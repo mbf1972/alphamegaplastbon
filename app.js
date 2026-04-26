@@ -6,6 +6,63 @@
 let items = [];
 let nextId = 1;
 
+// === Auth Logic ===
+const authOverlay = document.getElementById('auth-overlay');
+const authPassword = document.getElementById('auth-password');
+const authBtn = document.getElementById('auth-btn');
+const authError = document.getElementById('auth-error');
+
+const EXPECTED_HASH = "d30ea69ba67ff9c8c9d52a2d202edb26d1a619b0baed813de401ec2dbf392448";
+
+if (sessionStorage.getItem('auth_passed') === 'true') {
+    authOverlay.style.display = 'none';
+}
+
+async function hashString(str) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function checkAuth() {
+    const pwd = authPassword.value;
+    if (!pwd) return;
+    
+    authBtn.textContent = 'Vérification...';
+    authBtn.disabled = true;
+    
+    const hash = await hashString(pwd);
+    if (hash === EXPECTED_HASH) {
+        sessionStorage.setItem('auth_passed', 'true');
+        authOverlay.style.opacity = '0';
+        setTimeout(() => {
+            authOverlay.style.display = 'none';
+        }, 300);
+    } else {
+        authError.style.display = 'block';
+        authPassword.value = '';
+        authPassword.focus();
+        
+        // Shake animation
+        authBtn.style.animation = 'none';
+        void authBtn.offsetWidth;
+        authBtn.style.animation = 'shake 0.4s ease';
+    }
+    
+    authBtn.textContent = 'Valider';
+    authBtn.disabled = false;
+}
+
+if (authBtn) {
+    authBtn.addEventListener('click', checkAuth);
+    authPassword.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkAuth();
+    });
+}
+
+
 // === DOM References ===
 const qteInput = document.getElementById('qte');
 const diamInput = document.getElementById('diam');
@@ -32,11 +89,32 @@ let pickerMonth = pickerDate.getMonth();
 let pickerYear = pickerDate.getFullYear();
 
 // === Load / Init N° Bon ===
-let currentNumBon = parseInt(localStorage.getItem('num-bon')) || 100230;
+const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNG2S1-QVKJhPCWzFArxIcRCEZyX5A8LJdZJ-UgZzIERvGNiZ001Va_Z4qJXCXxn7u/exec";
+
+let currentNumBon = '...';
 function updateNumBonDisplay() {
     if (numBonDisplay) numBonDisplay.textContent = currentNumBon;
 }
 updateNumBonDisplay();
+
+// Fetch current N° Bon from Google Sheets
+async function fetchNumBon() {
+    try {
+        const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL + "?action=getNumBon");
+        const data = await response.json();
+        if (data && data.numBon) {
+            currentNumBon = parseInt(data.numBon);
+            updateNumBonDisplay();
+            localStorage.setItem('num-bon', currentNumBon);
+        }
+    } catch (e) {
+        console.error("Erreur lors de la récupération du numéro de bon:", e);
+        // Fallback to local storage if network fails
+        currentNumBon = parseInt(localStorage.getItem('num-bon')) || 100230;
+        updateNumBonDisplay();
+    }
+}
+fetchNumBon();
 
 // Set today's date
 function formatDateFR(d) {
@@ -293,7 +371,6 @@ shakeStyle.textContent = `
 document.head.appendChild(shakeStyle);
 
 // === PDF Button & Auto-Sync Sheets ===
-const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNG2S1-QVKJhPCWzFArxIcRCEZyX5A8LJdZJ-UgZzIERvGNiZ001Va_Z4qJXCXxn7u/exec";
 
 btnPdf.addEventListener('click', async function () {
     if (items.length === 0) {
@@ -342,8 +419,12 @@ btnPdf.addEventListener('click', async function () {
             this.textContent = '✓ PDF Téléchargé !';
             this.style.background = '#2dc770';
 
-            // Incrémenter le numéro pour le prochain bon
-            currentNumBon++;
+            // Mettre à jour le numéro avec la nouvelle valeur renvoyée par le serveur ou l'incrémenter
+            if (result.nextNumBon) {
+                currentNumBon = parseInt(result.nextNumBon);
+            } else {
+                currentNumBon++;
+            }
             localStorage.setItem('num-bon', currentNumBon);
             updateNumBonDisplay();
         } else {
