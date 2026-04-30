@@ -6,62 +6,7 @@
 let items = [];
 let nextId = 1;
 
-// === Auth Logic ===
-const authOverlay = document.getElementById('auth-overlay');
-const authPassword = document.getElementById('auth-password');
-const authBtn = document.getElementById('auth-btn');
-const authError = document.getElementById('auth-error');
-
-const EXPECTED_HASH = "d30ea69ba67ff9c8c9d52a2d202edb26d1a619b0baed813de401ec2dbf392448";
-
-if (sessionStorage.getItem('auth_passed') === 'true') {
-    authOverlay.style.display = 'none';
-}
-
-async function hashString(str) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function checkAuth() {
-    const pwd = authPassword.value;
-    if (!pwd) return;
-    
-    authBtn.textContent = 'Vérification...';
-    authBtn.disabled = true;
-    
-    const hash = await hashString(pwd);
-    if (hash === EXPECTED_HASH) {
-        sessionStorage.setItem('auth_passed', 'true');
-        authOverlay.style.opacity = '0';
-        setTimeout(() => {
-            authOverlay.style.display = 'none';
-        }, 300);
-    } else {
-        authError.style.display = 'block';
-        authPassword.value = '';
-        authPassword.focus();
-        
-        // Shake animation
-        authBtn.style.animation = 'none';
-        void authBtn.offsetWidth;
-        authBtn.style.animation = 'shake 0.4s ease';
-    }
-    
-    authBtn.textContent = 'Valider';
-    authBtn.disabled = false;
-}
-
-if (authBtn) {
-    authBtn.addEventListener('click', checkAuth);
-    authPassword.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') checkAuth();
-    });
-}
-
+// === Auth Logic (Déplacée vers menu.html) ===
 
 // === DOM References ===
 const qteInput = document.getElementById('qte');

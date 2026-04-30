@@ -10,6 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script>
+        if (sessionStorage.getItem('auth_passed') !== 'true') {
+            window.location.href = 'menu.html';
+        }
+    </script>
 </head>
 <body>
 
@@ -97,18 +102,6 @@
     <section class="btn-section" id="btn-pdf-section">
         <button class="btn-pdf" id="btn-pdf">PDF</button>
     </section>
-
-    <!-- Auth Overlay -->
-    <div id="auth-overlay" class="auth-overlay">
-        <div class="auth-box">
-            <h2>Accès Sécurisé</h2>
-            <p>Veuillez entrer le mot de passe</p>
-            <input type="password" id="auth-password" placeholder="Mot de passe">
-            <button id="auth-btn">Valider</button>
-            <p id="auth-error" style="color: #e74c3c; display: none; margin-top: 10px; font-size: 0.9rem;">Mot de passe incorrect</p>
-        </div>
-    </div>
-
     <script src="app.js"></script>
 </body>
 </html>
