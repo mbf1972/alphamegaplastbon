@@ -22,14 +22,16 @@ body {
     font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background-color: #00aeef;
     color: #ffffff;
-    height: 100vh;
-    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     -webkit-font-smoothing: antialiased;
     padding: 0 8px;
-    padding-bottom: env(safe-area-inset-bottom, 4px);
+    padding-bottom: env(safe-area-inset-bottom, 15px);
 }
 
 /* === Header / Title === */
@@ -317,12 +319,12 @@ input[type="number"] {
 
 /* === Items Zone (white area) === */
 .items-zone {
-    flex: 1;
+    flex: 1 1 auto;
     background: #ffffff;
     border-radius: 10px;
     margin: 0;
     margin-bottom: 6px;
-    min-height: 0;
+    min-height: 250px; /* Évite la disparition avec le clavier */
     padding: 0;
     overflow-y: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -516,14 +518,19 @@ input[type="number"] {
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 15vh;
     z-index: 9999;
     transition: opacity 0.3s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .auth-box {
@@ -534,6 +541,7 @@ input[type="number"] {
     text-align: center;
     width: 90%;
     max-width: 320px;
+    margin: auto 0;
 }
 
 .auth-box h2 {
