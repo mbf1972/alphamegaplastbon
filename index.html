@@ -11,7 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script>
-        if (sessionStorage.getItem('auth_passed') !== 'true') {
+        const authData = JSON.parse(localStorage.getItem('auth_data') || '{}');
+        const now = new Date().getTime();
+        if (!(authData.passed === 'true' && (now - authData.time < 12 * 60 * 60 * 1000))) {
             window.location.href = 'menu.html';
         }
     </script>
