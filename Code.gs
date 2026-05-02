@@ -60,6 +60,22 @@ function doPost(e) {
     // ==========================================================
 
     // ==========================================================
+    // NOUVEAU BLOC : Récupérer les données du TARIF en JSON
+    // ==========================================================
+    if (data.action === "getTarifData") {
+      var tarifSheet = ss.getSheetByName("tarif");
+      if (!tarifSheet) {
+        throw new Error("La feuille 'tarif' est introuvable.");
+      }
+      var values = tarifSheet.getRange("B2:F39").getValues();
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "Success",
+        "data": values
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    // ==========================================================
+
+    // ==========================================================
     // CODE EXISTANT : Génération du PDF pour le BON DE LIVRAISON
     // ==========================================================
     const sheet = ss.getActiveSheet();

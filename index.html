@@ -34,7 +34,7 @@
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                 Facture
             </button>
-            <button id="btn-tarif" class="menu-btn" style="cursor: pointer;">
+            <button onclick="window.location.href='tarif.html'" class="menu-btn" style="cursor: pointer;">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                 Tarif
             </button>
@@ -157,62 +157,6 @@
             document.head.appendChild(shakeStyle);
         }
 
-        // === Tarif PDF Logic ===
-        const btnTarif = document.getElementById('btn-tarif');
-        if (btnTarif) {
-            btnTarif.addEventListener('click', async function() {
-                const originalHtml = this.innerHTML;
-                this.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> Génération...';
-                this.disabled = true;
-
-                try {
-                    const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNG2S1-QVKJhPCWzFArxIcRCEZyX5A8LJdZJ-UgZzIERvGNiZ001Va_Z4qJXCXxn7u/exec";
-                    // Using POST instead of GET for PDF to avoid URL length limits and structure similarly to bon
-                    const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'getTarifPdf' }),
-                        headers: { "Content-Type": "text/plain;charset=utf-8" }
-                    });
-                    
-                    const result = await response.json();
-
-                    if (result.status === "Success") {
-                        const linkSource = `data:application/pdf;base64,${result.base64}`;
-                        const downloadLink = document.createElement("a");
-                        downloadLink.href = linkSource;
-                        downloadLink.download = result.fileName || "Tarif_AMplast.pdf";
-                        downloadLink.click();
-                        
-                        this.innerHTML = '✓ Téléchargé !';
-                        this.style.background = '#2dc770';
-                        this.style.color = '#fff';
-                        this.style.border = 'none';
-                    } else {
-                        console.error("Erreur Script:", result.message);
-                        alert("Erreur: " + result.message);
-                        this.innerHTML = '❌ Erreur';
-                        this.style.background = '#e74c3c';
-                        this.style.color = '#fff';
-                        this.style.border = 'none';
-                    }
-                } catch(e) {
-                    console.error("Erreur réseau:", e);
-                    alert("Erreur de connexion au serveur.");
-                    this.innerHTML = '❌ Erreur';
-                    this.style.background = '#e74c3c';
-                    this.style.color = '#fff';
-                    this.style.border = 'none';
-                }
-
-                setTimeout(() => {
-                    this.innerHTML = originalHtml;
-                    this.style.background = '';
-                    this.style.color = '';
-                    this.style.border = '';
-                    this.disabled = false;
-                }, 3000);
-            });
-        }
     </script>
 </body>
 </html>

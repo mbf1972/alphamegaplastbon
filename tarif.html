@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Tarif - AMplast">
+    <meta name="theme-color" content="#00aeef">
+    <title>Tarif - AMplast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        const authData = JSON.parse(localStorage.getItem('auth_data') || '{}');
+        const now = new Date().getTime();
+        if (!(authData.passed === 'true' && (now - authData.time < 12 * 60 * 60 * 1000))) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Title -->
+    <header class="app-header" id="app-header">
+        <h1 class="title">Tarif</h1>
+    </header>
+
+    <!-- Discount Input -->
+    <section class="tarif-discount-section" id="tarif-discount-section">
+        <div class="tarif-discount-row">
+            <label for="discount-pct">Réduction %</label>
+            <input type="number" id="discount-pct" min="0" max="100" step="any" placeholder="0" inputmode="decimal">
+            <button class="btn-apply" id="btn-apply">Appliquer</button>
+        </div>
+    </section>
+
+    <!-- Tarif Table Display Area -->
+    <section class="items-zone" id="tarif-zone">
+        <div class="tarif-loading" id="tarif-loading">
+            <div class="spinner"></div>
+            <p>Chargement du tarif...</p>
+        </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="btn-section" id="btn-pdf-section">
+        <button class="btn-pdf" id="btn-pdf-tarif">PDF</button>
+    </section>
+
+    <script>
+        const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNG2S1-QVKJhPCWzFArxIcRCEZyX5A8LJdZJ-UgZzIERvGNiZ001Va_Z4qJXCXxn7u/exec";
+
+        let originalData = []; // Données brutes du tarif (avant réduction)
+        let currentData = [];  // Données affichées (après réduction éventuelle)
+
+        // === Charger les données du tarif ===
+        async function loadTarifData() {
+            try {
+                const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getTarifData' }),
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }
+                });
+                const result = await response.json();
+
+                if (result.status === "Success") {
+                    originalData = result.data;
+                    currentData = JSON.parse(JSON.stringify(originalData)); // deep copy
+                    renderTarif(currentData);
+                } else {
+                    showError("Erreur: " + result.message);
+                }
+            } catch (e) {
+                console.error("Erreur réseau:", e);
+                showError("Erreur de connexion au serveur.");
+            }
+        }
+
+        function showError(msg) {
+            const zone = document.getElementById('tarif-zone');
+            zone.innerHTML = `<div class="tarif-loading"><p style="color:#e74c3c;">${msg}</p></div>`;
+        }
+
+        // === Afficher le tarif dans un tableau ===
+        function renderTarif(data) {
+            const zone = document.getElementById('tarif-zone');
+            let html = '';
+
+            for (let i = 0; i < data.length; i++) {
+                const row = data[i];
+
+                // Vérifier si c'est une ligne vide
+                const isEmpty = row.every(cell => cell === '' || cell === null || cell === undefined);
+                if (isEmpty) continue;
+
+                // Vérifier si c'est un en-tête (ligne avec du texte sans prix numérique)
+                const isHeader = isHeaderRow(row, i);
+
+                if (isHeader) {
+                    // Ligne d'en-tête / titre de catégorie
+                    const headerText = row.filter(c => c !== '' && c !== null && c !== undefined).join(' ');
+                    html += `<div class="tarif-row tarif-category">${headerText}</div>`;
+                } else {
+                    // Ligne de données normale
+                    html += `<div class="tarif-row ${i % 2 === 0 ? 'even' : 'odd'}">`;
+                    html += `<span class="tarif-cell tarif-desc">${formatCell(row[0])}</span>`;
+                    html += `<span class="tarif-cell tarif-val">${formatCell(row[1])}</span>`;
+                    html += `<span class="tarif-cell tarif-val">${formatCell(row[2])}</span>`;
+                    html += `<span class="tarif-cell tarif-val">${formatCell(row[3])}</span>`;
+                    html += `<span class="tarif-cell tarif-prix">${formatPrice(row[4])}</span>`;
+                    html += `</div>`;
+                }
+            }
+
+            zone.innerHTML = html;
+        }
+
+        function isHeaderRow(row, index) {
+            // Première ligne souvent un en-tête
+            if (index === 0) return true;
+            // Si seule la première colonne a du contenu, c'est probablement un titre de catégorie
+            const nonEmpty = row.filter(c => c !== '' && c !== null && c !== undefined);
+            if (nonEmpty.length === 1 && typeof row[0] === 'string' && row[0].length > 0) return true;
+            return false;
+        }
+
+        function formatCell(val) {
+            if (val === '' || val === null || val === undefined) return '';
+            return val;
+        }
+
+        function formatPrice(val) {
+            if (val === '' || val === null || val === undefined) return '';
+            const num = parseFloat(val);
+            if (isNaN(num)) return val;
+            return num.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // === Appliquer la réduction ===
+        document.getElementById('btn-apply').addEventListener('click', function() {
+            const pctInput = document.getElementById('discount-pct');
+            const pct = parseFloat(pctInput.value);
+
+            if (isNaN(pct) || pct < 0 || pct > 100) {
+                alert("Veuillez entrer un pourcentage valide (0-100).");
+                return;
+            }
+
+            // Recalculer à partir des données originales
+            currentData = JSON.parse(JSON.stringify(originalData));
+
+            const factor = 1 - (pct / 100);
+
+            for (let i = 0; i < currentData.length; i++) {
+                // Appliquer la réduction sur la dernière colonne (prix - colonne F = index 4)
+                const val = currentData[i][4];
+                if (val !== '' && val !== null && val !== undefined) {
+                    const num = parseFloat(val);
+                    if (!isNaN(num) && num > 0) {
+                        currentData[i][4] = (num * factor);
+                    }
+                }
+            }
+
+            renderTarif(currentData);
+
+            // Animation du bouton
+            this.textContent = '✓ Appliqué';
+            this.style.background = '#2dc770';
+            setTimeout(() => {
+                this.textContent = 'Appliquer';
+                this.style.background = '';
+            }, 1500);
+        });
+
+        // === Télécharger le PDF ===
+        document.getElementById('btn-pdf-tarif').addEventListener('click', async function() {
+            const originalText = this.textContent;
+            this.textContent = 'Génération...';
+            this.disabled = true;
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getTarifPdf' }),
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }
+                });
+
+                const result = await response.json();
+
+                if (result.status === "Success") {
+                    const linkSource = `data:application/pdf;base64,${result.base64}`;
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = linkSource;
+                    downloadLink.download = result.fileName || "Tarif_AMplast.pdf";
+                    downloadLink.click();
+
+                    this.textContent = '✓ Téléchargé !';
+                    this.style.background = '#2dc770';
+                } else {
+                    console.error("Erreur Script:", result.message);
+                    alert("Erreur: " + result.message);
+                    this.textContent = '❌ Erreur';
+                    this.style.background = '#e74c3c';
+                }
+            } catch (e) {
+                console.error("Erreur réseau:", e);
+                alert("Erreur de connexion au serveur.");
+                this.textContent = '❌ Erreur';
+                this.style.background = '#e74c3c';
+            }
+
+            setTimeout(() => {
+                this.textContent = originalText;
+                this.style.background = '';
+                this.disabled = false;
+            }, 3000);
+        });
+
+        // === Charger au démarrage ===
+        loadTarifData();
+    </script>
+</body>
+</html>
