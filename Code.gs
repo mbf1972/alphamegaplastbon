@@ -10,6 +10,17 @@ function doGet(e) {
       "numBon": numBon
     })).setMimeType(ContentService.MimeType.JSON);
   }
+  if (e && e.parameter && e.parameter.action === "getnumDevis") {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var devisSheet = ss.getSheetByName("devis");
+    if (!devisSheet) throw new Error("La feuille 'devis' est introuvable.");
+    var numDevis = devisSheet.getRange("F4").getValue();
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      "status": "Success",
+      "numDevis": numDevis
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
   return ContentService.createTextOutput("OK");
 }
 
@@ -95,13 +106,20 @@ function doPost(e) {
     // ==========================================================
 
     // ==========================================================
-    // CODE EXISTANT : Génération du PDF pour le BON DE LIVRAISON
+    // CODE EXISTANT : Génération du PDF pour le BON DE LIVRAISON OU DEVIS
     // ==========================================================
-    const sheet = ss.getActiveSheet();
+    var isDevis = data.type === "devis";
+    var sheet = isDevis ? ss.getSheetByName("devis") : ss.getActiveSheet();
+    if (!sheet) {
+      throw new Error("La feuille '" + (isDevis ? "devis" : "bon") + "' est introuvable.");
+    }
     
     // 2. Remplissage des données dans le modèle
-    sheet.getRange("F4").setValue(data.numBon);          
-    sheet.getRange("F5").setValue(data.dateBon);         
+    var num = isDevis ? data.numDevis : data.numBon;
+    var date = isDevis ? data.dateDevis : data.dateBon;
+    
+    sheet.getRange("F4").setValue(num);          
+    sheet.getRange("F5").setValue(date);         
     sheet.getRange("E9").setValue(data.clientNom);       
     sheet.getRange("E10").setValue(data.clientAdresse);  
     
@@ -153,17 +171,23 @@ function doPost(e) {
     var pdfBase64 = Utilities.base64Encode(response_bon.getBlob().getBytes());
 
     // 4. INCYCREMENTER le numéro de bon dans le tableau Google Sheet (ex: 200 devient 201)
-    var nextNum = parseInt(data.numBon) + 1;
+    var nextNum = parseInt(num) + 1;
     sheet.getRange("F4").setValue(nextNum);
     SpreadsheetApp.flush(); // On sauvegarde l'incrémentation
 
     // 5. Renvoyer la réponse à l'application web avec le nouveau numéro
-    return ContentService.createTextOutput(JSON.stringify({
+    var fileName = isDevis ? ("Devis_" + num + ".pdf") : ("Bon_Livraison_" + num + ".pdf");
+    var responseObj = {
       "status": "Success",
       "base64": pdfBase64,
-      "fileName": "Bon_Livraison_" + data.numBon + ".pdf",
-      "nextNumBon": nextNum
-    })).setMimeType(ContentService.MimeType.JSON);
+      "fileName": fileName
+    };
+    if (isDevis) {
+      responseObj.nextNumDevis = nextNum;
+    } else {
+      responseObj.nextNumBon = nextNum;
+    }
+    return ContentService.createTextOutput(JSON.stringify(responseObj)).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({
