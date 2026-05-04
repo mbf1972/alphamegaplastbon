@@ -28,9 +28,9 @@
     <!-- Discount Input -->
     <section class="tarif-discount-section" id="tarif-discount-section">
         <div class="tarif-discount-row">
-            <label for="discount-pct">Réduction %</label>
+            <label for="discount-pct">Remise</label>
             <input type="number" id="discount-pct" min="0" max="100" step="any" placeholder="0" inputmode="decimal">
-            <button class="btn-apply" id="btn-apply">Appliquer</button>
+            <button class="btn-apply" id="btn-apply">Ok</button>
         </div>
     </section>
 
@@ -93,6 +93,17 @@
                 const isEmpty = row.every(cell => cell === '' || cell === null || cell === undefined);
                 if (isEmpty) continue;
 
+                // Ignorer les informations de la société en haut du tarif
+                const descStr = (row[0] || '').toString().trim().toLowerCase();
+                if (descStr === 'plast' || 
+                    descStr === 'alpha mega plast' || 
+                    descStr.includes('route ouled ziyane') || 
+                    descStr === 'casablanca' || 
+                    descStr.startsWith('tel') || 
+                    descStr.startsWith('e-mail')) {
+                    continue;
+                }
+
                 // Vérifier si c'est un en-tête (ligne avec du texte sans prix numérique)
                 const isHeader = isHeaderRow(row, i);
 
@@ -104,10 +115,7 @@
                     // Ligne de données normale
                     html += `<div class="tarif-row ${i % 2 === 0 ? 'even' : 'odd'}">`;
                     html += `<span class="tarif-cell tarif-desc">${formatCell(row[0])}</span>`;
-                    html += `<span class="tarif-cell tarif-val">${formatCell(row[1])}</span>`;
-                    html += `<span class="tarif-cell tarif-val">${formatCell(row[2])}</span>`;
-                    html += `<span class="tarif-cell tarif-val">${formatCell(row[3])}</span>`;
-                    html += `<span class="tarif-cell tarif-prix">${formatPrice(row[4])}</span>`;
+                    html += `<span class="tarif-cell tarif-prix" data-index="${i}" title="Double-cliquez pour modifier">${formatPrice(row[4])}</span>`;
                     html += `</div>`;
                 }
             }
@@ -165,12 +173,54 @@
             renderTarif(currentData);
 
             // Animation du bouton
-            this.textContent = '✓ Appliqué';
+            this.textContent = '✓ Ok';
             this.style.background = '#2dc770';
             setTimeout(() => {
-                this.textContent = 'Appliquer';
+                this.textContent = 'Ok';
                 this.style.background = '';
             }, 1500);
+        });
+
+        // === Double clic pour modifier un prix ===
+        document.getElementById('tarif-zone').addEventListener('dblclick', function(e) {
+            const target = e.target.closest('.tarif-prix');
+            if (!target) return;
+            
+            if (target.querySelector('input')) return; // Déjà en édition
+            
+            const index = target.getAttribute('data-index');
+            let currentPrice = currentData[index][4];
+            if (typeof currentPrice === 'string') {
+                currentPrice = parseFloat(currentPrice.replace(',', '.').replace(/[^\d.-]/g, ''));
+            }
+            if (isNaN(currentPrice)) currentPrice = 0;
+            
+            // Arrondir pour éviter les erreurs de précision (ex: 9.7000005 -> 9.7)
+            currentPrice = parseFloat(Number(currentPrice).toFixed(2));
+            
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.step = 'any';
+            input.value = currentPrice;
+            input.className = 'edit-price-input';
+            
+            target.innerHTML = '';
+            target.appendChild(input);
+            input.focus();
+            
+            function finishEdit() {
+                const newVal = parseFloat(input.value);
+                if (!isNaN(newVal) && newVal >= 0) {
+                    currentData[index][4] = newVal;
+                    originalData[index][4] = newVal; // Sauvegarder dans original aussi
+                }
+                renderTarif(currentData);
+            }
+            
+            input.addEventListener('blur', finishEdit);
+            input.addEventListener('keydown', function(evt) {
+                if (evt.key === 'Enter') finishEdit();
+            });
         });
 
         // === Télécharger le PDF ===
@@ -182,7 +232,10 @@
             try {
                 const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'getTarifPdf' }),
+                    body: JSON.stringify({ 
+                        action: 'getTarifPdf',
+                        modifiedData: currentData
+                    }),
                     headers: { "Content-Type": "text/plain;charset=utf-8" }
                 });
 

@@ -26,36 +26,55 @@ function doPost(e) {
       if (!tarifSheet) {
         throw new Error("La feuille 'tarif' est introuvable.");
       }
-      var sheetId = tarifSheet.getSheetId();
       
-      // Construction de l'URL d'export PDF pour la sélection B2:F39 sur une seule page (scale=4)
-      var tarifUrl = "https://docs.google.com/spreadsheets/d/" + ss.getId() + "/export?"
-        + "exportFormat=pdf&format=pdf"
-        + "&size=A4&portrait=true"
-        + "&scale=4&fitw=true&fzr=false"
-        + "&gridlines=false&printtitle=false"
-        + "&sheetnames=false&pagenum=UNDEFINED"
-        + "&horizontal_alignment=CENTER"
-        + "&gid=" + sheetId 
-        + "&range=B2:F39";
+      var sheetToExport = tarifSheet;
+      var tempSheet = null;
+      
+      try {
+        if (data.modifiedData && data.modifiedData.length > 0) {
+          tempSheet = tarifSheet.copyTo(ss);
+          tempSheet.setName("Tarif_Temp_" + new Date().getTime());
+          tempSheet.getRange("B2:F39").setValues(data.modifiedData);
+          SpreadsheetApp.flush();
+          sheetToExport = tempSheet;
+        }
+        
+        var sheetId = sheetToExport.getSheetId();
+        
+        // Construction de l'URL d'export PDF pour la sélection B2:F39 sur une seule page (scale=4)
+        var tarifUrl = "https://docs.google.com/spreadsheets/d/" + ss.getId() + "/export?"
+          + "exportFormat=pdf&format=pdf"
+          + "&size=A4&portrait=true"
+          + "&scale=4&fitw=true&fzr=false"
+          + "&gridlines=false&printtitle=false"
+          + "&sheetnames=false&pagenum=UNDEFINED"
+          + "&horizontal_alignment=CENTER"
+          + "&gid=" + sheetId 
+          + "&range=B2:F39";
 
-      var token = ScriptApp.getOAuthToken();
-      var response = UrlFetchApp.fetch(tarifUrl, {
-        headers: { 'Authorization': 'Bearer ' + token },
-        muteHttpExceptions: true
-      });
+        var token = ScriptApp.getOAuthToken();
+        var response = UrlFetchApp.fetch(tarifUrl, {
+          headers: { 'Authorization': 'Bearer ' + token },
+          muteHttpExceptions: true
+        });
 
-      if (response.getResponseCode() !== 200) {
-        throw new Error("Export PDF Tarif échoué: " + response.getContentText());
+        if (response.getResponseCode() !== 200) {
+          throw new Error("Export PDF Tarif échoué: " + response.getContentText());
+        }
+
+        var tarifPdfBase64 = Utilities.base64Encode(response.getBlob().getBytes());
+
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "Success",
+          "base64": tarifPdfBase64,
+          "fileName": "Tarif_AMplast.pdf"
+        })).setMimeType(ContentService.MimeType.JSON);
+        
+      } finally {
+        if (tempSheet) {
+          ss.deleteSheet(tempSheet);
+        }
       }
-
-      var tarifPdfBase64 = Utilities.base64Encode(response.getBlob().getBytes());
-
-      return ContentService.createTextOutput(JSON.stringify({
-        "status": "Success",
-        "base64": tarifPdfBase64,
-        "fileName": "Tarif_AMplast.pdf"
-      })).setMimeType(ContentService.MimeType.JSON);
     }
     // ==========================================================
 
