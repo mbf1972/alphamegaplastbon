@@ -226,7 +226,7 @@ function renderItems() {
         <div class="item-row header">
             <div class="item-desc">Description</div>
             <div class="item-qte">Qté</div>
-            <div class="item-prix">Montant</div>
+            <div class="item-prix">Prix</div>
             <div class="item-total">Total</div>
             <div></div>
         </div>

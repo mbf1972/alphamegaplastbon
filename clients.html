@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00aeef">
+    <title>Clients - AMplast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #00aeef;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+        
+        .clients-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+            background-color: #00aeef;
+            color: #fff;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .clients-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 15px;
+            background-color: #00aeef;
+        }
+
+        .clients-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .btn-add {
+            position: absolute;
+            right: 15px;
+            background-color: #0000cd;
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            padding-bottom: 2px; /* Center the plus slightly */
+        }
+        
+        .btn-add:active {
+            transform: scale(0.95);
+        }
+
+        .clients-table-header {
+            display: flex;
+            padding: 10px 20px;
+            background-color: #00aeef;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .clients-table-header > div:first-child {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .clients-table-header > div:last-child {
+            flex: 1;
+            text-align: center;
+        }
+
+        .clients-list {
+            flex: 1;
+            background-color: #fff;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .client-row {
+            display: flex;
+            padding: 10px 20px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #000;
+        }
+
+        .client-row:nth-child(even) {
+            background-color: #eaf4fd; /* Very light blue */
+        }
+
+        .client-row:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .client-name {
+            flex: 1;
+            color: #000;
+            text-align: center;
+        }
+
+        .client-solde {
+            flex: 1;
+            text-align: right;
+            color: #0000cd;
+            padding-right: 10px;
+        }
+
+        .clients-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 12px 20px;
+            background-color: #00aeef;
+            font-size: 1.2rem;
+            font-weight: 800;
+            gap: 15px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 15px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .back-btn:active {
+            background: rgba(255,255,255,0.4);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: white;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.2rem;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Modal Add Client */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: #ffffff;
+            color: #333;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #00aeef;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00aeef;
+            box-shadow: 0 0 0 3px rgba(0,174,239,0.2);
+        }
+        .btn-save {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(180deg, #2dc770 0%, #22a85a 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: transform 0.15s ease;
+        }
+        .btn-save:active {
+            transform: scale(0.98);
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="clients-container">
+        <div class="clients-header">
+            <button class="back-btn" onclick="window.location.href='index.html'" aria-label="Retour">
+                <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <h1 class="clients-title">Clients</h1>
+            <button class="btn-add">+</button>
+        </div>
+        
+        <div class="clients-table-header">
+            <div>Nom</div>
+            <div>Solde</div>
+        </div>
+        
+        <div class="clients-list" id="clients-list">
+            <!-- Les données des clients seront injectées ici par JS -->
+        </div>
+        
+        <div class="clients-footer">
+            <div>Total Clients :</div>
+            <div id="total-clients">0.00</div>
+        </div>
+    </div>
+
+    <!-- Écran de chargement -->
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <div>Chargement...</div>
+    </div>
+
+    <!-- Modal Nouveau Client -->
+    <div id="add-client-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <h2 class="modal-title">Nouveau Client</h2>
+            
+            <div class="form-group">
+                <label for="client-type">Type de client</label>
+                <select id="client-type">
+                    <option value="physique">Personne physique</option>
+                    <option value="societe">Société</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-nom">Nom <span style="color:red">*</span></label>
+                <input type="text" id="client-nom" placeholder="Nom du client / société" required>
+            </div>
+            
+            <div class="form-group hidden" id="ice-group">
+                <label for="client-ice">ICE <span style="color:red">*</span></label>
+                <input type="text" id="client-ice" placeholder="Identifiant Commun de l'Entreprise">
+            </div>
+            
+            <div class="form-group">
+                <label for="client-adresse">Adresse <span style="color:red">*</span></label>
+                <input type="text" id="client-adresse" placeholder="Adresse complète" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-tel">Téléphone <span style="color:red">*</span></label>
+                <input type="tel" id="client-tel" placeholder="N° de téléphone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-email">E-mail</label>
+                <input type="email" id="client-email" placeholder="Adresse e-mail (optionnel)">
+            </div>
+            
+            <div class="form-group">
+                <label for="client-solde">Solde initial <span style="color:red">*</span></label>
+                <input type="number" step="0.01" id="client-solde" placeholder="0.00" value="0.00" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-plafond">Plafond de crédit <span style="color:red">*</span></label>
+                <input type="number" step="0.01" id="client-plafond" placeholder="100000.00" value="100000.00" required>
+            </div>
+            
+            <button class="btn-save" id="btn-save-client">Enregistrer</button>
+        </div>
+    </div>
+
+    <script src="clients.js"></script>
+</body>
+</html>
