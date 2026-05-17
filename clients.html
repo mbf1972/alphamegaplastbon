@@ -3,160 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#00aeef">
+    <meta name="description" content="Clients - AMplast">
+    <meta name="theme-color" content="#0f172a">
     <title>Clients - AMplast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #00aeef;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            min-height: 100dvh;
-        }
-        
-        .clients-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            height: 100dvh;
-            background-color: #00aeef;
-            color: #fff;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
         .clients-header {
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            padding: 15px;
-            background-color: #00aeef;
+            flex-shrink: 0;
+            padding: 6px 0 4px;
         }
 
         .clients-title {
-            font-size: 1.8rem;
-            font-weight: 800;
+            font-size: 0.95rem;
+            font-weight: 900;
             color: #ffffff;
-            margin: 0;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
-        .btn-add {
-            position: absolute;
-            right: 15px;
-            background-color: #0000cd;
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            font-size: 1.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            padding-bottom: 2px; /* Center the plus slightly */
-        }
-        
-        .btn-add:active {
-            transform: scale(0.95);
-        }
-
-        .clients-table-header {
-            display: flex;
-            padding: 10px 20px;
-            background-color: #00aeef;
-            border-top: 1px solid rgba(255,255,255,0.3);
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            font-size: 1.3rem;
-            font-weight: 800;
-        }
-
-        .clients-table-header > div:first-child {
+        .clients-body {
             flex: 1;
-            text-align: center;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
-        
-        .clients-table-header > div:last-child {
+
+        .clients-table-glass {
+            background: var(--glass-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
             flex: 1;
-            text-align: center;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
         }
 
         .clients-list {
             flex: 1;
-            background-color: #fff;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .client-row {
             display: flex;
-            padding: 10px 20px;
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #000;
+            padding: 10px 12px;
+            background: rgba(96, 165, 250, 0.05);
+            border-radius: var(--radius-sm);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all var(--transition-fast);
+            align-items: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
         }
 
         .client-row:nth-child(even) {
-            background-color: #eaf4fd; /* Very light blue */
+            background: rgba(96, 165, 250, 0.03);
         }
 
-        .client-row:nth-child(odd) {
-            background-color: #ffffff;
+        .client-row:active {
+            transform: scale(0.98);
+            background: rgba(96, 165, 250, 0.12);
+            border-color: rgba(96, 165, 250, 0.25);
+        }
+
+        .client-row::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--color-primary-light), var(--color-primary));
+            opacity: 0.5;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .client-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(96, 165, 250, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1rem;
+            color: var(--color-primary-light);
+            margin-right: 12px;
+            flex-shrink: 0;
+            border: 1px solid rgba(96, 165, 250, 0.15);
+        }
+
+        .client-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
 
         .client-name {
-            flex: 1;
-            color: #000;
-            text-align: center;
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 0.88rem;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+
+        .client-sub {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .client-amount-box {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
         }
 
         .client-solde {
-            flex: 1;
-            text-align: right;
-            color: #0000cd;
-            padding-right: 10px;
+            color: var(--color-primary-light);
+            font-weight: 900;
+            font-size: 0.95rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        }
+        
+        .client-solde.negative {
+            color: rgba(239, 68, 68, 0.9);
+        }
+
+        .client-solde-label {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.35);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
         .clients-footer {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--glass-shadow);
             display: flex;
-            justify-content: flex-end;
-            padding: 12px 20px;
-            background-color: #00aeef;
-            font-size: 1.2rem;
-            font-weight: 800;
-            gap: 15px;
-            border-top: 2px solid rgba(255,255,255,0.3);
+            justify-content: space-between;
+            padding: 8px 12px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            flex-shrink: 0;
         }
 
-        .back-btn {
+        #total-clients { font-size: 1rem; }
+
+        .btn-add-clients {
             position: absolute;
-            left: 15px;
-            background: rgba(255,255,255,0.2);
-            border: none;
+            right: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .back-btn:active {
-            background: rgba(255,255,255,0.4);
+            transition: all var(--transition-fast);
+            backdrop-filter: blur(8px);
+            font-size: 1.2rem;
+            font-weight: 300;
+            line-height: 1;
         }
 
-        /* Loading Overlay */
+        .btn-add-clients:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .clients-list::-webkit-scrollbar { width: 3px; }
+        .clients-list::-webkit-scrollbar-track { background: transparent; }
+        .clients-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+
         .loading-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -169,19 +227,10 @@
             color: white;
             font-weight: 800;
             font-family: 'Nunito', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1rem;
+            backdrop-filter: blur(8px);
         }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Modal Add Client */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -190,123 +239,281 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            padding: 20px;
+            padding: 16px;
+            backdrop-filter: blur(4px);
         }
         .modal-overlay.active {
             display: flex;
-            animation: fadeIn 0.2s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         .modal-content {
             background: #ffffff;
             color: #333;
             width: 100%;
             max-width: 400px;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: var(--radius-lg);
+            padding: 20px 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
             position: relative;
         }
         .modal-title {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #00aeef;
-            margin-top: 0;
-            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 0 0 16px;
             text-align: center;
         }
         .close-modal {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 12px;
+            right: 14px;
             background: none;
             border: none;
             font-size: 1.5rem;
-            color: #999;
+            color: #94a3b8;
             cursor: pointer;
             line-height: 1;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .form-group label {
             display: block;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: #555;
-            font-size: 0.9rem;
+            font-weight: 800;
+            margin-bottom: 3px;
+            color: var(--color-text);
+            font-size: 0.7rem;
+            text-transform: uppercase;
         }
         .form-group input, .form-group select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 8px 10px;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
             font-family: 'Nunito', sans-serif;
-            font-size: 1rem;
+            font-size: 0.85rem;
+            font-weight: 700;
             box-sizing: border-box;
+            color: var(--color-dark);
+            transition: all var(--transition-fast);
+            -webkit-appearance: none;
+            appearance: none;
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: #00aeef;
-            box-shadow: 0 0 0 3px rgba(0,174,239,0.2);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
         }
-        .btn-save {
+        .modal-content .btn-save {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(180deg, #2dc770 0%, #22a85a 100%);
+            padding: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: 800;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
             cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            transition: transform 0.15s ease;
+            margin-top: 4px;
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
         }
-        .btn-save:active {
-            transform: scale(0.98);
+        .modal-content .btn-save:active {
+            transform: scale(0.97);
         }
         .hidden {
             display: none !important;
         }
+
+        /* === Detail / Edit Modal === */
+        .detail-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+        .detail-modal-overlay.active {
+            display: flex;
+        }
+        .detail-modal {
+            background: #ffffff;
+            color: #333;
+            width: 100%;
+            max-width: 400px;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .detail-modal-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 0 0 14px;
+            text-align: center;
+            padding-right: 30px;
+            padding-left: 30px;
+            word-break: break-word;
+        }
+        .detail-close {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #94a3b8;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .detail-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .detail-field {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .detail-field-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.03em;
+        }
+        .detail-field-value {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--color-dark);
+            padding: 7px 10px;
+            background: #f8fafc;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid transparent;
+            min-height: 20px;
+            word-break: break-word;
+        }
+        .detail-field-value.editable {
+            background: #fff;
+            border-color: var(--color-border);
+            cursor: text;
+        }
+        .detail-field-value input,
+        .detail-field-value select {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--color-dark);
+            background: transparent;
+            padding: 0;
+        }
+        .detail-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .btn-edit-client {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.25);
+            transition: all var(--transition-fast);
+        }
+        .btn-edit-client:active { transform: scale(0.97); }
+
+        .btn-validate-client {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
+            transition: all var(--transition-fast);
+            display: none;
+        }
+        .btn-validate-client:active { transform: scale(0.97); }
+
+        .btn-cancel-edit {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.25);
+            transition: all var(--transition-fast);
+            display: none;
+        }
+        .btn-cancel-edit:active { transform: scale(0.97); }
+
+        @media (min-width: 600px) {
+            .client-row {
+                padding: 12px 16px;
+            }
+            .clients-list {
+                padding: 12px;
+                gap: 8px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="clients-container">
-        <div class="clients-header">
-            <button class="back-btn" onclick="window.location.href='index.html'" aria-label="Retour">
-                <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            </button>
-            <h1 class="clients-title">Clients</h1>
-            <button class="btn-add">+</button>
-        </div>
-        
-        <div class="clients-table-header">
-            <div>Nom</div>
-            <div>Solde</div>
-        </div>
-        
-        <div class="clients-list" id="clients-list">
-            <!-- Les données des clients seront injectées ici par JS -->
+    <header class="app-header">
+        <button class="header-back" onclick="window.location.href='index.html'" aria-label="Retour">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <h1 class="clients-title">Clients</h1>
+        <button class="btn-add-clients" id="btn-add-client" aria-label="Ajouter un client">+</button>
+    </header>
+
+    <div class="clients-body">
+        <div class="clients-table-glass">
+            
+            <div class="clients-list" id="clients-list">
+            </div>
         </div>
         
         <div class="clients-footer">
-            <div>Total Clients :</div>
-            <div id="total-clients">0.00</div>
+            <span>Total Clients</span>
+            <span id="total-clients">0.00</span>
         </div>
     </div>
 
-    <!-- Écran de chargement -->
     <div id="loading" class="loading-overlay">
         <div class="spinner"></div>
         <div>Chargement...</div>
     </div>
 
-    <!-- Modal Nouveau Client -->
     <div id="add-client-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" id="close-modal">&times;</button>
@@ -355,7 +562,56 @@
                 <input type="number" step="0.01" id="client-plafond" placeholder="100000.00" value="100000.00" required>
             </div>
             
-            <button class="btn-save" id="btn-save-client">Enregistrer</button>
+            <button class="btn-save btn-shine" id="btn-save-client">Enregistrer</button>
+        </div>
+    </div>
+
+    <!-- Detail / Edit Modal -->
+    <div id="detail-modal" class="detail-modal-overlay">
+        <div class="detail-modal">
+            <button class="detail-close" id="detail-close">&times;</button>
+            <h2 class="detail-modal-title" id="detail-client-name"></h2>
+
+            <div class="detail-fields">
+                <div class="detail-field">
+                    <span class="detail-field-label">Type</span>
+                    <div class="detail-field-value" id="detail-type"></div>
+                </div>
+                <div class="detail-field" id="detail-ice-row">
+                    <span class="detail-field-label">ICE</span>
+                    <div class="detail-field-value" id="detail-ice"></div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Nom</span>
+                    <div class="detail-field-value" id="detail-nom"></div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Adresse</span>
+                    <div class="detail-field-value" id="detail-adresse"></div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Téléphone</span>
+                    <div class="detail-field-value" id="detail-tel"></div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">E-mail</span>
+                    <div class="detail-field-value" id="detail-email"></div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Solde</span>
+                    <div class="detail-field-value" id="detail-solde"></div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Plafond de crédit</span>
+                    <div class="detail-field-value" id="detail-plafond"></div>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <button class="btn-edit-client" id="btn-edit-client">✏️ Modifier</button>
+                <button class="btn-cancel-edit" id="btn-cancel-edit">✕ Annuler</button>
+                <button class="btn-validate-client" id="btn-validate-client">✓ Valider</button>
+            </div>
         </div>
     </div>
 

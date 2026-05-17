@@ -224,9 +224,9 @@ function renderItems() {
     // Ligne d'entête (Header) - Toujours visible
     html += `
         <div class="item-row header">
-            <div class="item-desc">Description</div>
+            <div class="item-desc">Désignation</div>
             <div class="item-qte">Qté</div>
-            <div class="item-prix">Prix</div>
+            <div class="item-prix">P.U.</div>
             <div class="item-total">Total</div>
             <div></div>
         </div>
@@ -234,8 +234,10 @@ function renderItems() {
 
     // Articles réels
     items.forEach(item => {
-        const colorUpper = item.color.toUpperCase();
-        const desc = `Tube PVC D: ${item.diam} ${colorUpper} ${item.long}M ${item.sr === '-' ? '' : item.sr}`.trim();
+        const colorUpper = item.color !== '-' ? item.color.toUpperCase() : '';
+        const srText = item.sr !== '-' ? ` · ${item.sr}` : '';
+        const colorText = colorUpper ? ` · ${colorUpper}` : '';
+        const desc = `Tube PVC Ø${item.diam}${colorText} — ${item.long}m${srText}`;
         html += `
             <div class="item-row" id="row-${item.id}">
                 <div class="item-desc">${desc}</div>
@@ -247,8 +249,8 @@ function renderItems() {
         `;
     });
 
-    // Lignes vides pour remplir l'espace (Zebra striping continuera via CSS)
-    const minRows = 10;
+    // Lignes vides pour remplir l'espace
+    const minRows = 5;
     const currentRows = items.length;
     if (currentRows < minRows) {
         for (let i = 0; i < (minRows - currentRows); i++) {

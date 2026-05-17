@@ -104,6 +104,24 @@ function doPost(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
     // ==========================================================
+    // NOUVEAU BLOC : Récupérer les données des CLIENTS
+    // ==========================================================
+    if (data.action === "getClientsData") {
+      var clientsSheet = ss.getSheetByName("clients") || ss.getSheetByName("Clients") || ss.getSheetByName("client");
+      if (!clientsSheet) {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "Error",
+          "message": "La feuille 'clients' est introuvable. Les données clients seront gérées via Supabase."
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      var values = clientsSheet.getRange("A2:B1000").getValues();
+      var validClients = values.filter(function(row) { return row[0] !== ""; });
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "Success",
+        "data": validClients
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    // ==========================================================
 
     // ==========================================================
     // CODE EXISTANT : Génération du PDF pour le BON DE LIVRAISON OU DEVIS

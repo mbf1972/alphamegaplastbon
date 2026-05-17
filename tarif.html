@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Tarif - AMplast">
-    <meta name="theme-color" content="#00aeef">
+    <meta name="theme-color" content="#0f172a">
     <title>Tarif - AMplast</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,6 +22,9 @@
 
     <!-- Title -->
     <header class="app-header" id="app-header">
+        <button class="header-back" onclick="window.location.href='index.html'" aria-label="Retour">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
         <h1 class="title">Tarif</h1>
     </header>
 
@@ -30,7 +33,7 @@
         <div class="tarif-discount-row">
             <label for="discount-pct">Remise</label>
             <input type="number" id="discount-pct" min="0" max="100" step="any" placeholder="0" inputmode="decimal">
-            <button class="btn-apply" id="btn-apply">Ok</button>
+            <button class="btn-apply btn-shine" id="btn-apply">Ok</button>
         </div>
     </section>
 
@@ -44,7 +47,7 @@
 
     <!-- Actions -->
     <section class="btn-section" id="btn-pdf-section">
-        <button class="btn-pdf" id="btn-pdf-tarif">PDF</button>
+        <button class="btn-pdf btn-shine" id="btn-pdf-tarif">PDF</button>
     </section>
 
     <script>

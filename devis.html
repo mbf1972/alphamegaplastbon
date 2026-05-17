@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Devis - Création et gestion de devis">
-    <meta name="theme-color" content="#00aeef">
+    <meta name="theme-color" content="#0f172a">
     <title>Devis</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,32 +22,29 @@
 
     <!-- Title -->
     <header class="app-header" id="app-header">
+        <button class="header-back" onclick="window.location.href='index.html'" aria-label="Retour">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
         <h1 class="title">Devis</h1>
     </header>
 
     <!-- Client Info -->
     <section class="info-section" id="info-section">
-        <div class="info-row">
-            <div class="info-field full">
-                <label for="date-devis">Date</label>
-                <input type="text" id="date-devis" placeholder="jj/mm/aaaa" maxlength="10" inputmode="numeric">
-            </div>
-            <div class="info-field full">
-                <label for="num-devis-display">N° Devis</label>
-                <div id="num-devis-display">000000</div>
-            </div>
+        <div class="info-field">
+            <label for="date-devis">Date</label>
+            <input type="text" id="date-devis" placeholder="jj/mm/aaaa" maxlength="10" inputmode="numeric">
         </div>
-        <div class="info-row">
-            <div class="info-field full">
-                <label for="client-nom">Client</label>
-                <input type="text" id="client-nom" placeholder="Nom du client">
-            </div>
+        <div class="info-field">
+            <label for="num-devis-display">N° Devis</label>
+            <div id="num-devis-display">000000</div>
         </div>
-        <div class="info-row">
-            <div class="info-field full">
-                <label for="client-adresse">Adresse</label>
-                <input type="text" id="client-adresse" placeholder="Adresse du client">
-            </div>
+        <div class="info-field full">
+            <label for="client-nom">Client</label>
+            <input type="text" id="client-nom" placeholder="Nom du client">
+        </div>
+        <div class="info-field full">
+            <label for="client-adresse">Adresse</label>
+            <input type="text" id="client-adresse" placeholder="Adresse du client">
         </div>
     </section>
 
@@ -84,7 +81,7 @@
 
     <!-- Valider Button -->
     <section class="btn-section" id="btn-valider-section">
-        <button class="btn-valider" id="btn-valider">Valider</button>
+        <button class="btn-valider btn-shine" id="btn-valider">Valider</button>
     </section>
 
     <!-- Items Display Area (white zone) -->
@@ -102,7 +99,7 @@
 
     <!-- Actions -->
     <section class="btn-section" id="btn-pdf-section">
-        <button class="btn-pdf" id="btn-pdf">PDF</button>
+        <button class="btn-pdf btn-shine" id="btn-pdf">PDF</button>
     </section>
     <script src="devis.js"></script>
 </body>
