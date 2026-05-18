@@ -260,6 +260,16 @@ function openDetailModal(client) {
     btnEdit.style.display = 'block';
     btnValidate.style.display = 'none';
     btnCancelEdit.style.display = 'none';
+
+    // Reset tabs state
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+    const infoTab = document.getElementById('tab-infos');
+    if (infoTab) infoTab.classList.add('active');
+    
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    const infoPanel = document.getElementById('panel-infos');
+    if (infoPanel) infoPanel.style.display = 'block';
+
     detailModal.classList.add('active');
 }
 
@@ -417,3 +427,414 @@ btnValidate.addEventListener('click', async () => {
         btnValidate.disabled = false;
     }
 });
+
+// === Tabs and Relevé System ===
+
+function switchDetailTab(tabName) {
+    // Remove active class from all tabs
+    document.querySelectorAll('.detail-tab').forEach(tab => tab.classList.remove('active'));
+    // Add active class to selected tab
+    const targetTab = document.getElementById(`tab-${tabName}`);
+    if (targetTab) targetTab.classList.add('active');
+
+    // Hide all panels
+    document.querySelectorAll('.tab-panel').forEach(panel => panel.style.display = 'none');
+    // Show selected panel
+    const targetPanel = document.getElementById(`panel-${tabName}`);
+    if (targetPanel) targetPanel.style.display = 'block';
+
+    // If "releve" is clicked, fetch and render transactions
+    if (tabName === 'releve') {
+        loadClientReleve(currentClient);
+    }
+    
+    // If "paiement" is clicked, set default date
+    if (tabName === 'paiement') {
+        document.getElementById('pay-date').valueAsDate = new Date();
+        document.getElementById('pay-amount').value = '';
+        document.getElementById('pay-ref').value = '';
+        const imgGroup = document.getElementById('pay-image-group');
+        if (imgGroup) imgGroup.style.display = 'none';
+        clearUploadedImage();
+    }
+}
+window.switchDetailTab = switchDetailTab;
+
+async function loadClientReleve(client) {
+    const list = document.getElementById('releve-list');
+    list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94a3b8; font-weight: bold;">Chargement de l\'historique...</div>';
+    
+    try {
+        const [bons, paiements] = await Promise.all([
+            supabase('GET', `/bons?client_id=eq.${client.id}&order=date_bon.asc,created_at.asc`),
+            supabase('GET', `/paiements?client_id=eq.${client.id}&order=date_paiement.asc,created_at.asc`)
+        ]);
+
+        // Calculate Initial Balance dynamically:
+        // Initial Balance = Current Solde - Sum(Bons) + Sum(Paiements)
+        const totalBons = bons.reduce((sum, b) => sum + (parseFloat(b.total_general) || 0), 0);
+        const totalPaiements = paiements.reduce((sum, p) => sum + (parseFloat(p.montant) || 0), 0);
+        const currentSolde = parseFloat(client.solde) || 0;
+        const initialBalance = currentSolde - totalBons + totalPaiements;
+
+        const transactions = [];
+
+        // Add initial balance row
+        transactions.push({
+            date: '', // Will sort first
+            ref: 'INITIAL',
+            type: 'Solde initial',
+            debit: initialBalance >= 0 ? initialBalance : 0,
+            credit: initialBalance < 0 ? -initialBalance : 0,
+            isInitial: true
+        });
+
+        bons.forEach(b => {
+            transactions.push({
+                date: b.date_bon,
+                ref: `BL ${b.num_bon}`,
+                type: 'Livraison',
+                debit: parseFloat(b.total_general) || 0,
+                credit: 0,
+                timestamp: new Date(b.created_at || b.date_bon).getTime()
+            });
+        });
+
+        paiements.forEach(p => {
+            transactions.push({
+                date: p.date_paiement,
+                ref: p.reference || 'Reg',
+                type: `Paiement (${p.mode_paiement})`,
+                debit: 0,
+                credit: parseFloat(p.montant) || 0,
+                timestamp: new Date(p.created_at || p.date_paiement).getTime(),
+                image_data: p.image_data || null
+            });
+        });
+
+        // Sort transactions
+        transactions.sort((a, b) => {
+            if (a.isInitial) return -1;
+            if (b.isInitial) return 1;
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+            if (dateA !== dateB) return dateA - dateB;
+            return (a.timestamp || 0) - (b.timestamp || 0);
+        });
+
+        list.innerHTML = '';
+        let runningBalance = 0;
+
+        transactions.forEach(t => {
+            const row = document.createElement('div');
+            row.className = 'releve-row';
+            if (t.isInitial) row.classList.add('initial-row');
+
+            runningBalance += t.debit - t.credit;
+
+            let displayDate = '—';
+            if (t.date) {
+                const parts = t.date.split('-');
+                if (parts.length === 3) displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            } else if (t.isInitial) {
+                displayDate = 'Départ';
+            }
+
+            const dateDiv = document.createElement('div');
+            dateDiv.textContent = displayDate;
+
+            const refDiv = document.createElement('div');
+            refDiv.style.display = 'flex';
+            refDiv.style.alignItems = 'center';
+            refDiv.style.justifyContent = 'center';
+            
+            const refText = document.createElement('span');
+            refText.textContent = t.ref;
+            refDiv.appendChild(refText);
+            
+            if (t.image_data) {
+                const camIcon = document.createElement('span');
+                camIcon.className = 'releve-cam-icon';
+                camIcon.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`;
+                camIcon.title = "Voir le chèque / effet";
+                
+                camIcon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openImageViewer(t.image_data, t.ref);
+                });
+                refDiv.appendChild(camIcon);
+            }
+            
+            refDiv.title = t.type;
+            refDiv.style.cursor = 'help';
+
+            const debitDiv = document.createElement('div');
+            debitDiv.className = 'releve-debit';
+            debitDiv.textContent = t.debit > 0 ? t.debit.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
+
+            const creditDiv = document.createElement('div');
+            creditDiv.className = 'releve-credit';
+            creditDiv.textContent = t.credit > 0 ? t.credit.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
+
+            const soldeDiv = document.createElement('div');
+            soldeDiv.className = 'releve-solde-val';
+            soldeDiv.textContent = runningBalance.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            row.appendChild(dateDiv);
+            row.appendChild(refDiv);
+            row.appendChild(debitDiv);
+            row.appendChild(creditDiv);
+            row.appendChild(soldeDiv);
+
+            list.appendChild(row);
+        });
+
+        if (transactions.length <= 1 && initialBalance === 0) {
+            list.innerHTML = '<div class="releve-empty">Aucun historique de transaction.</div>';
+        }
+
+    } catch (e) {
+        console.error("Erreur historique:", e);
+        list.innerHTML = '<div style="padding: 20px; text-align: center; color: #ef4444; font-weight: bold;">Erreur de chargement.</div>';
+    }
+}
+
+// === Save Payment / Règlement ===
+const btnSavePayment = document.getElementById('btn-save-payment');
+if (btnSavePayment) {
+    btnSavePayment.addEventListener('click', async () => {
+        const amountVal = document.getElementById('pay-amount').value.trim();
+        const methodVal = document.getElementById('pay-method').value;
+        const refVal = document.getElementById('pay-ref').value.trim();
+        const dateVal = document.getElementById('pay-date').value;
+
+        if (!amountVal || parseFloat(amountVal) <= 0) {
+            alert("Veuillez saisir un montant de règlement valide.");
+            return;
+        }
+
+        if (!dateVal) {
+            alert("Veuillez choisir une date.");
+            return;
+        }
+
+        btnSavePayment.textContent = 'Enregistrement...';
+        btnSavePayment.disabled = true;
+
+        try {
+            const newPayment = {
+                client_id: currentClient.id,
+                date_paiement: dateVal,
+                montant: parseFloat(amountVal),
+                mode_paiement: methodVal,
+                reference: refVal || null,
+                image_data: uploadedImageBase64 || null
+            };
+
+            await supabase('POST', '/paiements', newPayment);
+
+            // Update client's local balance (trigger took care of DB, we update local object)
+            currentClient.solde = (parseFloat(currentClient.solde) || 0) - parseFloat(amountVal);
+
+            showToast('✓ Règlement enregistré avec succès !');
+            
+            clearUploadedImage();
+
+            // Switch to Relevé tab to see the updated transaction
+            switchDetailTab('releve');
+
+            // Reload background client list to update amounts and totals
+            await loadClients();
+
+        } catch (e) {
+            console.error("Erreur règlement:", e);
+            alert("Une erreur s'est produite lors de l'enregistrement du règlement : " + e.message);
+        } finally {
+            btnSavePayment.textContent = 'Enregistrer le règlement';
+            btnSavePayment.disabled = false;
+        }
+    });
+}
+
+// ==========================================
+//   GESTION DES IMAGES ET DE LA COMPRESSION
+// ==========================================
+
+let uploadedImageBase64 = null;
+
+const uploadContainer = document.getElementById('upload-container');
+const payImageFile = document.getElementById('pay-image-file');
+const uploadPrompt = document.getElementById('upload-prompt');
+const uploadPreview = document.getElementById('upload-preview');
+const previewImg = document.getElementById('preview-img');
+const btnRemoveImg = document.getElementById('btn-remove-img');
+const payMethodSelect = document.getElementById('pay-method');
+
+if (payMethodSelect) {
+    payMethodSelect.addEventListener('change', () => {
+        const selected = payMethodSelect.value;
+        const imgGroup = document.getElementById('pay-image-group');
+        if (imgGroup) {
+            if (selected === 'Chèque' || selected === 'Effet') {
+                imgGroup.style.display = 'block';
+            } else {
+                imgGroup.style.display = 'none';
+                clearUploadedImage();
+            }
+        }
+    });
+}
+
+if (uploadContainer && payImageFile) {
+    uploadContainer.addEventListener('click', (e) => {
+        if (e.target !== btnRemoveImg && !btnRemoveImg.contains(e.target)) {
+            payImageFile.click();
+        }
+    });
+}
+
+if (payImageFile) {
+    payImageFile.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const promptText = uploadPrompt.querySelector('span');
+        const origText = promptText.textContent;
+        promptText.textContent = 'Compression en cours...';
+
+        try {
+            const rawBase64 = await readFileAsBase64(file);
+            
+            try {
+                // Compresseur Python via microservice local
+                uploadedImageBase64 = await sendToPythonCompressor(rawBase64);
+                console.log("Image compressée avec succès via Python.");
+            } catch (pyErr) {
+                console.warn("Le microservice Python local est indisponible. Utilisation du compresseur Canvas HTML5 local...", pyErr);
+                // Fallback direct en Canvas HTML5 si le script Python n'est pas démarré
+                uploadedImageBase64 = await compressImageJS(file);
+            }
+
+            previewImg.src = uploadedImageBase64;
+            uploadPrompt.style.display = 'none';
+            uploadPreview.style.display = 'flex';
+        } catch (err) {
+            console.error("Erreur compression image :", err);
+            alert("Impossible de traiter cette image. Veuillez réessayer.");
+            clearUploadedImage();
+        } finally {
+            promptText.textContent = origText;
+        }
+    });
+}
+
+if (btnRemoveImg) {
+    btnRemoveImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        clearUploadedImage();
+    });
+}
+
+function clearUploadedImage() {
+    uploadedImageBase64 = null;
+    if (payImageFile) payImageFile.value = '';
+    if (uploadPrompt) uploadPrompt.style.display = 'flex';
+    if (uploadPreview) uploadPreview.style.display = 'none';
+    if (previewImg) previewImg.src = '';
+}
+
+function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
+
+async function sendToPythonCompressor(base64Image) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 2000); // 2 secondes de timeout
+
+    const res = await fetch('http://127.0.0.1:5001/compress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64Image }),
+        signal: controller.signal
+    });
+    clearTimeout(id);
+    const result = await res.json();
+    if (result.status === 'Success') {
+        return result.webp_base64;
+    } else {
+        throw new Error(result.message);
+    }
+}
+
+function compressImageJS(file, maxDimension = 800) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxDimension) {
+                        height = Math.round((height * maxDimension) / width);
+                        width = maxDimension;
+                    }
+                } else {
+                    if (height > maxDimension) {
+                        width = Math.round((width * maxDimension) / height);
+                        height = maxDimension;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const webpBase64 = canvas.toDataURL('image/webp', 0.70);
+                resolve(webpBase64);
+            };
+            img.onerror = err => reject(err);
+        };
+        reader.onerror = err => reject(err);
+    });
+}
+
+// ==========================================
+//      VISIONNEUSE DE CHÈQUES (MODAL)
+// ==========================================
+
+const viewerOverlay = document.getElementById('viewer-overlay');
+const viewerImg = document.getElementById('viewer-img');
+const viewerClose = document.getElementById('viewer-close');
+const viewerTitle = document.getElementById('viewer-title');
+
+function openImageViewer(imageData, titleRef) {
+    if (!viewerOverlay || !viewerImg) return;
+    viewerImg.src = imageData;
+    if (viewerTitle) viewerTitle.textContent = `Justificatif de règlement : ${titleRef}`;
+    viewerOverlay.classList.add('active');
+}
+
+if (viewerClose) {
+    viewerClose.addEventListener('click', closeImageViewer);
+}
+if (viewerOverlay) {
+    viewerOverlay.addEventListener('click', (e) => {
+        if (e.target === viewerOverlay) closeImageViewer();
+    });
+}
+
+function closeImageViewer() {
+    if (viewerOverlay) viewerOverlay.classList.remove('active');
+    if (viewerImg) viewerImg.src = '';
+}

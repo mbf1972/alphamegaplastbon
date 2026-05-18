@@ -118,7 +118,7 @@
                     // Ligne de données normale
                     html += `<div class="tarif-row ${i % 2 === 0 ? 'even' : 'odd'}">`;
                     html += `<span class="tarif-cell tarif-desc">${formatCell(row[0])}</span>`;
-                    html += `<span class="tarif-cell tarif-prix" data-index="${i}" title="Double-cliquez pour modifier">${formatPrice(row[4])}</span>`;
+                    html += `<span class="tarif-cell tarif-prix" data-index="${i}" title="Cliquez pour modifier">${formatPrice(row[4])}</span>`;
                     html += `</div>`;
                 }
             }
@@ -184,8 +184,8 @@
             }, 1500);
         });
 
-        // === Double clic pour modifier un prix ===
-        document.getElementById('tarif-zone').addEventListener('dblclick', function(e) {
+        // === Clic simple pour modifier un prix ===
+        document.getElementById('tarif-zone').addEventListener('click', function(e) {
             const target = e.target.closest('.tarif-prix');
             if (!target) return;
             
@@ -211,18 +211,23 @@
             target.appendChild(input);
             input.focus();
             
+            let finished = false;
             function finishEdit() {
+                if (finished) return;
+                finished = true;
                 const newVal = parseFloat(input.value);
                 if (!isNaN(newVal) && newVal >= 0) {
                     currentData[index][4] = newVal;
                     originalData[index][4] = newVal; // Sauvegarder dans original aussi
                 }
-                renderTarif(currentData);
+                target.textContent = formatPrice(currentData[index][4]);
             }
             
             input.addEventListener('blur', finishEdit);
             input.addEventListener('keydown', function(evt) {
-                if (evt.key === 'Enter') finishEdit();
+                if (evt.key === 'Enter') {
+                    input.blur();
+                }
             });
         });
 

@@ -5,8 +5,32 @@
 // === State ===
 let items = [];
 let nextId = 1;
+let selectedClientId = null;
+let clientList = [];
 
-// === Auth Logic (Déplacée vers menu.html) ===
+// === Supabase Helper ===
+const SUPABASE_URL = 'https://jhzfnatsshpohnoswxcd.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_JBix_f2SunAeMawTs9Y4TQ_NjXLrmfa';
+
+async function supabase(method, path, body) {
+    const options = {
+        method,
+        headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': method === 'POST' ? 'return=representation' : '',
+        }
+    };
+    if (body) options.body = JSON.stringify(body);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1${path}`, options);
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `HTTP ${res.status}`);
+    }
+    const text = await res.text();
+    return text ? JSON.parse(text) : {};
+}
 
 // === DOM References ===
 const qteInput = document.getElementById('qte');
@@ -18,6 +42,7 @@ const colorInput = document.getElementById('color');
 const dateBonInput = document.getElementById('date-bon');
 const clientNomInput = document.getElementById('client-nom');
 const clientAdresseInput = document.getElementById('client-adresse');
+const autocompleteList = document.getElementById('autocomplete-list');
 const numBonDisplay = document.getElementById('num-bon-display');
 const btnValider = document.getElementById('btn-valider');
 const btnPdf = document.getElementById('btn-pdf');
@@ -60,6 +85,58 @@ async function fetchNumBon() {
     }
 }
 fetchNumBon();
+
+// === Load Clients and Autocomplete ===
+async function fetchClients() {
+    try {
+        clientList = await supabase('GET', '/clients?select=id,nom,adresse&order=nom.asc');
+    } catch (e) {
+        console.error("Erreur lors de la récupération des clients:", e);
+    }
+}
+fetchClients();
+
+// Autocomplete UI logic
+if (clientNomInput && autocompleteList) {
+    clientNomInput.addEventListener('input', function() {
+        const val = this.value.trim().toLowerCase();
+        autocompleteList.innerHTML = '';
+        if (!val) {
+            autocompleteList.style.display = 'none';
+            selectedClientId = null;
+            return;
+        }
+
+        const matches = clientList.filter(c => c.nom.toLowerCase().includes(val));
+        if (matches.length === 0) {
+            autocompleteList.style.display = 'none';
+            selectedClientId = null;
+            return;
+        }
+
+        matches.forEach(client => {
+            const item = document.createElement('div');
+            item.className = 'autocomplete-item';
+            item.textContent = client.nom;
+            item.addEventListener('click', function() {
+                clientNomInput.value = client.nom;
+                clientAdresseInput.value = client.adresse || '';
+                selectedClientId = client.id;
+                autocompleteList.style.display = 'none';
+            });
+            autocompleteList.appendChild(item);
+        });
+
+        autocompleteList.style.display = 'block';
+    });
+
+    // Close autocomplete when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target !== clientNomInput && e.target !== autocompleteList) {
+            autocompleteList.style.display = 'none';
+        }
+    });
+}
 
 // Set today's date
 function formatDateFR(d) {
@@ -325,28 +402,70 @@ btnPdf.addEventListener('click', async function () {
         return;
     }
 
+    if (!selectedClientId) {
+        alert("Veuillez sélectionner un client de la liste d'autocomplétion pour enregistrer le bon.");
+        shakeButton(btnPdf);
+        return;
+    }
+
     const originalText = this.textContent;
-    this.textContent = 'Génération PDF...';
+    this.textContent = 'Enregistrement Supabase...';
     this.disabled = true;
 
     // Préparation des données
-    const payload = {
-        dateBon: dateBonInput.value,
-        numBon: currentNumBon,
-        clientNom: clientNomInput.value || '-',
-        clientAdresse: clientAdresseInput.value || '-',
-        totalGeneral: items.reduce((sum, item) => sum + item.total, 0),
-        items: items.map(item => ({
-            desc: `Tube PVC D: ${item.diam} ${item.color.toUpperCase()} ${item.long}M ${item.sr === '-' ? '' : item.sr}`.trim(),
-            qte: item.qte,
-            metrage: item.qte * (item.long || 0),
-            prix: item.prix,
-            total: item.total
-        }))
-    };
+    const totalG = items.reduce((sum, item) => sum + item.total, 0);
+    const dateParts = dateBonInput.value.split('/'); // DD/MM/YYYY
+    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // YYYY-MM-DD
 
     try {
-        // Envoi vers Google Apps Script (remplit la feuille + génère le PDF)
+        // Étape 1 : Enregistrer l'entête du Bon de livraison dans Supabase
+        const bonHeader = {
+            num_bon: parseInt(currentNumBon),
+            date_bon: formattedDate,
+            client_id: selectedClientId,
+            client_nom: clientNomInput.value.trim(),
+            client_adresse: clientAdresseInput.value.trim(),
+            total_general: totalG
+        };
+        
+        const createdBons = await supabase('POST', '/bons', bonHeader);
+        if (!createdBons || createdBons.length === 0) {
+            throw new Error("L'insertion dans la table 'bons' n'a pas retourné de résultat.");
+        }
+        const newBon = createdBons[0];
+
+        // Étape 2 : Enregistrer les articles du Bon de livraison dans Supabase
+        const bonLines = items.map(item => ({
+            bon_id: newBon.id,
+            qte: item.qte,
+            diam: item.diam,
+            long: item.long,
+            prix: item.prix,
+            sr: item.sr,
+            color: item.color,
+            total: item.total
+        }));
+
+        await supabase('POST', '/bon_items', bonLines);
+
+        this.textContent = 'Génération PDF...';
+
+        // Étape 3 : Envoyer vers Google Apps Script (remplit la feuille + génère le PDF)
+        const payload = {
+            dateBon: dateBonInput.value,
+            numBon: currentNumBon,
+            clientNom: clientNomInput.value || '-',
+            clientAdresse: clientAdresseInput.value || '-',
+            totalGeneral: totalG,
+            items: items.map(item => ({
+                desc: `Tube PVC D: ${item.diam} ${item.color.toUpperCase()} ${item.long}M ${item.sr === '-' ? '' : item.sr}`.trim(),
+                qte: item.qte,
+                metrage: item.qte * (item.long || 0),
+                prix: item.prix,
+                total: item.total
+            }))
+        };
+
         const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
             method: 'POST',
             body: JSON.stringify(payload),
@@ -374,15 +493,23 @@ btnPdf.addEventListener('click', async function () {
             }
             localStorage.setItem('num-bon', currentNumBon);
             updateNumBonDisplay();
+
+            // Clear items and inputs after successful save & download for a clean workflow
+            items = [];
+            selectedClientId = null;
+            clientNomInput.value = '';
+            clientAdresseInput.value = '';
+            renderItems();
+            updateTotal();
         } else {
             console.error("Erreur Script:", result.message);
-            alert("Erreur : " + result.message);
-            this.textContent = '❌ Erreur';
+            alert("Erreur de génération PDF : " + result.message);
+            this.textContent = '❌ Erreur PDF';
             this.style.background = '#e74c3c';
         }
     } catch (e) {
-        console.error("Erreur réseau:", e);
-        alert("Erreur de connexion au serveur Google.");
+        console.error("Erreur réseau/sauvegarde:", e);
+        alert("Erreur lors de l'enregistrement ou de la génération : " + e.message);
         this.textContent = '❌ Erreur';
         this.style.background = '#e74c3c';
     }

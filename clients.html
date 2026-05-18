@@ -64,7 +64,7 @@
         .client-row {
             display: flex;
             padding: 10px 12px;
-            background: rgba(96, 165, 250, 0.05);
+            background: rgb(19 19 55 / 66%);
             border-radius: var(--radius-sm);
             box-shadow: none;
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -77,7 +77,7 @@
         }
 
         .client-row:nth-child(even) {
-            background: rgba(96, 165, 250, 0.03);
+            background: rgb(19 19 55 / 45%);
         }
 
         .client-row:active {
@@ -344,13 +344,152 @@
             background: #ffffff;
             color: #333;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px; /* Légèrement plus large pour afficher le tableau proprement */
             border-radius: var(--radius-lg);
             padding: 20px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
+        }
+
+        /* === Tabs System === */
+        .detail-tabs {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 16px;
+            gap: 4px;
+        }
+        .detail-tab {
+            flex: 1;
+            padding: 8px 4px;
+            background: none;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all var(--transition-fast);
+            text-align: center;
+        }
+        .detail-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+        .detail-tab:hover {
+            color: var(--color-primary-light);
+        }
+
+        /* === Relevé Ledger Styles === */
+        .releve-container {
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--radius-sm);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            font-size: 0.72rem;
+        }
+        .releve-header {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1fr 1fr 1.1fr;
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 800;
+            padding: 8px 6px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .releve-list {
+            max-height: 250px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .releve-row {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1fr 1fr 1.1fr;
+            padding: 8px 6px;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: center;
+            align-items: center;
+            font-weight: 700;
+        }
+        .releve-row:nth-child(even) {
+            background: #f8fafc;
+        }
+        .releve-row.initial-row {
+            background: #ecfdf5;
+            color: #065f46;
+        }
+        .releve-debit {
+            color: #dc2626;
+        }
+        .releve-credit {
+            color: #16a34a;
+        }
+        .releve-solde-val {
+            font-weight: 800;
+            color: #1e293b;
+        }
+        .releve-empty {
+            padding: 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        /* === Payment Form Styles === */
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+        }
+        .payment-form label {
+            display: block;
+            font-weight: 800;
+            margin-bottom: 3px;
+            color: var(--color-text);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+        .payment-form input, .payment-form select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-sizing: border-box;
+            color: var(--color-dark);
+            transition: all var(--transition-fast);
+        }
+        .payment-form input:focus, .payment-form select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+        .payment-form .btn-save {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
+            transition: all var(--transition-fast);
+        }
+        .payment-form .btn-save:active {
+            transform: scale(0.97);
         }
         .detail-modal-title {
             font-size: 1.1rem;
@@ -485,6 +624,140 @@
                 gap: 8px;
             }
         }
+
+        /* === Upload Section & Preview inside payment form === */
+        .upload-container {
+            border: 2px dashed var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            margin-top: 4px;
+        }
+        .upload-container:hover {
+            border-color: var(--color-primary);
+            background: #f0f7ff;
+        }
+        .upload-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+        .upload-prompt svg {
+            color: var(--color-primary);
+            margin-bottom: 2px;
+        }
+        .upload-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .upload-preview img {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-remove-img {
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+        .btn-remove-img:hover {
+            background: #dc2626;
+        }
+        
+        /* === Cam Icon in statement ledger row === */
+        .releve-cam-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 6px;
+            color: var(--color-primary);
+            cursor: pointer;
+            vertical-align: middle;
+            transition: all var(--transition-fast);
+        }
+        .releve-cam-icon:hover {
+            transform: scale(1.2);
+            color: var(--color-primary-light);
+        }
+
+        /* === Visual Zoomable Image Viewer Modal === */
+        .viewer-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: 'Nunito', sans-serif;
+        }
+        .viewer-overlay.active {
+            display: flex;
+        }
+        .viewer-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .viewer-img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: var(--radius-md);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .viewer-close {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 800;
+            transition: all var(--transition-fast);
+        }
+        .viewer-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+        .viewer-title {
+            color: white;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
@@ -572,46 +845,128 @@
             <button class="detail-close" id="detail-close">&times;</button>
             <h2 class="detail-modal-title" id="detail-client-name"></h2>
 
-            <div class="detail-fields">
-                <div class="detail-field">
-                    <span class="detail-field-label">Type</span>
-                    <div class="detail-field-value" id="detail-type"></div>
+            <!-- Tabs System -->
+            <div class="detail-tabs">
+                <button class="detail-tab active" id="tab-infos" onclick="switchDetailTab('infos')">👤 Infos</button>
+                <button class="detail-tab" id="tab-releve" onclick="switchDetailTab('releve')">📜 Relevé</button>
+                <button class="detail-tab" id="tab-paiement" onclick="switchDetailTab('paiement')">💵 Règlement</button>
+            </div>
+
+            <!-- Tab Panel: Infos (Existing Form) -->
+            <div class="tab-panel active" id="panel-infos">
+                <div class="detail-fields">
+                    <div class="detail-field">
+                        <span class="detail-field-label">Type</span>
+                        <div class="detail-field-value" id="detail-type"></div>
+                    </div>
+                    <div class="detail-field" id="detail-ice-row">
+                        <span class="detail-field-label">ICE</span>
+                        <div class="detail-field-value" id="detail-ice"></div>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-field-label">Nom</span>
+                        <div class="detail-field-value" id="detail-nom"></div>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-field-label">Adresse</span>
+                        <div class="detail-field-value" id="detail-adresse"></div>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-field-label">Téléphone</span>
+                        <div class="detail-field-value" id="detail-tel"></div>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-field-label">E-mail</span>
+                        <div class="detail-field-value" id="detail-email"></div>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-field-label">Solde</span>
+                        <div class="detail-field-value" id="detail-solde"></div>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-field-label">Plafond de crédit</span>
+                        <div class="detail-field-value" id="detail-plafond"></div>
+                    </div>
                 </div>
-                <div class="detail-field" id="detail-ice-row">
-                    <span class="detail-field-label">ICE</span>
-                    <div class="detail-field-value" id="detail-ice"></div>
-                </div>
-                <div class="detail-field">
-                    <span class="detail-field-label">Nom</span>
-                    <div class="detail-field-value" id="detail-nom"></div>
-                </div>
-                <div class="detail-field">
-                    <span class="detail-field-label">Adresse</span>
-                    <div class="detail-field-value" id="detail-adresse"></div>
-                </div>
-                <div class="detail-field">
-                    <span class="detail-field-label">Téléphone</span>
-                    <div class="detail-field-value" id="detail-tel"></div>
-                </div>
-                <div class="detail-field">
-                    <span class="detail-field-label">E-mail</span>
-                    <div class="detail-field-value" id="detail-email"></div>
-                </div>
-                <div class="detail-field">
-                    <span class="detail-field-label">Solde</span>
-                    <div class="detail-field-value" id="detail-solde"></div>
-                </div>
-                <div class="detail-field">
-                    <span class="detail-field-label">Plafond de crédit</span>
-                    <div class="detail-field-value" id="detail-plafond"></div>
+
+                <div class="detail-actions">
+                    <button class="btn-edit-client" id="btn-edit-client">✏️ Modifier</button>
+                    <button class="btn-cancel-edit" id="btn-cancel-edit">✕ Annuler</button>
+                    <button class="btn-validate-client" id="btn-validate-client">✓ Valider</button>
                 </div>
             </div>
 
-            <div class="detail-actions">
-                <button class="btn-edit-client" id="btn-edit-client">✏️ Modifier</button>
-                <button class="btn-cancel-edit" id="btn-cancel-edit">✕ Annuler</button>
-                <button class="btn-validate-client" id="btn-validate-client">✓ Valider</button>
+            <!-- Tab Panel: Relevé (New Transaction List) -->
+            <div class="tab-panel" id="panel-releve" style="display: none;">
+                <div class="releve-container">
+                    <div class="releve-header">
+                        <div>Date</div>
+                        <div>Réf</div>
+                        <div>Débit</div>
+                        <div>Crédit</div>
+                        <div>Solde</div>
+                    </div>
+                    <div class="releve-list" id="releve-list">
+                        <!-- Rempli en JS -->
+                    </div>
+                </div>
             </div>
+
+            <!-- Tab Panel: Règlement (New Payment Form) -->
+            <div class="tab-panel" id="panel-paiement" style="display: none;">
+                <div class="payment-form">
+                    <div class="form-group">
+                        <label for="pay-date">Date de règlement</label>
+                        <input type="date" id="pay-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="pay-amount">Montant (DH) <span style="color:red">*</span></label>
+                        <input type="number" step="0.01" id="pay-amount" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pay-method">Mode de règlement <span style="color:red">*</span></label>
+                        <select id="pay-method">
+                            <option value="Espèces">Espèces</option>
+                            <option value="Chèque">Chèque</option>
+                            <option value="Effet">Effet</option>
+                            <option value="Virement">Virement</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pay-ref">Référence / Commentaire</label>
+                        <input type="text" id="pay-ref" placeholder="N° chèque, ref virement, etc.">
+                    </div>
+                    
+                    <!-- Upload d'image de chèque/effet (nouveau) -->
+                    <div class="form-group" id="pay-image-group" style="display: none;">
+                        <label>Photo du Chèque / Effet</label>
+                        <div class="upload-container" id="upload-container">
+                            <input type="file" id="pay-image-file" accept="image/*" style="display: none;">
+                            <div class="upload-prompt" id="upload-prompt">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="upload-icon"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                <span>Prendre une photo ou choisir un fichier</span>
+                            </div>
+                            <div class="upload-preview" id="upload-preview" style="display: none;">
+                                <img src="" id="preview-img" alt="Aperçu chèque">
+                                <button class="btn-remove-img" id="btn-remove-img" type="button">✕ Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-save btn-shine" id="btn-save-payment">Enregistrer le règlement</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Image Viewer Modal Overlay -->
+    <div class="viewer-overlay" id="viewer-overlay">
+        <div class="viewer-content">
+            <button class="viewer-close" id="viewer-close" aria-label="Fermer">✕</button>
+            <img class="viewer-img" id="viewer-img" src="" alt="Chèque agrandi">
+            <span class="viewer-title" id="viewer-title">Visualisation du règlement</span>
         </div>
     </div>
 

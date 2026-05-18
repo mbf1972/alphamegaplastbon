@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Dashboard - AMplast">
+    <meta name="theme-color" content="#0f172a">
+    <title>Tableau de Bord - AMplast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Chart.js CDN for high-end analytics chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .dashboard-body {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 8px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .kpi-card-full {
+            grid-column: span 2;
+        }
+
+        .kpi-card {
+            background: var(--glass-bg);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+        }
+
+        .kpi-card.sales::before {
+            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+        }
+
+        .kpi-card.payments::before {
+            background: linear-gradient(to bottom, #34d399, #10b981);
+        }
+
+        .kpi-card.outstanding::before {
+            background: linear-gradient(to bottom, #f87171, #ef4444);
+        }
+
+        .kpi-title {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .kpi-value {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        /* Visual Analytics Container */
+        .analytics-glass {
+            background: var(--glass-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 0.82rem;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 180px;
+        }
+
+        /* Time Filters */
+        .filter-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 2px;
+            gap: 2px;
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 5px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.6);
+            background: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+
+        /* Recent Activity Journal */
+        .journal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .journal-row {
+            display: flex;
+            padding: 9px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 0.72rem;
+        }
+
+        .journal-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .journal-ref {
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .journal-date {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .journal-amount {
+            font-size: 0.78rem;
+            font-weight: 900;
+            text-align: right;
+        }
+
+        .journal-amount.debit {
+            color: #ff8a8a;
+        }
+
+        .journal-amount.credit {
+            color: #4ade80;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: white;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--color-primary);
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (min-width: 600px) {
+            .dashboard-body {
+                padding: 12px;
+                gap: 16px;
+            }
+            .kpi-grid {
+                gap: 12px;
+            }
+            .kpi-card {
+                padding: 16px;
+            }
+            .kpi-value {
+                font-size: 1.4rem;
+            }
+            .chart-container {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <button class="header-back" onclick="window.location.href='index.html'" aria-label="Retour">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <h1 class="clients-title">Journal de Vente</h1>
+        <div style="width: 32px;"></div> <!-- To center the title -->
+    </header>
+
+    <div class="dashboard-body">
+        
+        <!-- Summary Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card sales">
+                <span class="kpi-title">Ventes Totales</span>
+                <span class="kpi-value" id="kpi-sales">0.00 DH</span>
+            </div>
+            
+            <div class="kpi-card payments">
+                <span class="kpi-title">Recouvrements</span>
+                <span class="kpi-value" id="kpi-payments">0.00 DH</span>
+            </div>
+
+            <div class="kpi-card outstanding kpi-card-full">
+                <span class="kpi-title">Encours Client Total</span>
+                <span class="kpi-value" id="kpi-outstanding">0.00 DH</span>
+            </div>
+        </div>
+
+        <!-- Sales Chart -->
+        <div class="analytics-glass">
+            <div class="section-header">
+                <span class="section-title">Activité Ventes</span>
+                <div class="filter-tabs">
+                    <button class="filter-btn active" id="btn-30d" onclick="changePeriod(30)">30j</button>
+                    <button class="filter-btn" id="btn-7d" onclick="changePeriod(7)">7j</button>
+                    <button class="filter-btn" id="btn-all" onclick="changePeriod(0)">Tout</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Transactions Feed -->
+        <div class="analytics-glass" style="flex: 1; min-height: 200px;">
+            <div class="section-header">
+                <span class="section-title">Flux de Transactions</span>
+            </div>
+            <div class="journal-list" id="journal-list">
+                <!-- Rempli dynamiquement -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Spinner loading indicator -->
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <div>Analyse financière...</div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -38,9 +38,10 @@
             <label for="num-bon-display">N° Bon</label>
             <div id="num-bon-display">000000</div>
         </div>
-        <div class="info-field full">
+        <div class="info-field full" style="position: relative;">
             <label for="client-nom">Client</label>
-            <input type="text" id="client-nom" placeholder="Nom du client">
+            <input type="text" id="client-nom" placeholder="Nom du client" autocomplete="off">
+            <div id="autocomplete-list" class="autocomplete-items" style="display: none;"></div>
         </div>
         <div class="info-field full">
             <label for="client-adresse">Adresse</label>
