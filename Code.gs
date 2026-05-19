@@ -188,10 +188,12 @@ function doPost(e) {
     // Convertir en Base64
     var pdfBase64 = Utilities.base64Encode(response_bon.getBlob().getBytes());
 
-    // 4. INCYCREMENTER le numéro de bon dans le tableau Google Sheet (ex: 200 devient 201)
-    var nextNum = parseInt(num) + 1;
-    sheet.getRange("F4").setValue(nextNum);
-    SpreadsheetApp.flush(); // On sauvegarde l'incrémentation
+    // 4. INCREMENTER le numéro de bon dans le tableau Google Sheet (ex: 200 devient 201)
+    if (!data.noIncrement) {
+      var nextNum = parseInt(num) + 1;
+      sheet.getRange("F4").setValue(nextNum);
+      SpreadsheetApp.flush(); // On sauvegarde l'incrémentation
+    }
 
     // 5. Renvoyer la réponse à l'application web avec le nouveau numéro
     var fileName = isDevis ? ("Devis_" + num + ".pdf") : ("Bon_Livraison_" + num + ".pdf");

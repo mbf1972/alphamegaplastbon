@@ -681,8 +681,8 @@
             background: #dc2626;
         }
         
-        /* === Cam Icon in statement ledger row === */
-        .releve-cam-icon {
+        /* === Cam & PDF Icons in statement ledger row === */
+        .releve-cam-icon, .releve-pdf-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -692,9 +692,17 @@
             vertical-align: middle;
             transition: all var(--transition-fast);
         }
-        .releve-cam-icon:hover {
-            transform: scale(1.2);
+        .releve-cam-icon:hover, .releve-pdf-icon:hover {
+            transform: scale(1.25);
             color: var(--color-primary-light);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .releve-pdf-icon.loading svg {
+            animation: spin 1s linear infinite;
+            color: #10b981 !important;
         }
 
         /* === Visual Zoomable Image Viewer Modal === */

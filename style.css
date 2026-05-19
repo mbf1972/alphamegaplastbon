@@ -1218,3 +1218,152 @@ input[type="number"] {
     background: rgba(59, 130, 246, 0.2);
     color: #ffffff;
 }
+
+/* === Add Client Button in Header === */
+.btn-add-clients {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-size: 0.8rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.btn-add-clients:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* === Add Client Modal Styles === */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 16px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.modal-overlay.active {
+    display: flex;
+}
+.modal-content {
+    background: #ffffff;
+    color: #333;
+    width: 100%;
+    max-width: 400px;
+    border-radius: var(--radius-lg);
+    padding: 20px 20px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    margin: 0 0 16px;
+    text-align: center;
+}
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+}
+.form-group {
+    margin-bottom: 10px;
+}
+.form-group label {
+    display: block;
+    font-weight: 800;
+    margin-bottom: 3px;
+    color: var(--color-text);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-sizing: border-box;
+    color: var(--color-dark);
+    transition: all var(--transition-fast);
+    -webkit-appearance: none;
+    appearance: none;
+}
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+.modal-content .btn-save {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 4px;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
+}
+.modal-content .btn-save:active {
+    transform: scale(0.97);
+}
+.hidden {
+    display: none !important;
+}
+
+/* === Edit All Mode Inputs in Tarif === */
+.edit-desc-input, .edit-price-input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    box-sizing: border-box;
+    transition: all var(--transition-fast);
+}
+
+.edit-desc-input:focus, .edit-price-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.edit-price-input {
+    text-align: right;
+}

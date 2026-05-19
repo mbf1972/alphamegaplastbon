@@ -6,6 +6,7 @@
 let items = [];
 let nextId = 1;
 let selectedClientId = null;
+let selectedClientOriginalNom = "";
 let clientList = [];
 
 // === Supabase Helper ===
@@ -100,10 +101,20 @@ fetchClients();
 if (clientNomInput && autocompleteList) {
     clientNomInput.addEventListener('input', function() {
         const val = this.value.trim().toLowerCase();
+        
+        // Si nous avions sélectionné un client générique (ex: "Client") et que le texte commence toujours 
+        // par son nom d'origine, on garde active la sélection du client en base.
+        if (selectedClientId && selectedClientOriginalNom) {
+            if (this.value.toLowerCase().startsWith(selectedClientOriginalNom.toLowerCase())) {
+                return;
+            }
+        }
+        
         autocompleteList.innerHTML = '';
         if (!val) {
             autocompleteList.style.display = 'none';
             selectedClientId = null;
+            selectedClientOriginalNom = "";
             return;
         }
 
@@ -111,6 +122,7 @@ if (clientNomInput && autocompleteList) {
         if (matches.length === 0) {
             autocompleteList.style.display = 'none';
             selectedClientId = null;
+            selectedClientOriginalNom = "";
             return;
         }
 
@@ -122,6 +134,7 @@ if (clientNomInput && autocompleteList) {
                 clientNomInput.value = client.nom;
                 clientAdresseInput.value = client.adresse || '';
                 selectedClientId = client.id;
+                selectedClientOriginalNom = client.nom;
                 autocompleteList.style.display = 'none';
             });
             autocompleteList.appendChild(item);
@@ -497,6 +510,7 @@ btnPdf.addEventListener('click', async function () {
             // Clear items and inputs after successful save & download for a clean workflow
             items = [];
             selectedClientId = null;
+            selectedClientOriginalNom = "";
             clientNomInput.value = '';
             clientAdresseInput.value = '';
             renderItems();
@@ -524,4 +538,162 @@ btnPdf.addEventListener('click', async function () {
 
 // === Initial Render ===
 renderItems();
+
+// === Toast Notification ===
+function showToast(message) {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        font-size: 0.85rem;
+        box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    `;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+        setTimeout(() => toast.remove(), 400);
+    }, 2500);
+}
+
+// === Add Client Modal Logic ===
+const btnAddClient = document.getElementById('btn-add-client');
+const modal = document.getElementById('add-client-modal');
+const btnCloseModal = document.getElementById('close-modal');
+const clientTypeSelect = document.getElementById('modal-client-type');
+const iceGroup = document.getElementById('modal-ice-group');
+const btnSaveClient = document.getElementById('modal-btn-save-client');
+
+const inputNom = document.getElementById('modal-client-nom');
+const inputIce = document.getElementById('modal-client-ice');
+const inputAdresse = document.getElementById('modal-client-adresse');
+const inputTel = document.getElementById('modal-client-tel');
+const inputEmail = document.getElementById('modal-client-email');
+const inputSolde = document.getElementById('modal-client-solde');
+const inputPlafond = document.getElementById('modal-client-plafond');
+
+if (btnAddClient && modal) {
+    btnAddClient.addEventListener('click', () => {
+        modal.classList.add('active');
+        if (inputNom) inputNom.focus();
+    });
+}
+
+if (btnCloseModal && modal) {
+    btnCloseModal.addEventListener('click', () => {
+        modal.classList.remove('active');
+    });
+}
+
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+        }
+    });
+}
+
+if (clientTypeSelect && iceGroup) {
+    clientTypeSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'societe') {
+            iceGroup.classList.remove('hidden');
+        } else {
+            iceGroup.classList.add('hidden');
+            if (inputIce) inputIce.value = '';
+        }
+    });
+}
+
+if (btnSaveClient) {
+    btnSaveClient.addEventListener('click', async () => {
+        const type = clientTypeSelect.value;
+        const nom = inputNom.value.trim();
+        const ice = inputIce.value.trim();
+        const adresse = inputAdresse.value.trim();
+        const tel = inputTel.value.trim();
+        const email = inputEmail.value.trim();
+        const soldeStr = inputSolde.value.trim();
+        const plafondStr = inputPlafond.value.trim();
+
+        if (!nom) { alert("Le nom est obligatoire."); inputNom.focus(); return; }
+        if (type === 'societe' && !ice) { alert("L'ICE est obligatoire pour une société."); inputIce.focus(); return; }
+        if (!adresse) { alert("L'adresse est obligatoire."); inputAdresse.focus(); return; }
+        if (!tel) { alert("Le téléphone est obligatoire."); inputTel.focus(); return; }
+        if (soldeStr === '') { alert("Le solde est obligatoire."); inputSolde.focus(); return; }
+        if (plafondStr === '') { alert("Le plafond est obligatoire."); inputPlafond.focus(); return; }
+
+        const newClient = {
+            type,
+            nom,
+            ice: type === 'societe' ? ice : null,
+            adresse,
+            tel,
+            email: email || null,
+            solde: parseFloat(soldeStr),
+            plafond: parseFloat(plafondStr),
+        };
+
+        btnSaveClient.textContent = 'Enregistrement...';
+        btnSaveClient.disabled = true;
+
+        try {
+            const createdClients = await supabase('POST', '/clients', newClient);
+
+            // Reset fields
+            inputNom.value = '';
+            inputIce.value = '';
+            inputAdresse.value = '';
+            inputTel.value = '';
+            inputEmail.value = '';
+            inputSolde.value = '0.00';
+            inputPlafond.value = '100000.00';
+            clientTypeSelect.value = 'physique';
+            iceGroup.classList.add('hidden');
+
+            modal.classList.remove('active');
+
+            // Toast success
+            showToast('✓ Client ajouté avec succès !');
+
+            // Reload client list for autocomplete
+            await fetchClients();
+
+            // Select the newly created client automatically
+            if (createdClients && createdClients.length > 0) {
+                const newlyCreatedClient = createdClients[0];
+                selectedClientId = newlyCreatedClient.id;
+                clientNomInput.value = newlyCreatedClient.nom;
+                clientAdresseInput.value = newlyCreatedClient.adresse || '';
+            }
+        } catch (error) {
+            console.error("Erreur Supabase:", error);
+            alert("Erreur lors de l'enregistrement du client.");
+        } finally {
+            btnSaveClient.textContent = 'Enregistrer';
+            btnSaveClient.disabled = false;
+        }
+    });
+}
 

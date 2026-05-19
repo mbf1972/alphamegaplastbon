@@ -26,6 +26,7 @@
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
         <h1 class="title">Bon de livraison</h1>
+        <button class="btn-add-clients" id="btn-add-client" aria-label="Ajouter un client">+Client</button>
     </header>
 
     <!-- Client Info -->
@@ -102,6 +103,60 @@
     <section class="btn-section" id="btn-pdf-section">
         <button class="btn-pdf btn-shine" id="btn-pdf">PDF</button>
     </section>
+
+    <!-- Modal d'ajout de client -->
+    <div id="add-client-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <h2 class="modal-title">Nouveau Client</h2>
+            
+            <div class="form-group">
+                <label for="modal-client-type">Type de client</label>
+                <select id="modal-client-type">
+                    <option value="physique">Personne physique</option>
+                    <option value="societe">Société</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="modal-client-nom">Nom <span style="color:red">*</span></label>
+                <input type="text" id="modal-client-nom" placeholder="Nom du client / société" required>
+            </div>
+            
+            <div class="form-group hidden" id="modal-ice-group">
+                <label for="modal-client-ice">ICE <span style="color:red">*</span></label>
+                <input type="text" id="modal-client-ice" placeholder="Identifiant Commun de l'Entreprise">
+            </div>
+            
+            <div class="form-group">
+                <label for="modal-client-adresse">Adresse <span style="color:red">*</span></label>
+                <input type="text" id="modal-client-adresse" placeholder="Adresse complète" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="modal-client-tel">Téléphone <span style="color:red">*</span></label>
+                <input type="tel" id="modal-client-tel" placeholder="N° de téléphone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="modal-client-email">E-mail</label>
+                <input type="email" id="modal-client-email" placeholder="Adresse e-mail (optionnel)">
+            </div>
+            
+            <div class="form-group">
+                <label for="modal-client-solde">Solde initial <span style="color:red">*</span></label>
+                <input type="number" step="0.01" id="modal-client-solde" placeholder="0.00" value="0.00" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="modal-client-plafond">Plafond de crédit <span style="color:red">*</span></label>
+                <input type="number" step="0.01" id="modal-client-plafond" placeholder="100000.00" value="100000.00" required>
+            </div>
+            
+            <button class="btn-save btn-shine" id="modal-btn-save-client">Enregistrer</button>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>

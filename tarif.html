@@ -26,6 +26,7 @@
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
         <h1 class="title">Tarif</h1>
+        <button class="btn-add-clients" id="btn-add-tarif" aria-label="Ajouter un tarif">+Tarif</button>
     </header>
 
     <!-- Discount Input -->
@@ -55,6 +56,7 @@
 
         let originalData = []; // Données brutes du tarif (avant réduction)
         let currentData = [];  // Données affichées (après réduction éventuelle)
+        let isEditAllMode = false; // Mode édition globale de tout le tableau
 
         // === Charger les données du tarif ===
         async function loadTarifData() {
@@ -116,10 +118,27 @@
                     html += `<div class="tarif-row tarif-category">${headerText}</div>`;
                 } else {
                     // Ligne de données normale
-                    html += `<div class="tarif-row ${i % 2 === 0 ? 'even' : 'odd'}">`;
-                    html += `<span class="tarif-cell tarif-desc">${formatCell(row[0])}</span>`;
-                    html += `<span class="tarif-cell tarif-prix" data-index="${i}" title="Cliquez pour modifier">${formatPrice(row[4])}</span>`;
-                    html += `</div>`;
+                    if (isEditAllMode) {
+                        let currentPrice = row[4];
+                        if (typeof currentPrice === 'string') {
+                            currentPrice = parseFloat(currentPrice.replace(',', '.').replace(/[^\d.-]/g, ''));
+                        }
+                        if (isNaN(currentPrice)) currentPrice = '';
+
+                        html += `<div class="tarif-row ${i % 2 === 0 ? 'even' : 'odd'}">`;
+                        html += `<span class="tarif-cell tarif-desc">`;
+                        html += `<input type="text" class="edit-desc-input" data-index="${i}" value="${formatCell(row[0]).replace(/"/g, '&quot;')}">`;
+                        html += `</span>`;
+                        html += `<span class="tarif-cell tarif-prix">`;
+                        html += `<input type="number" step="any" class="edit-price-input" data-index="${i}" value="${currentPrice}" style="width: 70px;">`;
+                        html += `</span>`;
+                        html += `</div>`;
+                    } else {
+                        html += `<div class="tarif-row ${i % 2 === 0 ? 'even' : 'odd'}">`;
+                        html += `<span class="tarif-cell tarif-desc">${formatCell(row[0])}</span>`;
+                        html += `<span class="tarif-cell tarif-prix" data-index="${i}" title="Cliquez pour modifier">${formatPrice(row[4])}</span>`;
+                        html += `</div>`;
+                    }
                 }
             }
 
@@ -186,6 +205,7 @@
 
         // === Clic simple pour modifier un prix ===
         document.getElementById('tarif-zone').addEventListener('click', function(e) {
+            if (isEditAllMode) return; // Désactivé si mode édition globale actif
             const target = e.target.closest('.tarif-prix');
             if (!target) return;
             
@@ -276,6 +296,44 @@
                 this.style.background = '';
                 this.disabled = false;
             }, 3000);
+        });
+
+        // === Bouton +Tarif (Edition globale) ===
+        document.getElementById('btn-add-tarif').addEventListener('click', function() {
+            isEditAllMode = !isEditAllMode;
+            
+            if (isEditAllMode) {
+                // Changer le bouton en mode actif / vert "Terminer"
+                this.textContent = '✓ Terminer';
+                this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                this.style.border = 'none';
+                this.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.25)';
+            } else {
+                // Remettre le bouton original
+                this.textContent = '+Tarif';
+                this.style.background = '';
+                this.style.border = '';
+                this.style.boxShadow = '';
+            }
+            
+            // Re-render
+            renderTarif(currentData);
+        });
+
+        // === Mettre à jour les données lors de la saisie en édition globale ===
+        document.getElementById('tarif-zone').addEventListener('input', function(e) {
+            const target = e.target;
+            const index = parseInt(target.getAttribute('data-index'), 10);
+            if (isNaN(index)) return;
+            
+            if (target.classList.contains('edit-desc-input')) {
+                currentData[index][0] = target.value;
+                originalData[index][0] = target.value;
+            } else if (target.classList.contains('edit-price-input')) {
+                const val = parseFloat(target.value);
+                currentData[index][4] = isNaN(val) ? '' : val;
+                originalData[index][4] = isNaN(val) ? '' : val;
+            }
         });
 
         // === Charger au démarrage ===

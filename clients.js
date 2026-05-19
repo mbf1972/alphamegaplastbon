@@ -491,6 +491,10 @@ async function loadClientReleve(client) {
 
         bons.forEach(b => {
             transactions.push({
+                id: b.id,
+                num_bon: b.num_bon,
+                client_nom: b.client_nom,
+                client_adresse: b.client_adresse,
                 date: b.date_bon,
                 ref: `BL ${b.num_bon}`,
                 type: 'Livraison',
@@ -564,6 +568,25 @@ async function loadClientReleve(client) {
                 });
                 refDiv.appendChild(camIcon);
             }
+
+            if (t.type === 'Livraison') {
+                const pdfIcon = document.createElement('span');
+                pdfIcon.className = 'releve-pdf-icon';
+                pdfIcon.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`;
+                pdfIcon.title = "Télécharger le bon de livraison en PDF";
+                
+                pdfIcon.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    if (pdfIcon.classList.contains('loading')) return;
+                    pdfIcon.classList.add('loading');
+                    try {
+                        await downloadBonPdf(t);
+                    } finally {
+                        pdfIcon.classList.remove('loading');
+                    }
+                });
+                refDiv.appendChild(pdfIcon);
+            }
             
             refDiv.title = t.type;
             refDiv.style.cursor = 'help';
@@ -596,6 +619,62 @@ async function loadClientReleve(client) {
     } catch (e) {
         console.error("Erreur historique:", e);
         list.innerHTML = '<div style="padding: 20px; text-align: center; color: #ef4444; font-weight: bold;">Erreur de chargement.</div>';
+    }
+}
+
+async function downloadBonPdf(t) {
+    try {
+        const bonItems = await supabase('GET', `/bon_items?bon_id=eq.${t.id}`);
+        const totalG = t.debit;
+        
+        let formattedDate = '';
+        if (t.date) {
+            const parts = t.date.split('-');
+            if (parts.length === 3) {
+                formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+        }
+        
+        const payload = {
+            dateBon: formattedDate,
+            numBon: t.num_bon,
+            clientNom: t.client_nom || '-',
+            clientAdresse: t.client_adresse || '-',
+            totalGeneral: totalG,
+            items: bonItems.map(item => ({
+                desc: `Tube PVC D: ${item.diam} ${item.color.toUpperCase()} ${item.long}M ${item.sr === '-' ? '' : item.sr}`.trim(),
+                qte: item.qte,
+                metrage: item.qte * (item.long || 0),
+                prix: item.prix,
+                total: item.total
+            })),
+            noIncrement: true
+        };
+        
+        const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNG2S1-QVKJhPCWzFArxIcRCEZyX5A8LJdZJ-UgZzIERvGNiZ001Va_Z4qJXCXxn7u/exec";
+        
+        const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { "Content-Type": "text/plain;charset=utf-8" }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === "Success") {
+            const linkSource = `data:application/pdf;base64,${result.base64}`;
+            const downloadLink = document.createElement("a");
+            downloadLink.href = linkSource;
+            downloadLink.download = result.fileName;
+            downloadLink.click();
+            showToast('✓ PDF Téléchargé !');
+        } else {
+            console.error("Erreur Script:", result.message);
+            alert("Erreur de génération PDF : " + result.message);
+        }
+    } catch (e) {
+        console.error("Erreur génération PDF:", e);
+        alert("Erreur de connexion au serveur Google.");
     }
 }
 
