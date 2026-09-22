@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Documents Officiels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --forest:#1F3D2E;
+    --forest-light:#2E5943;
+    --forest-dark:#122519;
+    --kraft:#E9DFC7;
+    --kraft-warm:#F3EAD3;
+    --kraft-line:#D8C9A3;
+    --orange:#D97B3F;
+    --orange-dark:#B85F28;
+    --text-dark:#22301F;
+    --text-soft:#5A6B54;
+    --white:#FFFDF8;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{
+    height:100%;
+    margin:0;
+    overflow:hidden;
+    font-family:'Manrope',sans-serif;
+    background:var(--kraft);
+    color:var(--text-dark);
+  }
+  body{
+    display:flex;
+    flex-direction:column;
+    height:100dvh;
+  }
+
+  /* HEADER */
+  .header{
+    background:linear-gradient(160deg, var(--forest) 0%, var(--forest-dark) 100%);
+    padding:20px 20px 18px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    box-shadow:0 4px 14px rgba(18,37,25,0.3);
+  }
+  .back-btn{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background 0.2s ease, transform 0.15s ease;
+  }
+  .back-btn svg{
+    width:18px;
+    height:18px;
+    stroke:var(--white);
+    stroke-width:2.5;
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .back-btn:hover{background:rgba(255,255,255,0.28);}
+  .back-btn:active{transform:scale(0.95);}
+  .logo{
+    height:36px;
+    width:auto;
+    flex-shrink:0;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+  }
+  .header-text h1{
+    margin:0; font-size:16.5px; font-weight:800; color:var(--white); letter-spacing:0.2px;
+  }
+  .header-text span{
+    font-size:11px; color:var(--kraft-warm); opacity:0.85; font-weight:600;
+  }
+
+  /* SEARCH BAR */
+  .search-bar{
+    flex-shrink:0;
+    padding:12px 14px 4px;
+    position:relative;
+  }
+  .search-bar svg{
+    position:absolute;
+    left:26px;
+    top:50%;
+    transform:translateY(-50%);
+    width:15px;height:15px;
+    stroke:var(--text-soft);
+    stroke-width:2.2;
+    fill:none;
+    pointer-events:none;
+  }
+  .search-input{
+    width:100%;
+    height:38px;
+    border:1px solid var(--kraft-line);
+    background:var(--white);
+    border-radius:12px;
+    padding:0 12px 0 34px;
+    font-family:'Manrope',sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--text-dark);
+  }
+  .search-input::placeholder{color:var(--text-soft); font-weight:600; opacity:0.7;}
+  .search-input:focus{outline:2px solid var(--forest-light);}
+
+  .empty-search{
+    text-align:center; color:var(--text-soft); font-size:12px; padding:24px 10px;
+  }
+
+  /* LIST */
+  .list{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:14px 14px 10px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .list::-webkit-scrollbar{width:6px;}
+  .list::-webkit-scrollbar-track{background:transparent;}
+  .list::-webkit-scrollbar-thumb{background:var(--kraft-line); border-radius:6px;}
+  .list::-webkit-scrollbar-thumb:hover{background:var(--forest-light);}
+
+  .doc-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--white);
+    border:1px solid var(--kraft-line);
+    border-radius:15px;
+    padding:12px 13px;
+    box-shadow:0 3px 8px rgba(31,61,46,0.07);
+  }
+
+  .doc-icon{
+    width:40px;height:40px;
+    border-radius:12px;
+    background:var(--kraft-warm);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .doc-icon svg{width:19px;height:19px; stroke:var(--forest); stroke-width:2; fill:none;}
+
+  .doc-text{flex:1; min-width:0;}
+  .doc-text b{
+    display:block;
+    font-size:13px;
+    font-weight:800;
+    color:var(--forest-dark);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .doc-text span{
+    display:block;
+    font-size:10px;
+    color:var(--text-soft);
+    font-weight:600;
+    margin-top:1px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .doc-actions{
+    display:flex;
+    gap:6px;
+    flex-shrink:0;
+  }
+  .doc-btn{
+    width:34px;height:34px;
+    border-radius:10px;
+    border:none;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.15s ease;
+  }
+  .doc-btn:hover{transform:scale(1.05);}
+  .doc-btn:active{transform:scale(0.96);}
+  .doc-btn svg{width:16px;height:16px; stroke-width:2.1; fill:none;}
+
+  .btn-view{background:var(--forest-light);}
+  .btn-view svg{stroke:var(--white);}
+  .btn-view:hover{background:var(--forest);}
+
+  .btn-download{background:#185336;}
+  .btn-download svg{stroke:var(--white);}
+  .btn-download:hover{background:#0e3622;}
+
+  .btn-share{background:var(--orange);}
+  .btn-share svg{stroke:var(--white);}
+  .btn-share:hover{background:var(--orange-dark);}
+
+  /* FILTRES & CATEGORIE */
+  .filters-wrapper{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:10px 14px 4px;
+    flex-shrink:0;
+  }
+  .cat-select-box{
+    position:relative;
+    width:100%;
+  }
+  .cat-select{
+    width:100%;
+    height:38px;
+    border:1px solid var(--kraft-line);
+    background:var(--white);
+    border-radius:12px;
+    padding:0 30px 0 12px;
+    font-family:'Manrope',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    color:var(--forest-dark);
+    outline:none;
+    cursor:pointer;
+    appearance:none;
+  }
+  .cat-select:focus{outline:2px solid var(--forest-light);}
+  .cat-select-arrow{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    pointer-events:none;
+    width:14px;
+    height:14px;
+    stroke:var(--forest);
+    stroke-width:2.2;
+    fill:none;
+  }
+
+  /* BADGE CATEGORIE */
+  .doc-badge{
+    display:inline-block;
+    font-size:9px;
+    font-weight:700;
+    color:var(--forest);
+    background:var(--kraft-line);
+    padding:2px 6px;
+    border-radius:6px;
+    margin-top:3px;
+    max-width:100%;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* TOAST */
+  .toast{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--forest-dark);
+    color:var(--white);
+    padding:10px 18px;
+    border-radius:10px;
+    font-size:12px;
+    font-weight:700;
+    box-shadow:0 4px 12px rgba(0,0,0,0.25);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease;
+    z-index:9999;
+  }
+  .toast.show{
+    opacity:1;
+  }
+
+  /* FOOTER */
+  .footer{
+    flex-shrink:0;
+    padding:10px 16px 14px;
+    text-align:center;
+  }
+  .footer span{
+    font-size:10px;
+    color:var(--text-soft);
+    font-weight:600;
+  }
+
+  /* ADD BUTTON IN HEADER */
+  .header-add-btn{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    margin-left:auto;
+    transition:background 0.2s ease, transform 0.15s ease;
+  }
+  .header-add-btn:hover{background:rgba(255,255,255,0.28);}
+  .header-add-btn:active{transform:scale(0.95);}
+  .header-add-btn svg{
+    width:20px;
+    height:20px;
+    stroke:var(--white);
+    stroke-width:2.5;
+    fill:none;
+  }
+
+  /* MODAL OVERLAY */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(18,37,25,0.55);
+    backdrop-filter:blur(4px);
+    z-index:200;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease;
+  }
+  .modal-overlay.open{
+    opacity:1;
+    pointer-events:all;
+  }
+
+  /* MODAL PANEL */
+  .modal-panel{
+    width:100%;
+    max-width:480px;
+    background:var(--white);
+    border-radius:24px 24px 0 0;
+    padding:24px 20px 32px;
+    transform:translateY(100%);
+    transition:transform 0.32s cubic-bezier(0.34,1.28,0.64,1);
+    max-height:92dvh;
+    overflow-y:auto;
+  }
+  .modal-overlay.open .modal-panel{
+    transform:translateY(0);
+  }
+  .modal-handle{
+    width:40px;height:4px;
+    background:var(--kraft-line);
+    border-radius:4px;
+    margin:0 auto 20px;
+  }
+  .modal-title{
+    font-size:16px;
+    font-weight:800;
+    color:var(--forest-dark);
+    margin:0 0 18px;
+    text-align:center;
+  }
+
+  /* FORM */
+  .form-group{
+    margin-bottom:14px;
+  }
+  .form-label{
+    display:block;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--text-soft);
+    margin-bottom:5px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .form-input, .form-select{
+    width:100%;
+    height:42px;
+    border:1.5px solid var(--kraft-line);
+    background:var(--kraft-warm);
+    border-radius:12px;
+    padding:0 14px;
+    font-family:'Manrope',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-dark);
+    outline:none;
+    transition:border-color 0.2s ease;
+  }
+  .form-input:focus, .form-select:focus{border-color:var(--forest-light);}
+  .form-select{appearance:none; cursor:pointer;}
+  .form-select-wrap{position:relative;}
+  .form-select-wrap svg{
+    position:absolute;
+    right:12px;top:50%;transform:translateY(-50%);
+    pointer-events:none;
+    width:14px;height:14px;
+    stroke:var(--forest);stroke-width:2.2;fill:none;
+  }
+
+  /* IMAGE AREA */
+  .img-zone{
+    border:2px dashed var(--kraft-line);
+    border-radius:14px;
+    background:var(--kraft-warm);
+    min-height:130px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    transition:border-color 0.2s ease, background 0.2s ease;
+    overflow:hidden;
+    position:relative;
+  }
+  .img-zone:hover{border-color:var(--forest-light); background:#eef5ee;}
+  .img-zone img{
+    width:100%;height:100%;
+    object-fit:contain;
+    border-radius:12px;
+    max-height:200px;
+  }
+  .img-zone-placeholder{
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
+  .img-zone-placeholder svg{width:32px;height:32px;stroke:var(--text-soft);stroke-width:1.5;fill:none;}
+  .img-zone-placeholder span{font-size:12px;font-weight:600;color:var(--text-soft);}
+
+  .img-btns{
+    display:flex;
+    gap:8px;
+    margin-top:8px;
+  }
+  .img-btn{
+    flex:1;
+    height:38px;
+    border-radius:10px;
+    border:1.5px solid var(--kraft-line);
+    background:var(--white);
+    font-family:'Manrope',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    color:var(--forest-dark);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:background 0.2s ease, border-color 0.2s ease;
+  }
+  .img-btn:hover{background:var(--kraft-warm);border-color:var(--forest-light);}
+  .img-btn svg{width:16px;height:16px;stroke:var(--forest);stroke-width:2;fill:none;}
+
+  /* SAVE BUTTON */
+  .btn-save{
+    width:100%;
+    height:46px;
+    border-radius:14px;
+    background:linear-gradient(135deg, var(--forest-light) 0%, var(--forest-dark) 100%);
+    border:none;
+    color:var(--white);
+    font-family:'Manrope',sans-serif;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    margin-top:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    box-shadow:0 4px 14px rgba(31,61,46,0.3);
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-save:hover{transform:scale(1.02); box-shadow:0 6px 18px rgba(31,61,46,0.4);}
+  .btn-save:active{transform:scale(0.98);}
+  .btn-save:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+  .btn-save .spinner{
+    width:18px;height:18px;
+    border:2.5px solid rgba(255,255,255,0.4);
+    border-top-color:var(--white);
+    border-radius:50%;
+    animation:spin 0.7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .btn-cancel{
+    width:100%;
+    height:40px;
+    border-radius:12px;
+    background:transparent;
+    border:1.5px solid var(--kraft-line);
+    color:var(--text-soft);
+    font-family:'Manrope',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:8px;
+    transition:background 0.2s ease;
+  }
+  .btn-cancel:hover{background:var(--kraft-warm);}
+
+  /* ======= PHONE AUTH OVERLAY ======= */
+  .auth-overlay{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(160deg, var(--forest-dark) 0%, #0a1a10 100%);
+    z-index:999;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    transition:opacity 0.4s ease;
+  }
+  .auth-overlay.hidden{
+    opacity:0;
+    pointer-events:none;
+  }
+  .auth-admin-corner-btn{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:12px;
+    padding:8px 14px;
+    color:var(--white);
+    font-family:'Manrope',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    backdrop-filter:blur(8px);
+    transition:background 0.2s ease, transform 0.15s ease;
+    z-index:1001;
+  }
+  .auth-admin-corner-btn:hover{background:rgba(255,255,255,0.22); transform:scale(1.02);}
+  .auth-admin-corner-btn:active{transform:scale(0.96);}
+  .auth-admin-corner-btn svg{stroke:currentColor;}
+  .auth-logo-wrap{
+    margin-bottom:28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .auth-logo-wrap img{
+    height:52px;
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+  }
+  .auth-logo-wrap span{
+    font-size:13px;
+    font-weight:700;
+    color:rgba(255,255,255,0.55);
+    letter-spacing:0.5px;
+  }
+  .auth-card{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:22px;
+    padding:28px 22px;
+    width:100%;
+    max-width:360px;
+    backdrop-filter:blur(12px);
+  }
+  .auth-step-title{
+    font-size:17px;
+    font-weight:800;
+    color:var(--white);
+    margin:0 0 6px;
+    text-align:center;
+  }
+  .auth-step-sub{
+    font-size:12px;
+    color:rgba(255,255,255,0.5);
+    text-align:center;
+    margin:0 0 22px;
+    line-height:1.5;
+  }
+  .auth-phone-input{
+    width:100%;
+    height:48px;
+    background:rgba(255,255,255,0.1);
+    border:1.5px solid rgba(255,255,255,0.2);
+    border-radius:13px;
+    color:var(--white);
+    font-family:'Manrope',sans-serif;
+    font-size:17px;
+    font-weight:700;
+    text-align:center;
+    letter-spacing:2px;
+    outline:none;
+    transition:border-color 0.2s ease;
+    padding:0 14px;
+  }
+  .auth-phone-input::placeholder{
+    color:rgba(255,255,255,0.3);
+    letter-spacing:1px;
+    font-size:13px;
+    font-weight:600;
+  }
+  .auth-phone-input:focus{border-color:rgba(255,255,255,0.45);}
+
+  .auth-field{
+    margin-bottom:14px;
+    text-align:left;
+  }
+  .auth-field-label{
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    color:rgba(255,255,255,0.7);
+    margin-bottom:6px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .auth-text-input{
+    width:100%;
+    height:44px;
+    background:rgba(255,255,255,0.1);
+    border:1.5px solid rgba(255,255,255,0.2);
+    border-radius:12px;
+    color:var(--white);
+    font-family:'Manrope',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    padding:0 14px;
+    outline:none;
+    transition:border-color 0.2s ease;
+  }
+  .auth-text-input:focus{border-color:rgba(255,255,255,0.45);}
+  .auth-text-input::placeholder{color:rgba(255,255,255,0.35); font-size:13px;}
+
+  .auth-pin-input{
+    width:100%;
+    height:50px;
+    background:rgba(255,255,255,0.1);
+    border:1.5px solid rgba(255,255,255,0.2);
+    border-radius:13px;
+    color:var(--white);
+    font-family:'JetBrains Mono',monospace;
+    font-size:24px;
+    font-weight:700;
+    text-align:center;
+    letter-spacing:10px;
+    outline:none;
+    transition:border-color 0.2s ease;
+  }
+  .auth-pin-input:focus{border-color:rgba(255,255,255,0.45);}
+  .auth-pin-input::placeholder{
+    color:rgba(255,255,255,0.3);
+    letter-spacing:4px;
+    font-size:16px;
+  }
+
+  .auth-btn{
+    width:100%;
+    height:46px;
+    border-radius:13px;
+    background:linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
+    border:none;
+    color:var(--white);
+    font-family:'Manrope',sans-serif;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    margin-top:14px;
+    box-shadow:0 4px 16px rgba(185,95,40,0.4);
+    transition:transform 0.15s ease, opacity 0.15s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .auth-btn:hover{transform:scale(1.02);}
+  .auth-btn:active{transform:scale(0.97);}
+  .auth-btn:disabled{opacity:0.5; cursor:not-allowed; transform:none;}
+  .auth-btn .spinner{
+    width:16px; height:16px;
+    border:2.5px solid rgba(255,255,255,0.35);
+    border-top-color:white;
+    border-radius:50%;
+    animation:spin 0.7s linear infinite;
+  }
+  .auth-links{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:16px;
+    font-size:11.5px;
+    color:rgba(255,255,255,0.5);
+  }
+  .auth-links a{
+    color:rgba(255,255,255,0.7);
+    cursor:pointer;
+    text-decoration:none;
+    font-weight:700;
+    transition:color 0.2s ease;
+  }
+  .auth-links a:hover{color:var(--orange);}
+
+  .auth-error{
+    background:rgba(185,40,40,0.25);
+    border:1px solid rgba(255,80,80,0.3);
+    border-radius:10px;
+    padding:9px 12px;
+    font-size:12px;
+    font-weight:700;
+    color:#ff9999;
+    text-align:center;
+    margin-top:12px;
+    display:none;
+  }
+  .auth-error.show{display:block;}
+
+  /* ======= ADMIN PANEL BUTTON ======= */
+  .header-admin-btn{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background 0.2s ease, transform 0.15s ease;
+  }
+  .header-admin-btn:hover{background:rgba(255,255,255,0.25);}
+  .header-admin-btn:active{transform:scale(0.95);}
+  .header-admin-btn svg{width:18px;height:18px;stroke:rgba(255,255,255,0.8);stroke-width:2.2;fill:none;}
+
+  /* ======= ADMIN MODAL ======= */
+  .admin-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(18,37,25,0.7);
+    backdrop-filter:blur(8px);
+    z-index:2000;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease;
+  }
+  .admin-overlay.open{opacity:1; pointer-events:all;}
+  .admin-panel{
+    width:100%;
+    max-width:480px;
+    background:var(--white);
+    border-radius:24px 24px 0 0;
+    padding:22px 18px 36px;
+    transform:translateY(100%);
+    transition:transform 0.32s cubic-bezier(0.34,1.2,0.64,1);
+    max-height:92dvh;
+    overflow-y:auto;
+  }
+  .admin-overlay.open .admin-panel{transform:translateY(0);}
+  .admin-panel-title{
+    font-size:15px;
+    font-weight:800;
+    color:var(--forest-dark);
+    text-align:center;
+    margin:0 0 18px;
+  }
+  .admin-pwd-form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .admin-pwd-input{
+    width:100%;
+    height:44px;
+    border:1.5px solid var(--kraft-line);
+    background:var(--kraft-warm);
+    border-radius:11px;
+    padding:0 14px;
+    font-family:'Manrope',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--text-dark);
+    outline:none;
+    transition:border-color 0.2s ease;
+  }
+  .admin-pwd-input:focus{border-color:var(--forest-light);}
+  .admin-pwd-btn{
+    width:100%;
+    height:44px;
+    border-radius:11px;
+    background:linear-gradient(135deg, var(--forest-light) 0%, var(--forest) 100%);
+    border:none;
+    color:var(--white);
+    font-family:'Manrope',sans-serif;
+    font-size:13.5px;
+    font-weight:800;
+    cursor:pointer;
+    transition:opacity 0.2s ease, transform 0.15s ease;
+  }
+  .admin-pwd-btn:hover{opacity:0.95; transform:scale(1.01);}
+  .admin-gmail-btn{
+    width:100%;
+    height:46px;
+    border-radius:12px;
+    border:1.5px solid #EA4335;
+    background:#FFF5F5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-family:'Manrope',sans-serif;
+    font-size:13.5px;
+    font-weight:800;
+    color:#C5221F;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow:0 2px 8px rgba(234,67,53,0.15);
+  }
+  .admin-gmail-btn:hover{background:#FCE8E6; transform:scale(1.01); box-shadow:0 4px 12px rgba(234,67,53,0.25);}
+  .admin-gmail-btn:active{transform:scale(0.97);}
+  .admin-divider{
+    display:flex;
+    align-items:center;
+    margin:14px 0;
+    color:var(--text-soft);
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .admin-divider::before, .admin-divider::after{
+    content:'';
+    flex:1;
+    border-bottom:1px solid var(--kraft-line);
+  }
+  .admin-divider span{padding:0 10px;}
+  .google-signin-btn{
+    width:100%;
+    height:44px;
+    border-radius:12px;
+    border:1.5px solid #e0e0e0;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-family:'Manrope',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    color:#3c3c3c;
+    cursor:pointer;
+    transition:background 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  }
+  .google-signin-btn:hover{background:#f8f8f8; box-shadow:0 3px 10px rgba(0,0,0,0.13);}
+  .google-signin-btn img{width:20px;height:20px;}
+  .admin-section{
+    margin-top:20px;
+  }
+  .admin-section-title{
+    font-size:11px;
+    font-weight:800;
+    color:var(--text-soft);
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    margin-bottom:10px;
+  }
+  .phone-list-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--kraft-warm);
+    border:1px solid var(--kraft-line);
+    border-radius:12px;
+    padding:10px 12px;
+    margin-bottom:8px;
+    gap:8px;
+  }
+  .phone-info{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    min-width:0;
+  }
+  .phone-number{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--forest-dark);
+    letter-spacing:1px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .phone-meta{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  .phone-badge{
+    display:inline-flex;
+    align-items:center;
+    font-size:10px;
+    font-weight:800;
+    padding:2px 7px;
+    border-radius:6px;
+    letter-spacing:0.3px;
+  }
+  .phone-badge.waiting{
+    background:#fef3c7;
+    color:#92400e;
+    border:1px solid #fde68a;
+  }
+  .phone-badge.active{
+    background:#d1fae5;
+    color:#065f46;
+    border:1px solid #a7f3d0;
+  }
+  .phone-email-text{
+    font-size:11px;
+    color:var(--text-soft);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:180px;
+  }
+  .phone-actions{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-shrink:0;
+  }
+  .phone-reset-btn{
+    width:28px;height:28px;
+    border-radius:8px;
+    border:none;
+    background:#e0f2fe;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.15s ease;
+  }
+  .phone-reset-btn:hover{background:#bae6fd;}
+  .phone-reset-btn svg{width:14px;height:14px;stroke:#0369a1;stroke-width:2.2;fill:none;}
+  .phone-del-btn{
+    width:28px;height:28px;
+    border-radius:8px;
+    border:none;
+    background:#fee2e2;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    transition:background 0.15s ease;
+  }
+  .phone-del-btn:hover{background:#fca5a5;}
+  .phone-del-btn svg{width:14px;height:14px;stroke:#b91c1c;stroke-width:2.5;fill:none;}
+  .add-phone-form{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+  }
+  .add-phone-form input{
+    flex:1;
+    height:42px;
+    border:1.5px solid var(--kraft-line);
+    background:var(--kraft-warm);
+    border-radius:11px;
+    padding:0 12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--text-dark);
+    letter-spacing:1px;
+    outline:none;
+    transition:border-color 0.2s ease;
+  }
+  .add-phone-form input:focus{border-color:var(--forest-light);}
+  .add-phone-form button{
+    height:42px;
+    padding:0 16px;
+    border-radius:11px;
+    border:none;
+    background:var(--forest-light);
+    color:var(--white);
+    font-family:'Manrope',sans-serif;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background 0.15s ease;
+  }
+  .add-phone-form button:hover{background:var(--forest);}
+  .admin-close-btn{
+    width:100%;
+    height:40px;
+    border-radius:12px;
+    background:transparent;
+    border:1.5px solid var(--kraft-line);
+    color:var(--text-soft);
+    font-family:'Manrope',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:18px;
+    transition:background 0.2s ease;
+  }
+  .admin-close-btn:hover{background:var(--kraft-warm);}
+  .admin-logged-as{
+    font-size:11px;
+    font-weight:600;
+    color:var(--forest-light);
+    text-align:center;
+    margin-bottom:14px;
+    background:rgba(46,89,67,0.08);
+    border-radius:8px;
+    padding:7px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="header" style="position:relative;">
+    <img class="logo" src="data:image/png;base64,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" alt="Alpha Mega Plast">
+    <div class="header-text">
+      <h1>Documents Officiels</h1>
+      <span id="count">Chargement...</span>
+    </div>
+    <button class="header-add-btn" id="fabBtn" onclick="openModal()" title="Ajouter un document" aria-label="Ajouter un document">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <button class="header-admin-btn" id="adminBtn" onclick="openAdminPanel()" title="Gestion des accès" aria-label="Panneau admin">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </button>
+  </div>
+
+  <div class="filters-wrapper">
+    <div class="search-bar" style="padding:0;">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="Rechercher par titre ou mot-clé..." oninput="render()">
+    </div>
+
+    <div class="cat-select-box">
+      <select class="cat-select" id="catFilter" onchange="render()">
+        <option value="">Toutes les catégories</option>
+      </select>
+      <svg class="cat-select-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="footer">
+    <span>Alpha Mega Plast © Gestion interne</span>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- PHONE & PIN AUTH OVERLAY -->
+  <div class="auth-overlay" id="authOverlay">
+    <!-- Bouton Espace Admin directement accessible sur l'écran d'accueil -->
+    <button class="auth-admin-corner-btn" onclick="openAdminPanel()" title="Espace Administrateur">
+      <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>Espace Admin</span>
+    </button>
+
+    <div class="auth-logo-wrap">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAACqCAYAAACDKRmzAABbOUlEqkjggg==" alt="Logo" onerror="this.style.display='none'">
+      <span>ALPHA MEGA PLAST</span>
+    </div>
+
+    <!-- STEP 1: Phone number entry -->
+    <div class="auth-card" id="authStep1">
+      <p class="auth-step-title">Accès sécurisé</p>
+      <p class="auth-step-sub">Entrez votre numéro de téléphone marocain pour vous identifier.</p>
+      <input class="auth-phone-input" id="authPhoneInput" type="tel" placeholder="06 XX XX XX XX" maxlength="14" oninput="formatPhoneInput(this)" onkeydown="if(event.key==='Enter')checkPhoneNumber()">
+      <div class="auth-error" id="authError1"></div>
+      <button class="auth-btn" id="authCheckBtn" onclick="checkPhoneNumber()">
+        <span>Continuer</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="auth-links" style="justify-content:center;margin-top:16px;">
+        <a onclick="openAdminPanel()" style="color:rgba(255,255,255,0.75);font-size:12px;display:flex;align-items:center;gap:6px;">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <u>Vous êtes administrateur ? Connectez-vous ici</u>
+        </a>
+      </div>
+    </div>
+
+    <!-- STEP 2A: First login / Register Profile (Email + PIN) -->
+    <div class="auth-card" id="authStepRegister" style="display:none;">
+      <p class="auth-step-title">👋 Première connexion</p>
+      <p class="auth-step-sub">Numéro autorisé : <b id="regPhoneDisplay" style="color:var(--white);"></b><br>Renseignez votre email et créez votre code PIN personnel.</p>
+      
+      <div class="auth-field">
+        <label class="auth-field-label">Votre adresse email</label>
+        <input class="auth-text-input" id="regEmailInput" type="email" placeholder="nom@exemple.com" autocomplete="email">
+      </div>
+
+      <div class="auth-field">
+        <label class="auth-field-label">Créer un code PIN (4 à 6 chiffres)</label>
+        <input class="auth-pin-input" id="regPinInput" type="password" maxlength="6" inputmode="numeric" placeholder="••••" oninput="this.value=this.value.replace(/\D/g,'')">
+      </div>
+
+      <div class="auth-field">
+        <label class="auth-field-label">Confirmer le code PIN</label>
+        <input class="auth-pin-input" id="regPinConfirmInput" type="password" maxlength="6" inputmode="numeric" placeholder="••••" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')registerProfile()">
+      </div>
+
+      <div class="auth-error" id="authErrorRegister"></div>
+
+      <button class="auth-btn" id="regSubmitBtn" onclick="registerProfile()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+        Enregistrer et Accéder
+      </button>
+
+      <div class="auth-links" style="justify-content:center;">
+        <a onclick="backToStep1()">← Changer de numéro</a>
+      </div>
+    </div>
+
+    <!-- STEP 2B: Returning user / Login with PIN -->
+    <div class="auth-card" id="authStepLogin" style="display:none;">
+      <p class="auth-step-title">🔐 Code PIN</p>
+      <p class="auth-step-sub">
+        Numéro : <b id="loginPhoneDisplay" style="color:var(--white);"></b>
+        <span id="loginEmailDisplay" style="display:block;margin-top:4px;font-size:11px;color:rgba(255,255,255,0.65);"></span>
+      </p>
+
+      <div class="auth-field">
+        <label class="auth-field-label" style="text-align:center;">Entrez votre code PIN secret</label>
+        <input class="auth-pin-input" id="loginPinInput" type="password" maxlength="6" inputmode="numeric" placeholder="••••" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')loginWithPin()">
+      </div>
+
+      <div class="auth-error" id="authErrorLogin"></div>
+
+      <button class="auth-btn" id="loginSubmitBtn" onclick="loginWithPin()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+        Se connecter
+      </button>
+
+      <div class="auth-links">
+        <a onclick="backToStep1()">← Changer de numéro</a>
+        <a onclick="forgotPin()">PIN oublié ?</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div class="admin-overlay" id="adminOverlay" onclick="handleAdminOverlayClick(event)">
+    <div class="admin-panel">
+      <div class="modal-handle"></div>
+      <h2 class="admin-panel-title">🔒 Espace Administrateur</h2>
+
+      <!-- Pre-auth state -->
+      <div id="adminPreAuth">
+        <p style="font-size:12.5px;color:var(--text-soft);text-align:center;margin:0 0 16px;line-height:1.5;">
+          Accès administrateur : <b>mohamedbnofatima@gmail.com</b>
+        </p>
+
+        <!-- OPTION 1: Auth par Gmail avec envoi de code OTP -->
+        <div id="adminGmailStepSend">
+          <button class="admin-gmail-btn" id="btnSendGmailOtp" onclick="sendAdminGmailOtp()">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#EA4335" stroke-width="2"/><polyline points="22,6 12,13 2,6" stroke="#EA4335" stroke-width="2"/></svg>
+            <span>Recevoir un code sur mon Gmail</span>
+          </button>
+          <p style="font-size:11px;color:var(--text-soft);text-align:center;margin:7px 0 0;">
+            Envoie un code de vérification à <b>mohamedbnofatima@gmail.com</b>
+          </p>
+        </div>
+
+        <!-- OPTION 1 SUITE: Saisie du code reçu par Gmail -->
+        <div id="adminGmailStepVerify" style="display:none;margin-top:10px;text-align:center;">
+          <div style="background:#FFF5F5;border:1px solid #FCDAD7;border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+            <p style="font-size:12px;color:#C5221F;font-weight:700;margin:0 0 4px;">
+              ✉️ Code envoyé à mohamedbnofatima@gmail.com
+            </p>
+            <p style="font-size:11px;color:var(--text-soft);margin:0;">
+              Consultez votre boîte mail et entrez le code à 6 chiffres :
+            </p>
+          </div>
+          <input class="admin-pwd-input" id="adminGmailOtpInput" type="tel" maxlength="6" placeholder="000000" style="text-align:center;font-size:22px;letter-spacing:6px;font-family:'JetBrains Mono',monospace;" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')verifyAdminGmailOtp()">
+          <button class="admin-pwd-btn" id="btnVerifyGmailOtp" onclick="verifyAdminGmailOtp()" style="margin-top:10px;background:#C5221F;">
+            Valider et Se Connecter
+          </button>
+          <div style="margin-top:10px;">
+            <a onclick="sendAdminGmailOtp()" style="font-size:11.5px;color:var(--orange);cursor:pointer;font-weight:700;">Renvoyer un nouveau code</a>
+          </div>
+        </div>
+
+        <div class="admin-divider"><span>OU MOT DE PASSE</span></div>
+
+        <!-- OPTION 2: Mot de passe immédiat -->
+        <div class="admin-pwd-form">
+          <input class="admin-pwd-input" id="adminPwdInput" type="password" placeholder="Mot de passe admin (AMP@admin2024)" onkeydown="if(event.key==='Enter')loginAdminWithPassword()">
+          <button class="admin-pwd-btn" onclick="loginAdminWithPassword()" style="background:var(--forest);">Connexion par Mot de passe</button>
+        </div>
+
+        <div class="auth-error" id="adminAuthError" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- Post-auth state -->
+      <div id="adminPostAuth" style="display:none;">
+        <div class="admin-logged-as" id="adminLoggedAs">✅ Connecté en tant qu'administrateur</div>
+
+        <!-- Bouton pour débloquer la page et entrer en admin -->
+        <button onclick="enterAsAdmin()" style="width:100%;height:44px;background:linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);color:white;border:none;border-radius:12px;font-family:'Manrope',sans-serif;font-size:13.5px;font-weight:800;cursor:pointer;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 3px 12px rgba(217,123,63,0.35);">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="white" stroke-width="2.5" fill="none"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Accéder aux documents (Mode Admin)
+        </button>
+
+        <div class="admin-section">
+          <div class="admin-section-title">Numéros autorisés & Statut</div>
+          <div id="phoneListContainer"><div style="font-size:12px;color:var(--text-soft);text-align:center;padding:12px;">Chargement...</div></div>
+          
+          <div class="add-phone-form">
+            <input type="tel" id="newPhoneInput" placeholder="06 00 00 00 00" maxlength="14" oninput="formatPhoneInput(this)" onkeydown="if(event.key==='Enter')addPhone()">
+            <button onclick="addPhone()">+ Ajouter</button>
+          </div>
+          <p style="font-size:11px;color:var(--text-soft);margin:8px 0 0;line-height:1.4;">
+            💡 Ajoutez les numéros autorisés. L'utilisateur ajoutera son email et choisira son code PIN lors de sa 1ère visite.
+          </p>
+        </div>
+      </div>
+
+      <button class="admin-close-btn" onclick="closeAdminPanel()">Fermer</button>
+    </div>
+  </div>
+
+  <!-- GOOGLE GSI CALLBACK -->
+  <div id="googleOneTapDiv" style="display:none;"></div>
+
+  <!-- ADD DOCUMENT MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal-panel" id="modalPanel">
+      <div class="modal-handle"></div>
+      <h2 class="modal-title">📄 Nouveau Document</h2>
+
+      <div class="form-group">
+        <label class="form-label" for="docTitre">Nom du document</label>
+        <input class="form-input" id="docTitre" type="text" placeholder="Ex: Contrat de vente, Facture 2024..." maxlength="120">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="docCategorie">Catégorie</label>
+        <div class="form-select-wrap">
+          <select class="form-select" id="docCategorie">
+            <option value="">— Sans catégorie —</option>
+          </select>
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Image du document</label>
+        <div class="img-zone" id="imgZone" onclick="triggerUpload()">
+          <div class="img-zone-placeholder" id="imgPlaceholder">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Appuyez pour choisir une image</span>
+          </div>
+          <img id="imgPreview" style="display:none;" alt="Aperçu du document">
+        </div>
+        <div class="img-btns">
+          <button class="img-btn" onclick="triggerCamera()" type="button">
+            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Prendre une photo
+          </button>
+          <button class="img-btn" onclick="triggerUpload()" type="button">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Uploader un fichier
+          </button>
+        </div>
+        <!-- Hidden inputs -->
+        <input type="file" id="fileUpload" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+        <input type="file" id="cameraCapture" accept="image/*" capture="environment" style="display:none" onchange="handleFileSelect(event)">
+      </div>
+
+      <button class="btn-save" id="btnSave" onclick="saveDocument()">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Enregistrer le document
+      </button>
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+    </div>
+  </div>
+
+<script>
+  const SUPABASE_URL = "https://jhzfnatsshpohnoswxcd.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpoemZuYXRzc2hwb2hub3N3eGNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MTIzNTIsImV4cCI6MjA5NDI4ODM1Mn0.PMGnUk1Lh7-oFdxZ4sA-g6_3YsTgHhPk-KyFYxSlWlI";
+
+  let allDocuments = [];
+
+  const docIconSvg = '<path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/>';
+
+  async function loadDocuments() {
+    const list = document.getElementById('list');
+    list.innerHTML = '<div class="empty-search">Chargement des documents depuis Supabase...</div>';
+    try {
+      // Chargement direct via l'API REST de Supabase (filtre sur les 80 fichiers PDF valides)
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/documents?select=*&pdf=like.*documents-officiels/doc_*&order=id.asc`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      if (!res.ok) throw new Error("Erreur HTTP: " + res.status);
+      allDocuments = await res.json();
+
+      populateCategories();
+      render();
+    } catch (err) {
+      console.error('Erreur Supabase:', err);
+      list.innerHTML = `<div class="empty-search" style="color:#b85f28;">
+        Impossible de charger les documents.<br>
+        <small style="opacity:0.8;">Erreur de connexion : ${escapeHtml(err.message)}</small>
+      </div>`;
+      document.getElementById('count').textContent = 'Erreur';
+    }
+  }
+
+  function populateCategories() {
+    const catFilter = document.getElementById('catFilter');
+    const categories = Array.from(new Set(allDocuments.map(d => d.categorie).filter(Boolean))).sort();
+    catFilter.innerHTML = `<option value="">Toutes les catégories (${allDocuments.length})</option>`;
+    
+    categories.forEach(cat => {
+      const count = allDocuments.filter(d => d.categorie === cat).length;
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = `${cat} (${count})`;
+      catFilter.appendChild(opt);
+    });
+
+    const sansCatCount = allDocuments.filter(d => !d.categorie).length;
+    if (sansCatCount > 0) {
+      const opt = document.createElement('option');
+      opt.value = "__NONE__";
+      opt.textContent = `Documents généraux / Racine (${sansCatCount})`;
+      catFilter.appendChild(opt);
+    }
+  }
+
+  function render(){
+    const list = document.getElementById('list');
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    const selectedCat = document.getElementById('catFilter').value;
+    list.innerHTML = '';
+
+    const filtered = allDocuments.filter(doc => {
+      const title = (doc.titre || '').toLowerCase();
+      const cat = (doc.categorie || '').toLowerCase();
+      const matchesQuery = !query || title.includes(query) || cat.includes(query);
+
+      let matchesCat = true;
+      if (selectedCat === "__NONE__") {
+        matchesCat = !doc.categorie;
+      } else if (selectedCat) {
+        matchesCat = (doc.categorie === selectedCat);
+      }
+
+      return matchesQuery && matchesCat;
+    });
+
+    if(filtered.length === 0){
+      list.innerHTML = '<div class="empty-search">Aucun document trouvé pour cette recherche.</div>';
+      document.getElementById('count').textContent = '0 document(s)';
+      return;
+    }
+
+    filtered.forEach(doc => {
+      const card = document.createElement('div');
+      card.className = 'doc-card';
+      const catLabel = doc.categorie ? doc.categorie : 'Document général';
+      card.innerHTML = `
+        <div class="doc-icon" onclick="viewDocument('${encodeURI(doc.pdf)}')" style="cursor:pointer;" title="Consulter">
+          <svg viewBox="0 0 24 24">${docIconSvg}</svg>
+        </div>
+        <div class="doc-text" onclick="viewDocument('${encodeURI(doc.pdf)}')" style="cursor:pointer;" title="Consulter le document">
+          <b>${escapeHtml(doc.titre)}</b>
+          <span class="doc-badge">${escapeHtml(catLabel)}</span>
+        </div>
+        <div class="doc-actions">
+          <button class="doc-btn btn-view" onclick="viewDocument('${encodeURI(doc.pdf)}')" aria-label="Voir" title="Consulter dans un nouvel onglet">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="doc-btn btn-download" onclick="downloadDocument('${encodeURI(doc.pdf)}', '${escapeAttr(doc.titre)}')" aria-label="Télécharger" title="Télécharger le fichier PDF sur votre appareil">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button class="doc-btn btn-share" onclick="shareDocument('${escapeAttr(doc.titre)}', '${encodeURI(doc.pdf)}')" aria-label="Partager" title="Partager ou copier le lien">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 3.9M15.4 6.6L8.6 10.5"/></svg>
+          </button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    document.getElementById('count').textContent = filtered.length + ' document(s)';
+  }
+
+  function viewDocument(pdfUrl){
+    if (!pdfUrl) return;
+    window.open(pdfUrl, '_blank');
+  }
+
+  async function downloadDocument(pdfUrl, filename){
+    if (!pdfUrl) return;
+    showToast("Téléchargement en cours...");
+    try {
+      const response = await fetch(pdfUrl);
+      if (!response.ok) throw new Error('Erreur HTTP ' + response.status);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = (filename || 'document') + '.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1500);
+      showToast("Fichier téléchargé avec succès !");
+    } catch(err) {
+      console.warn("Échec du téléchargement direct blob, ouverture directe...", err);
+      // Fallback si fetch est restreint par le navigateur en local
+      const a = document.createElement('a');
+      a.href = pdfUrl;
+      a.target = '_blank';
+      a.download = (filename || 'document') + '.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+  }
+
+  async function shareDocument(title, pdfUrl){
+    if (!pdfUrl) return;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: `Document officiel: ${title}`,
+          url: pdfUrl
+        });
+        return;
+      } catch(e) {}
+    }
+    // Fallback: copier le lien dans le presse-papier
+    try {
+      await navigator.clipboard.writeText(pdfUrl);
+      showToast("Lien copié dans le presse-papier !");
+    } catch(e) {
+      window.prompt("Copiez le lien direct ci-dessous :", pdfUrl);
+    }
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  function escapeHtml(str){
+    return String(str || '').replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[m]);
+  }
+
+  function escapeAttr(str){
+    return String(str || '').replace(/'/g, "\\'");
+  }
+
+  // Lancement
+  loadDocuments();
+
+  /* ========== MODAL & ADD DOCUMENT LOGIC ========== */
+
+  let selectedImageFile = null;
+
+  function openModal(){
+    // Populate categories from loaded docs
+    const catSel = document.getElementById('docCategorie');
+    const existingCats = Array.from(new Set(allDocuments.map(d => d.categorie).filter(Boolean))).sort();
+    catSel.innerHTML = '<option value="">— Sans catégorie —</option>';
+    existingCats.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      catSel.appendChild(opt);
+    });
+    // Allow typing a new category
+    const newCatOpt = document.createElement('option');
+    newCatOpt.value = '__NEW__';
+    newCatOpt.textContent = '✏️ Nouvelle catégorie...';
+    catSel.appendChild(newCatOpt);
+
+    // Reset form
+    document.getElementById('docTitre').value = '';
+    selectedImageFile = null;
+    document.getElementById('imgPreview').style.display = 'none';
+    document.getElementById('imgPlaceholder').style.display = 'flex';
+
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal(){
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e){
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function triggerUpload(){
+    document.getElementById('fileUpload').click();
+  }
+
+  function triggerCamera(){
+    document.getElementById('cameraCapture').click();
+  }
+
+  function handleFileSelect(event){
+    const file = event.target.files[0];
+    if (!file) return;
+    selectedImageFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById('imgPreview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      document.getElementById('imgPlaceholder').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+    // Reset input so same file can be re-selected
+    event.target.value = '';
+  }
+
+  // Handle "new category" option
+  document.getElementById('docCategorie').addEventListener('change', function(){
+    if (this.value === '__NEW__') {
+      const newCat = window.prompt('Entrez le nom de la nouvelle catégorie :');
+      if (newCat && newCat.trim()) {
+        const opt = document.createElement('option');
+        opt.value = newCat.trim();
+        opt.textContent = newCat.trim();
+        this.insertBefore(opt, this.querySelector('option[value="__NEW__"]'));
+        this.value = newCat.trim();
+      } else {
+        this.value = '';
+      }
+    }
+  });
+
+  async function saveDocument(){
+    const titre = document.getElementById('docTitre').value.trim();
+    const categorie = document.getElementById('docCategorie').value;
+    const btnSave = document.getElementById('btnSave');
+
+    if (!titre) {
+      showToast('⚠️ Veuillez saisir un nom pour le document.');
+      document.getElementById('docTitre').focus();
+      return;
+    }
+    if (!selectedImageFile) {
+      showToast('⚠️ Veuillez choisir ou prendre une photo du document.');
+      return;
+    }
+
+    // Disable button and show spinner
+    btnSave.disabled = true;
+    btnSave.innerHTML = '<div class="spinner"></div> Conversion en cours...';
+
+    try {
+      // 1. Convert image to PDF using jsPDF
+      const { jsPDF } = window.jspdf;
+      const imgDataUrl = await fileToDataUrl(selectedImageFile);
+      const imgDimensions = await getImageDimensions(imgDataUrl);
+
+      // Determine PDF page size to match image aspect ratio (A4 portrait/landscape)
+      const isLandscape = imgDimensions.width > imgDimensions.height;
+      const pdf = new jsPDF({
+        orientation: isLandscape ? 'landscape' : 'portrait',
+        unit: 'px',
+        format: isLandscape ? [imgDimensions.width, imgDimensions.height] : [imgDimensions.width, imgDimensions.height],
+        hotfixes: ['px_scaling']
+      });
+
+      pdf.addImage(imgDataUrl, getImgFormat(selectedImageFile), 0, 0, imgDimensions.width, imgDimensions.height);
+      const pdfBytes = pdf.output('arraybuffer');
+
+      // 2. Determine next storage path (doc_XXX.pdf)
+      btnSave.innerHTML = '<div class="spinner"></div> Upload en cours...';
+      const nextId = await getNextDocId();
+      const storagePath = `doc_${String(nextId).padStart(3, '0')}.pdf`;
+
+      // 3. Upload to Supabase Storage
+      const uploadRes = await fetch(
+        `${SUPABASE_URL}/storage/v1/object/${BUCKET_NAME}/${storagePath}`,
+        {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/pdf',
+            'x-upsert': 'true'
+          },
+          body: pdfBytes
+        }
+      );
+      if (!uploadRes.ok) {
+        const errText = await uploadRes.text();
+        throw new Error('Upload Storage: ' + errText);
+      }
+
+      // 4. Get public URL
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${storagePath}`;
+
+      // 5. Insert row in documents table
+      const row = {
+        titre: titre,
+        categorie: (categorie && categorie !== '__NEW__') ? categorie : null,
+        pdf: publicUrl
+      };
+      const insertRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/documents`,
+        {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(row)
+        }
+      );
+      if (!insertRes.ok) {
+        const errText = await insertRes.text();
+        throw new Error('Insert DB: ' + errText);
+      }
+
+      // 6. Success: refresh list and close modal
+      showToast('✅ Document enregistré avec succès !');
+      closeModal();
+      await loadDocuments();
+
+    } catch(err) {
+      console.error('Erreur lors de l\'enregistrement:', err);
+      showToast('❌ Erreur : ' + err.message);
+    } finally {
+      btnSave.disabled = false;
+      btnSave.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Enregistrer le document`;
+    }
+  }
+
+  function fileToDataUrl(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function getImageDimensions(dataUrl){
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.src = dataUrl;
+    });
+  }
+
+  function getImgFormat(file){
+    const type = file.type.toLowerCase();
+    if (type.includes('png')) return 'PNG';
+    if (type.includes('webp')) return 'WEBP';
+    return 'JPEG';
+  }
+
+  async function getNextDocId(){
+    // Fetch all docs to find max id
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/documents?select=id&order=id.desc&limit=1`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      });
+      const data = await res.json();
+      if (data && data.length > 0) return (data[0].id || 0) + 1;
+    } catch(e) {}
+    return (allDocuments.length || 0) + 1;
+  }
+
+  /* =====================================================
+     CONFIGURATION ACCÈS ET AUTHENTIFICATION (SANS ULTRAMSG)
+     - L'admin ajoute le numéro marocain.
+     - 1ère visite : l'utilisateur renseigne son email et choisit son code PIN.
+     - Visites suivantes : connexion avec numéro + code PIN secret.
+  ===================================================== */
+  const GOOGLE_CLIENT_ID   = ''; // Optionnel : Google OAuth Client ID pour l'admin
+  const ADMIN_EMAIL        = 'mohamedbnofatima@gmail.com';
+  const ADMIN_FALLBACK_PWD = 'AMP@admin2024'; // Mot de passe admin de secours
+  const SESSION_KEY        = 'amp_auth_phone';
+
+  /* =====================================================
+     SCRIPT SQL SUPABASE À EXÉCUTER (dans Supabase SQL Editor):
+     
+     CREATE TABLE IF NOT EXISTS authorized_phones (
+       id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+       phone text UNIQUE NOT NULL,
+       email text,
+       pin text,
+       created_at timestamptz DEFAULT now()
+     );
+     ALTER TABLE authorized_phones ENABLE ROW LEVEL SECURITY;
+     CREATE POLICY "Accès complet" ON authorized_phones FOR ALL USING (true) WITH CHECK (true);
+  ===================================================== */
+
+  let currentAuthUser = null; // { id, phone, email, pin }
+  let isAdminAuthed   = false;
+
+  /* ---------- PAGE INIT: check session ---------- */
+  function initAuth(){
+    const savedPhone = sessionStorage.getItem(SESSION_KEY);
+    const isAdmin    = sessionStorage.getItem('amp_is_admin') === 'true';
+
+    if(savedPhone || isAdmin){
+      dismissAuthOverlay();
+      if(isAdmin) isAdminAuthed = true;
+    } else {
+      const overlay = document.getElementById('authOverlay');
+      overlay.classList.remove('hidden');
+      overlay.style.display = 'flex';
+      setTimeout(() => {
+        const input = document.getElementById('authPhoneInput');
+        if(input) input.focus();
+      }, 400);
+    }
+  }
+
+  function dismissAuthOverlay(){
+    const overlay = document.getElementById('authOverlay');
+    overlay.classList.add('hidden');
+    setTimeout(() => { overlay.style.display = 'none'; }, 450);
+  }
+
+  /* ---------- PHONE FORMAT (Moroccan: 06 12 34 56 78) ---------- */
+  function formatPhoneInput(input){
+    let digits = input.value.replace(/\D/g,'').substring(0,10);
+    let formatted = '';
+    for(let i=0;i<digits.length;i++){
+      if(i>0 && i%2===0) formatted+=' ';
+      formatted+=digits[i];
+    }
+    input.value = formatted;
+  }
+
+  function rawPhone(formatted){
+    return (formatted || '').replace(/\s/g,'');
+  }
+
+  function isValidMoroccanPhone(raw){
+    // Mobile marocain : 06XXXXXXXX ou 07XXXXXXXX (10 chiffres)
+    return /^0[67]\d{8}$/.test(raw);
+  }
+
+  /* ---------- STEP 1: CHECK PHONE NUMBER ---------- */
+  async function checkPhoneNumber(){
+    const input = document.getElementById('authPhoneInput');
+    const raw   = rawPhone(input.value);
+    const errEl = document.getElementById('authError1');
+    const btn   = document.getElementById('authCheckBtn');
+    errEl.classList.remove('show');
+
+    if(!isValidMoroccanPhone(raw)){
+      errEl.textContent = '⚠️ Numéro invalide. Format attendu : 06 XX XX XX XX ou 07 XX XX XX XX';
+      errEl.classList.add('show');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Vérification...';
+
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/authorized_phones?phone=eq.${raw}&select=*`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+
+      if(!res.ok){
+        if(res.status === 404){
+          throw new Error("La table 'authorized_phones' n'existe pas encore dans Supabase. Veuillez l'exécuter dans Supabase SQL Editor.");
+        }
+        throw new Error(await res.text());
+      }
+
+      const rows = await res.json();
+      if(!rows || rows.length === 0){
+        errEl.textContent = '🚫 Ce numéro n\'est pas autorisé. Veuillez contacter l\'administrateur.';
+        errEl.classList.add('show');
+        return;
+      }
+
+      currentAuthUser = rows[0];
+      const formatted = raw.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
+
+      if(!currentAuthUser.pin || String(currentAuthUser.pin).trim() === ''){
+        // 1ère connexion : inviter à renseigner email + créer son PIN
+        document.getElementById('authStep1').style.display = 'none';
+        document.getElementById('authStepRegister').style.display = 'block';
+        document.getElementById('regPhoneDisplay').textContent = formatted;
+        document.getElementById('authErrorRegister').classList.remove('show');
+        document.getElementById('regEmailInput').value = currentAuthUser.email || '';
+        document.getElementById('regPinInput').value = '';
+        document.getElementById('regPinConfirmInput').value = '';
+        setTimeout(() => document.getElementById('regEmailInput').focus(), 250);
+      } else {
+        // Connexion récurrente : demander le PIN
+        document.getElementById('authStep1').style.display = 'none';
+        document.getElementById('authStepLogin').style.display = 'block';
+        document.getElementById('loginPhoneDisplay').textContent = formatted;
+        
+        const emailEl = document.getElementById('loginEmailDisplay');
+        if(currentAuthUser.email){
+          const parts = currentAuthUser.email.split('@');
+          const masked = parts[0].length > 2 ? parts[0][0] + '***' + parts[0].slice(-1) + '@' + parts[1] : currentAuthUser.email;
+          emailEl.textContent = `Compte associé : ${masked}`;
+        } else {
+          emailEl.textContent = '';
+        }
+
+        document.getElementById('authErrorLogin').classList.remove('show');
+        document.getElementById('loginPinInput').value = '';
+        setTimeout(() => document.getElementById('loginPinInput').focus(), 250);
+      }
+
+    } catch(err){
+      console.error('checkPhoneNumber error:', err);
+      errEl.textContent = '❌ Erreur : ' + err.message;
+      errEl.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span>Continuer</span><svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>';
+    }
+  }
+
+  /* ---------- STEP 2A: REGISTER EMAIL & PIN (FIRST LOGIN) ---------- */
+  async function registerProfile(){
+    const email = document.getElementById('regEmailInput').value.trim();
+    const pin   = document.getElementById('regPinInput').value.trim();
+    const conf  = document.getElementById('regPinConfirmInput').value.trim();
+    const errEl = document.getElementById('authErrorRegister');
+    const btn   = document.getElementById('regSubmitBtn');
+    errEl.classList.remove('show');
+
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      errEl.textContent = '⚠️ Veuillez entrer une adresse email valide.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    if(!pin || !/^\d{4,6}$/.test(pin)){
+      errEl.textContent = '⚠️ Le code PIN doit contenir entre 4 et 6 chiffres.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    if(pin !== conf){
+      errEl.textContent = '⚠️ Les deux codes PIN ne sont pas identiques.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Enregistrement...';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/authorized_phones?id=eq.${currentAuthUser.id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({ email: email, pin: pin })
+      });
+
+      if(!res.ok) throw new Error(await res.text());
+
+      // Authentifier la session et débloquer l'accès
+      sessionStorage.setItem(SESSION_KEY, currentAuthUser.phone);
+      dismissAuthOverlay();
+      showToast('🎉 Profil configuré avec succès ! Bienvenue.');
+
+    } catch(err){
+      console.error('registerProfile error:', err);
+      errEl.textContent = '❌ Erreur : ' + err.message;
+      errEl.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg> Enregistrer et Accéder';
+    }
+  }
+
+  /* ---------- STEP 2B: LOGIN WITH PIN ---------- */
+  async function loginWithPin(){
+    const pin   = document.getElementById('loginPinInput').value.trim();
+    const errEl = document.getElementById('authErrorLogin');
+    const btn   = document.getElementById('loginSubmitBtn');
+    errEl.classList.remove('show');
+
+    if(!pin){
+      errEl.textContent = '⚠️ Veuillez entrer votre code PIN.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    if(pin !== String(currentAuthUser.pin)){
+      errEl.textContent = '❌ Code PIN incorrect. Réessayez.';
+      errEl.classList.add('show');
+      document.getElementById('loginPinInput').select();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Connexion...';
+
+    setTimeout(() => {
+      sessionStorage.setItem(SESSION_KEY, currentAuthUser.phone);
+      dismissAuthOverlay();
+      showToast('✅ Authentification réussie ! Bienvenue.');
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg> Se connecter';
+    }, 250);
+  }
+
+  function backToStep1(){
+    document.getElementById('authStepRegister').style.display = 'none';
+    document.getElementById('authStepLogin').style.display    = 'none';
+    document.getElementById('authStep1').style.display        = 'block';
+    document.getElementById('authError1').classList.remove('show');
+    currentAuthUser = null;
+    setTimeout(() => {
+      const input = document.getElementById('authPhoneInput');
+      if(input) input.focus();
+    }, 200);
+  }
+
+  function forgotPin(){
+    alert("🔒 Code PIN oublié :\n\nVeuillez contacter l'administrateur (Mohamed) pour réinitialiser votre compte. Vous pourrez ensuite saisir à nouveau votre email et un nouveau code PIN.");
+  }
+
+  /* ---------- ADMIN PANEL ---------- */
+  function openAdminPanel(){
+    document.getElementById('adminOverlay').classList.add('open');
+    if(!isAdminAuthed){
+      document.getElementById('adminPreAuth').style.display         = 'block';
+      document.getElementById('adminPostAuth').style.display        = 'none';
+      document.getElementById('adminGmailStepSend').style.display   = 'block';
+      document.getElementById('adminGmailStepVerify').style.display = 'none';
+      document.getElementById('adminAuthError').classList.remove('show');
+      const pwdInput = document.getElementById('adminPwdInput');
+      if(pwdInput) pwdInput.value = '';
+    } else {
+      document.getElementById('adminPreAuth').style.display  = 'none';
+      document.getElementById('adminPostAuth').style.display = 'block';
+      loadPhoneList();
+    }
+  }
+
+  function closeAdminPanel(){
+    document.getElementById('adminOverlay').classList.remove('open');
+  }
+
+  function handleAdminOverlayClick(e){
+    if(e.target === document.getElementById('adminOverlay')) closeAdminPanel();
+  }
+
+  /* ---------- GMAIL AUTH (mohamedbnofatima@gmail.com) via Supabase ---------- */
+  async function sendAdminGmailOtp(){
+    const btn = document.getElementById('btnSendGmailOtp');
+    const errEl = document.getElementById('adminAuthError');
+    errEl.classList.remove('show');
+    
+    if(btn){
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;border:2.5px solid rgba(234,67,53,0.3);border-top-color:#EA4335;border-radius:50%;animation:spin 0.7s linear infinite;"></div> Envoi en cours...';
+    }
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/otp`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: ADMIN_EMAIL })
+      });
+
+      if(!res.ok){
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.msg || err.error_description || 'Erreur lors de l\'envoi du code.');
+      }
+
+      document.getElementById('adminGmailStepSend').style.display   = 'none';
+      document.getElementById('adminGmailStepVerify').style.display = 'block';
+      showToast('✉️ Code de sécurité envoyé sur ' + ADMIN_EMAIL);
+      setTimeout(() => {
+        const input = document.getElementById('adminGmailOtpInput');
+        if(input) { input.value = ''; input.focus(); }
+      }, 250);
+
+    } catch(err){
+      console.error('sendAdminGmailOtp error:', err);
+      errEl.textContent = '❌ ' + err.message;
+      errEl.classList.add('show');
+    } finally {
+      if(btn){
+        btn.disabled = false;
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#EA4335" stroke-width="2"/><polyline points="22,6 12,13 2,6" stroke="#EA4335" stroke-width="2"/></svg> <span>Recevoir un code sur mon Gmail</span>`;
+      }
+    }
+  }
+
+  async function verifyAdminGmailOtp(){
+    const token = (document.getElementById('adminGmailOtpInput').value || '').trim();
+    const btn = document.getElementById('btnVerifyGmailOtp');
+    const errEl = document.getElementById('adminAuthError');
+    errEl.classList.remove('show');
+
+    if(!token || token.length < 6){
+      errEl.textContent = '⚠️ Veuillez entrer le code à 6 chiffres reçu sur votre Gmail.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Vérification...';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/verify`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: ADMIN_EMAIL,
+          token: token,
+          type: 'email'
+        })
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if(!res.ok || data.error || data.error_code || data.code === 403){
+        throw new Error(data.msg || data.error_description || 'Code incorrect ou expiré.');
+      }
+
+      showToast('✅ Connecté avec succès via Gmail !');
+      onAdminAuthSuccess(ADMIN_EMAIL);
+
+    } catch(err){
+      console.error('verifyAdminGmailOtp error:', err);
+      errEl.textContent = '❌ ' + err.message;
+      errEl.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Valider et Se Connecter';
+    }
+  }
+
+  /* ---------- ADMIN PASSWORD LOGIN ---------- */
+  function loginAdminWithPassword(){
+    const input = document.getElementById('adminPwdInput');
+    const pwd = (input.value || '').trim();
+    const errEl = document.getElementById('adminAuthError');
+    errEl.classList.remove('show');
+
+    if(!pwd){
+      errEl.textContent = '⚠️ Veuillez entrer le mot de passe administrateur.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    if(pwd === ADMIN_FALLBACK_PWD){
+      input.value = '';
+      onAdminAuthSuccess('mohamedbnofatima@gmail.com');
+    } else {
+      errEl.textContent = '❌ Mot de passe incorrect.';
+      errEl.classList.add('show');
+      input.select();
+    }
+  }
+
+  /* ---------- ENTER PAGE AS ADMIN ---------- */
+  function enterAsAdmin(){
+    sessionStorage.setItem('amp_is_admin', 'true');
+    isAdminAuthed = true;
+    closeAdminPanel();
+    dismissAuthOverlay();
+    showToast('👑 Mode Administrateur activé ! Accès complet.');
+  }
+
+  /* ---------- GOOGLE SIGN-IN ---------- */
+  function triggerGoogleSignIn(){
+    if(!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === ''){
+      // S'il n'y a pas de Client ID Google configuré, proposer l'envoi de code Gmail
+      sendAdminGmailOtp();
+      return;
+    }
+
+    google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'email profile',
+      callback: async (response) => {
+        if(response.error) return;
+        try {
+          const infoRes = await fetch(
+            `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${response.access_token}`
+          );
+          const info = await infoRes.json();
+          if(info.email === ADMIN_EMAIL){
+            onAdminAuthSuccess(info.email);
+          } else {
+            const errEl = document.getElementById('adminAuthError');
+            errEl.textContent = `🚫 Accès refusé pour ${info.email}. Seul ${ADMIN_EMAIL} est autorisé.`;
+            errEl.classList.add('show');
+          }
+        } catch(e) {
+          console.error('Google auth error:', e);
+        }
+      }
+    }).requestAccessToken();
+  }
+
+  function onAdminAuthSuccess(email){
+    isAdminAuthed = true;
+    sessionStorage.setItem('amp_is_admin', 'true');
+    document.getElementById('adminPreAuth').style.display  = 'none';
+    document.getElementById('adminPostAuth').style.display = 'block';
+    document.getElementById('adminLoggedAs').textContent   = `✅ Connecté : ${email}`;
+    loadPhoneList();
+  }
+
+  /* ---------- PHONE LIST MANAGEMENT ---------- */
+  async function loadPhoneList(){
+    const container = document.getElementById('phoneListContainer');
+    container.innerHTML = '<div style="font-size:12px;color:var(--text-soft);text-align:center;padding:12px;">Chargement...</div>';
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/authorized_phones?select=*&order=id.asc`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      });
+      if(!res.ok){
+        if(res.status === 404){
+          container.innerHTML = '<div style="font-size:11.5px;color:#b91c1c;text-align:center;padding:10px;line-height:1.4;">⚠️ La table <b>authorized_phones</b> n\'existe pas dans Supabase.<br>Exécutez le script SQL dans Supabase SQL Editor.</div>';
+          return;
+        }
+        throw new Error(await res.text());
+      }
+      const phones = await res.json();
+      if(!phones || phones.length === 0){
+        container.innerHTML = '<div style="font-size:12px;color:var(--text-soft);text-align:center;padding:12px;">Aucun numéro enregistré.</div>';
+        return;
+      }
+      container.innerHTML = '';
+      phones.forEach(p => {
+        const formatted = (p.phone || '').replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
+        const isConfigured = !!p.pin && String(p.pin).trim() !== '';
+        const item = document.createElement('div');
+        item.className = 'phone-list-item';
+        item.innerHTML = `
+          <div class="phone-info">
+            <span class="phone-number">${formatted}</span>
+            <div class="phone-meta">
+              ${isConfigured 
+                ? `<span class="phone-badge active">🟢 Actif</span><span class="phone-email-text" title="${escapeAttr(p.email || '')}">${escapeHtml(p.email || 'Email renseigné')}</span>` 
+                : `<span class="phone-badge waiting">🟡 En attente 1ère connexion</span>`}
+            </div>
+          </div>
+          <div class="phone-actions">
+            ${isConfigured ? `
+              <button class="phone-reset-btn" onclick="resetUserPin(${p.id}, '${formatted}')" title="Réinitialiser PIN & Email (l'utilisateur pourra reconfigurer son profil)">
+                <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              </button>
+            ` : ''}
+            <button class="phone-del-btn" onclick="deletePhone(${p.id}, this)" title="Supprimer ce numéro">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    } catch(err) {
+      container.innerHTML = '<div style="font-size:12px;color:#b91c1c;text-align:center;padding:10px;">Erreur : ' + escapeHtml(err.message) + '</div>';
+    }
+  }
+
+  async function addPhone(){
+    const input = document.getElementById('newPhoneInput');
+    const raw   = rawPhone(input.value);
+    if(!isValidMoroccanPhone(raw)){
+      showToast('⚠️ Numéro invalide. Ex: 06 12 34 56 78');
+      return;
+    }
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/authorized_phones`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({ phone: raw, email: null, pin: null })
+      });
+      if(res.status === 409){
+        showToast('⚠️ Ce numéro est déjà autorisé.');
+        return;
+      }
+      if(!res.ok) throw new Error(await res.text());
+      input.value = '';
+      showToast('✅ Numéro ajouté ! L\'utilisateur configurera son code.');
+      loadPhoneList();
+    } catch(err) {
+      showToast('❌ Erreur : ' + err.message);
+    }
+  }
+
+  async function resetUserPin(id, formattedPhone){
+    if(!confirm(`Réinitialiser l'accès pour ${formattedPhone} ?\n\nL'utilisateur devra redéfinir son email et son code PIN lors de sa prochaine visite.`)) return;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/authorized_phones?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ pin: null, email: null })
+      });
+      if(!res.ok) throw new Error(await res.text());
+      showToast('🔄 Accès réinitialisé pour ' + formattedPhone);
+      loadPhoneList();
+    } catch(err) {
+      showToast('❌ Erreur : ' + err.message);
+    }
+  }
+
+  async function deletePhone(id, btn){
+    if(!confirm('Supprimer définitivement ce numéro des autorisations ?')) return;
+    btn.disabled = true;
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/authorized_phones?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      });
+      showToast('🗑️ Numéro supprimé.');
+      loadPhoneList();
+    } catch(err) {
+      showToast('❌ Erreur lors de la suppression.');
+      btn.disabled = false;
+    }
+  }
+
+  /* ---------- INIT ---------- */
+  initAuth();
+  loadDocuments();
+
+</script>
+</body>
+</html>
