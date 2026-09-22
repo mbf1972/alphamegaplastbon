@@ -1,0 +1,105 @@
+/* 
+    Alphamegaplast - High-Performance Design System
+    Design for Browser-Direct Use (Compatible with Tailwind CDN)
+*/
+
+/* Typography Overrides for Responsiveness */
+h1 {
+    font-size: clamp(2.25rem, 8vw, 5rem);
+}
+
+h2 {
+    font-size: clamp(1.8rem, 6vw, 3.75rem);
+}
+
+h3 {
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+}
+
+body {
+    font-family: 'Manrope', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animations */
+@keyframes slow-zoom {
+    0% {
+        transform: scale(1.1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+.animate-slow-zoom {
+    animation: slow-zoom 20s ease-in-out infinite;
+}
+
+/* Scroll Reveal (Handled via Intersection Observer in script.js) */
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Dynamic Navbar Height Adjustments */
+#main-nav {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Branding Effects */
+.brand-glow {
+    filter: drop-shadow(0 0 15px rgba(22, 163, 74, 0.3));
+}
+
+/* Navigation Link Underline Interaction */
+.nav-link-underline {
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.nav-link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #16a34a;
+    /* primary-emerald-600 */
+    transition: width 0.3s ease;
+}
+
+.nav-link-underline:hover::after {
+    width: 100%;
+}
+
+/* Text Selection Glow */
+::selection {
+    background: #16a34a;
+    color: white;
+}
+
+/* Dark Mode Overrides for Selection */
+.dark ::selection {
+    background: #34d399;
+    /* emerald-400 */
+    color: #0f172a;
+    /* slate-900 */
+}
+
+/* Custom Gradients */
+.hero-overlay {
+    background: linear-gradient(to right, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.6), transparent);
+}

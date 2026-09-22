@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr" class="overflow-x-hidden">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AlphaMegaPlast | Excellence en Plasturgie Industrielle & Solutions PVC</title>
+    <meta name="description"
+        content="AlphaMegaPlast : Leader de l'industrie plastique haute performance. Solutions durables en PVC, Polyéthylène et services de micronisation pour l'infrastructure mondiale.">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Syne:wght@400..800&family=Outfit:wght@100..900&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#16a34a", "primary-dark": "#15803d",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "brand": ["Syne", "sans-serif"],
+                        "ui": ["Outfit", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <link href="style.css" rel="stylesheet" />
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display selection:bg-primary selection:text-white overflow-x-hidden w-full max-w-[100vw]">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <header id="main-nav"
+            class="sticky top-0 z-50 flex items-center justify-between border-b border-white/10 bg-white/70 dark:bg-background-dark/80 backdrop-blur-xl px-3 sm:px-6 lg:px-20 py-3 transition-all duration-500">
+            <div class="flex items-center gap-2 lg:gap-12 min-w-0">
+                <a href="#" class="group flex items-center gap-2 lg:gap-4 py-1 min-w-0">
+                    <div class="relative flex items-center justify-center">
+                        <div
+                            class="absolute inset-0 bg-primary/30 blur-2xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-700 opacity-0 group-hover:opacity-100">
+                        </div>
+                        <div
+                            class="relative bg-white dark:bg-slate-800 p-1.5 lg:p-2 rounded-xl lg:2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 group-hover:border-primary/50 transition-all duration-500 scale-100 group-hover:scale-105 group-hover:-rotate-3">
+                            <img src="image.jpg" alt="AlphaMegaPlast Logo"
+                                class="h-8 lg:h-10 w-auto object-contain brand-glow transition-transform duration-500" />
+                        </div>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                        <h2
+                            class="text-slate-900 dark:text-white text-base sm:text-lg lg:text-2xl font-brand font-extrabold leading-none tracking-tight transition-all duration-300 truncate">
+                            AlphaMega<span
+                                class="text-primary group-hover:text-emerald-400 sm:group-hover:tracking-wider transition-all duration-500">Plast</span>
+                        </h2>
+                        <div class="flex items-center gap-1 sm:gap-2 mt-0.5 sm:mt-1.5 overflow-hidden font-ui">
+                            <div
+                                class="hidden sm:block h-[1px] w-0 bg-primary group-hover:w-4 transition-all duration-500">
+                            </div>
+                            <span
+                                class="text-[6px] sm:text-[9px] font-black text-slate-500 dark:text-slate-400 tracking-wider sm:tracking-[0.3em] uppercase opacity-70 group-hover:opacity-100 group-hover:text-primary transition-all duration-500 truncate">Excellence
+                                Industrielle</span>
+                        </div>
+                    </div>
+                </a>
+                <nav class="hidden md:flex items-center gap-10">
+                    <a class="nav-link-underline text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-[11px] uppercase tracking-[0.15em] font-black transition-colors"
+                        href="#">Accueil</a>
+                    <a class="nav-link-underline text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-[11px] uppercase tracking-[0.15em] font-black transition-colors"
+                        href="#produits">Produits</a>
+                    <a class="nav-link-underline text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-[11px] uppercase tracking-[0.15em] font-black transition-colors"
+                        href="#services">Services</a>
+                    <a class="nav-link-underline text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-[11px] uppercase tracking-[0.15em] font-black transition-colors"
+                        href="#contact">Contact</a>
+                </nav>
+            </div>
+            <div class="flex-shrink-0 flex items-center gap-1 sm:gap-3 lg:gap-8">
+                <button
+                    class="md:hidden flex items-center justify-center size-10 text-slate-900 dark:text-white hover:text-primary transition-colors focus:outline-none"
+                    id="mobile-menu-toggle" aria-label="Menu">
+                    <span class="material-symbols-outlined text-[32px]">menu</span>
+                </button>
+                <a href="#contact"
+                    class="hidden md:flex relative group min-w-[140px] lg:min-w-[160px] cursor-pointer items-center justify-center rounded-2xl h-10 lg:h-12 px-6 lg:px-8 bg-slate-900 dark:bg-primary text-white text-[10px] lg:text-xs font-black uppercase tracking-widest shadow-2xl hover:bg-primary dark:hover:bg-primary-dark transition-all duration-500 overflow-hidden">
+                    <div
+                        class="absolute inset-x-0 bottom-0 h-1 bg-white/20 scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                    </div>
+                    <span class="relative z-10 flex items-center gap-2">
+                        Contact
+                        <span
+                            class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    </span>
+                </a>
+            </div>
+            <!-- Mobile Menu Backdrop -->
+            <div id="mobile-menu-backdrop"
+                class="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-500 md:hidden">
+            </div>
+
+            <!-- Mobile Menu Sidebar -->
+            <div id="mobile-menu"
+                class="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm z-[70] bg-white dark:bg-slate-950 border-l border-slate-200 dark:border-white/10 translate-x-full transition-transform duration-500 md:hidden flex flex-col shadow-2xl">
+
+                <!-- Navbar Inside Menu -->
+                <div
+                    class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-white/10 bg-slate-50/50 dark:bg-slate-900/50">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="bg-white dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <img src="image.jpg" alt="Logo" class="h-6 w-auto object-contain" />
+                        </div>
+                        <span
+                            class="text-slate-900 dark:text-white font-brand font-black text-lg tracking-tight">AlphaMega<span
+                                class="text-primary">Plast</span></span>
+                    </div>
+                    <button id="mobile-menu-close"
+                        class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-white dark:bg-white/5 p-2 rounded-full border border-slate-200 dark:border-white/10 shadow-sm focus:outline-none">
+                        <span class="material-symbols-outlined text-xl">close</span>
+                    </button>
+                </div>
+
+                <!-- Main Links -->
+                <nav class="flex-1 overflow-y-auto py-8 px-6 flex flex-col gap-6">
+                    <a class="mobile-nav-link group flex items-center justify-between text-2xl font-brand font-bold text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors border-b border-slate-100 dark:border-white/5 pb-6"
+                        href="#">
+                        <span>Accueil</span>
+                        <span
+                            class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all">trending_flat</span>
+                    </a>
+                    <a class="mobile-nav-link group flex items-center justify-between text-2xl font-brand font-bold text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors border-b border-slate-100 dark:border-white/5 pb-6"
+                        href="#produits">
+                        <span>Nos Produits</span>
+                        <span
+                            class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all">trending_flat</span>
+                    </a>
+                    <a class="mobile-nav-link group flex items-center justify-between text-2xl font-brand font-bold text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors border-b border-slate-100 dark:border-white/5 pb-6"
+                        href="#services">
+                        <span>Nos Atouts</span>
+                        <span
+                            class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all">trending_flat</span>
+                    </a>
+                    <a class="mobile-nav-link group flex items-center justify-between text-2xl font-brand font-bold text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors pb-2"
+                        href="#contact">
+                        <span>Contact</span>
+                        <span
+                            class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all">trending_flat</span>
+                    </a>
+                </nav>
+
+                <!-- Footer CTA Inside Menu -->
+                <div
+                    class="p-6 border-t border-slate-100 dark:border-white/10 bg-slate-50 dark:bg-slate-900/50 mt-auto">
+                    <div class="flex flex-col gap-4">
+                        <a href="#contact"
+                            class="mobile-nav-link w-full bg-slate-900 dark:bg-primary hover:bg-slate-800 dark:hover:bg-emerald-600 text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl flex items-center justify-center gap-2 transition-all active:scale-95">
+                            Obtenir un devis
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                        <div class="flex items-center justify-center gap-2 mt-2">
+                            <span class="material-symbols-outlined text-slate-500 text-sm">mail</span>
+                            <span
+                                class="text-slate-500 text-[10px] uppercase tracking-widest font-bold font-ui">contact@alphamegaplast.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 flex flex-col">
+            <!-- Hero Section: Premium & Dynamic -->
+            <section class="relative w-full h-[85vh] min-h-[700px] overflow-hidden bg-slate-900">
+                <div class="absolute inset-0">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[10000ms] scale-110 animate-slow-zoom"
+                        style='background-image: url("images/tuyaux pvc.webp");'>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
+                    <!-- Subtle pattern overlay -->
+                    <div
+                        class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:32px_32px]">
+                    </div>
+                </div>
+
+                <div class="relative h-full max-w-7xl mx-auto px-6 lg:px-10 flex flex-col justify-center">
+                    <div class="max-w-3xl fade-up">
+                        <div
+                            class="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-md border border-primary/30 px-4 py-2 rounded-2xl mb-8">
+                            <span class="relative flex h-2 w-2">
+                                <span
+                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                            </span>
+                            <span class="text-primary text-[10px] font-black uppercase tracking-[0.2em] font-ui">Leader
+                                de l'Industrie</span>
+                        </div>
+
+                        <h1
+                            class="text-white text-4xl md:text-5xl lg:text-8xl font-brand font-extrabold leading-[0.95] tracking-tight mb-8">
+                            L'Expertise du <br />
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-primary">Plastique
+                                Durable</span>
+                        </h1>
+
+                        <p class="text-slate-300 text-lg lg:text-xl max-w-xl mb-12 leading-relaxed font-ui opacity-90">
+                            AlphaMegaPlast conçoit et fabrique des solutions plastiques haute performance pour
+                            l'infrastructure mondiale, l'agriculture et l'industrie lourde.
+                        </p>
+
+                        <div class="flex flex-wrap gap-5 items-center">
+                            <a href="#produits"
+                                class="group relative bg-primary hover:bg-emerald-600 text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-[0_20px_40px_rgba(22,163,74,0.3)] hover:-translate-y-1">
+                                <span class="relative z-10 flex items-center gap-3">
+                                    Découvrir le Catalogue
+                                    <span
+                                        class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+                                </span>
+                            </a>
+                            <a href="#contact"
+                                class="bg-white/5 hover:bg-white/10 backdrop-blur-xl text-white border border-white/10 px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all">
+                                Nous Consulter
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Floating Stats Cards -->
+                    <div class="absolute right-10 bottom-20 hidden lg:flex flex-col gap-6 fade-up"
+                        style="animation-delay: 400ms">
+                        <div
+                            class="bg-white/10 backdrop-blur-2xl border border-white/10 p-6 rounded-[2rem] shadow-2xl flex items-center gap-5 w-72 group hover:bg-white/20 transition-all cursor-default">
+                            <div
+                                class="size-14 bg-primary/20 rounded-2xl flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-3xl">verified</span>
+                            </div>
+                            <div>
+                                <div class="text-white text-2xl font-brand font-black leading-none">ISO 9001</div>
+                                <div class="text-slate-400 text-[10px] uppercase tracking-tighter mt-1 font-ui">
+                                    Certification Qualité</div>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white/10 backdrop-blur-2xl border border-white/10 p-6 rounded-[2rem] shadow-2xl flex items-center gap-5 w-72 group hover:bg-white/20 transition-all cursor-default">
+                            <div
+                                class="size-14 bg-emerald-400/20 rounded-2xl flex items-center justify-center text-emerald-400 text-primary">
+                                <span class="material-symbols-outlined text-3xl">public</span>
+                            </div>
+                            <div>
+                                <div class="text-white text-2xl font-brand font-black leading-none">+25 Ans</div>
+                                <div class="text-slate-400 text-[10px] uppercase tracking-tighter mt-1 font-ui">
+                                    Expérience Industrielle</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gradient bottom fade -->
+                <div
+                    class="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-background-light dark:from-background-dark to-transparent">
+                </div>
+            </section>
+
+            <!-- Categories Section: Modern Grid -->
+            <section id="produits" class="relative max-w-7xl mx-auto w-full px-6 lg:px-10 py-32 overflow-hidden">
+                <!-- Abstract Background Elements -->
+                <div class="absolute -top-24 -left-24 size-96 bg-primary/5 blur-[120px] rounded-full"></div>
+                <div class="absolute -bottom-24 -right-24 size-96 bg-emerald-400/5 blur-[120px] rounded-full"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                    <div class="max-w-2xl fade-up">
+                        <div class="flex items-center gap-3 text-primary mb-6">
+                            <div class="h-[1px] w-8 bg-primary"></div>
+                            <span class="text-[10px] font-black uppercase tracking-[0.3em] font-ui">Notre Gamme</span>
+                        </div>
+                        <h2
+                            class="text-slate-950 dark:text-white text-3xl md:text-4xl lg:text-6xl font-brand font-black leading-none mb-6">
+                            Solutions de <br /><span class="text-primary italic">Haute Précision</span>
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-lg font-ui">
+                            Chaque produit AlphaMegaPlast est testé pour résister aux conditions les plus extrêmes.
+                            Qualité, durabilité et conformité aux normes internationales.
+                        </p>
+                    </div>
+                    <div class="flex gap-4 fade-up">
+                        <button
+                            class="size-14 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:bg-primary hover:text-white hover:border-primary transition-all duration-500 shadow-sm">
+                            <span class="material-symbols-outlined">west</span>
+                        </button>
+                        <button
+                            class="size-14 rounded-2xl bg-slate-900 dark:bg-slate-800 flex items-center justify-center text-white hover:bg-primary transition-all duration-500 shadow-xl">
+                            <span class="material-symbols-outlined">east</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <!-- Card 1: Tuyaux PVC -->
+                    <div class="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-700 fade-up"
+                        style="animation-delay: 100ms">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="images/tuyaux pvc.webp" alt="Tuyaux PVC"
+                                class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-110" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60">
+                            </div>
+                            <div class="absolute top-6 left-6">
+                                <span
+                                    class="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg">PVC
+                                    Series</span>
+                            </div>
+                        </div>
+                        <div class="p-10 font-ui">
+                            <h3 class="text-2xl font-brand font-black mb-4 group-hover:text-primary transition-colors">
+                                Tuyaux PVC</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-10 leading-relaxed">
+                                Performance optimale pour l'assainissement et la distribution d'eau potable. Haute
+                                résistance à la corrosion.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-black text-primary uppercase tracking-widest">Voir
+                                    spécifications</span>
+                                <div
+                                    class="size-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                    <span class="material-symbols-outlined">trending_flat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Tuyaux Polyethylene -->
+                    <div class="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-700 fade-up"
+                        style="animation-delay: 200ms">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="images/tuyaux polythelene.webp" alt="Tuyaux Polyéthylène"
+                                class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-110" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60">
+                            </div>
+                            <div class="absolute top-6 left-6">
+                                <span
+                                    class="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg">PE
+                                    Series</span>
+                            </div>
+                        </div>
+                        <div class="p-10 font-ui">
+                            <h3 class="text-2xl font-brand font-black mb-4 group-hover:text-primary transition-colors">
+                                Polyéthylène</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-10 leading-relaxed">
+                                Solutions flexibles et durables idéales pour l'irrigation agricole intensive et les
+                                réseaux de gaz.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-black text-primary uppercase tracking-widest">Voir
+                                    spécifications</span>
+                                <div
+                                    class="size-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                    <span class="material-symbols-outlined">trending_flat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Tube Orange -->
+                    <div class="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-700 fade-up"
+                        style="animation-delay: 300ms">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="images/tube orange.webp" alt="Tube Orange"
+                                class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-110" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60">
+                            </div>
+                            <div class="absolute top-6 left-6">
+                                <span
+                                    class="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg">Conduit
+                                    Series</span>
+                            </div>
+                        </div>
+                        <div class="p-10 font-ui">
+                            <h3 class="text-2xl font-brand font-black mb-4 group-hover:text-primary transition-colors">
+                                Tube Orange</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-10 leading-relaxed">
+                                Protection optimale des câbles électriques et télécoms. Résistance supérieure à
+                                l'écrasement.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-black text-primary uppercase tracking-widest">Voir
+                                    spécifications</span>
+                                <div
+                                    class="size-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                    <span class="material-symbols-outlined">trending_flat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Showcase Secondary Row -->
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10">
+                    <!-- Card 4: Micronisation -->
+                    <div class="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-700 fade-up"
+                        style="animation-delay: 400ms">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="images/micronisation et broyage.webp" alt="Micronisation"
+                                class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-110" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60">
+                            </div>
+                            <div class="absolute top-6 left-6">
+                                <span
+                                    class="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg">Process</span>
+                            </div>
+                        </div>
+                        <div class="p-10 font-ui">
+                            <h3 class="text-2xl font-brand font-black mb-4 group-hover:text-primary transition-colors">
+                                Micronisation</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-10 leading-relaxed">
+                                Transformation haute technologie des matières plastiques en poudres fines et
+                                ultra-fines.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-black text-primary uppercase tracking-widest">Services
+                                    techniques</span>
+                                <div
+                                    class="size-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                    <span class="material-symbols-outlined">trending_flat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Grains -->
+                    <div class="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-700 fade-up"
+                        style="animation-delay: 500ms">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="images/grains.webp" alt="Grains"
+                                class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-110" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60">
+                            </div>
+                            <div class="absolute top-6 left-6">
+                                <span
+                                    class="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg">Resource</span>
+                            </div>
+                        </div>
+                        <div class="p-10 font-ui">
+                            <h3 class="text-2xl font-brand font-black mb-4 group-hover:text-primary transition-colors">
+                                Matières Premières</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-10 leading-relaxed">
+                                Fourniture de granulés plastiques vierges et recyclés pour tous vos besoins de
+                                production.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-black text-primary uppercase tracking-widest">Demander
+                                    échantillon</span>
+                                <div
+                                    class="size-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                    <span class="material-symbols-outlined">trending_flat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Coudes -->
+                    <div class="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-700 fade-up"
+                        style="animation-delay: 600ms">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="images/coudes pvc.webp" alt="Coudes PVC"
+                                class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-110" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60">
+                            </div>
+                            <div class="absolute top-6 left-6">
+                                <span
+                                    class="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg">Fittings</span>
+                            </div>
+                        </div>
+                        <div class="p-10 font-ui">
+                            <h3 class="text-2xl font-brand font-black mb-4 group-hover:text-primary transition-colors">
+                                Coudes & Raccords</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-10 leading-relaxed">
+                                Gamme complète de coudes, T, et manchons en PVC pour tous types de raccordement.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-black text-primary uppercase tracking-widest">Voir
+                                    catalogue</span>
+                                <div
+                                    class="size-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                    <span class="material-symbols-outlined">trending_flat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us Section: Striking Icons -->
+            <section id="services" class="bg-slate-950 py-32 overflow-hidden relative">
+                <!-- Decorative Glow -->
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-primary/10 blur-[150px] rounded-full">
+                </div>
+
+                <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+                    <div class="text-center mb-24 max-w-3xl mx-auto fade-up">
+                        <div class="flex items-center justify-center gap-3 text-primary mb-6">
+                            <div class="h-[1px] w-8 bg-primary"></div>
+                            <span class="text-[10px] font-black uppercase tracking-[0.3em] font-ui">Nos Atouts</span>
+                            <div class="h-[1px] w-8 bg-primary"></div>
+                        </div>
+                        <h2 class="text-white text-3xl md:text-4xl lg:text-7xl font-brand font-black leading-none mb-8">
+                            Pourquoi Nous Faire <br /><span class="text-emerald-400 italic">Confiance</span> ?
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                        <div class="group fade-up" style="animation-delay: 100ms">
+                            <div
+                                class="size-20 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 mb-8 rotate-3 group-hover:rotate-0">
+                                <span class="material-symbols-outlined text-4xl">inventory_2</span>
+                            </div>
+                            <h3 class="text-white text-xl font-brand font-black mb-4">Stock Permanent</h3>
+                            <p class="text-slate-500 font-ui text-sm leading-relaxed">
+                                Une logistique optimisée garantissant la disponibilité immédiate de nos produits phares.
+                            </p>
+                        </div>
+                        <div class="group fade-up" style="animation-delay: 200ms">
+                            <div
+                                class="size-20 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-white transition-all duration-500 mb-8 -rotate-3 group-hover:rotate-0">
+                                <span class="material-symbols-outlined text-4xl">high_quality</span>
+                            </div>
+                            <h3 class="text-white text-xl font-brand font-black mb-4">Qualité Supérieure</h3>
+                            <p class="text-slate-500 font-ui text-sm leading-relaxed">
+                                Contrôles rigoureux à chaque étape de fabrication pour une longévité exceptionnelle.
+                            </p>
+                        </div>
+                        <div class="group fade-up" style="animation-delay: 300ms">
+                            <div
+                                class="size-20 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 mb-8 rotate-3 group-hover:rotate-0">
+                                <span class="material-symbols-outlined text-4xl">eco</span>
+                            </div>
+                            <h3 class="text-white text-xl font-brand font-black mb-4">Engagement Éco</h3>
+                            <p class="text-slate-500 font-ui text-sm leading-relaxed">
+                                Processus de recyclage intégrés et réduction de l'empreinte carbone industrielle.
+                            </p>
+                        </div>
+                        <div class="group fade-up" style="animation-delay: 400ms">
+                            <div
+                                class="size-20 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-white transition-all duration-500 mb-8 -rotate-3 group-hover:rotate-0">
+                                <span class="material-symbols-outlined text-4xl">support_agent</span>
+                            </div>
+                            <h3 class="text-white text-xl font-brand font-black mb-4">Support Expert</h3>
+                            <p class="text-slate-500 font-ui text-sm leading-relaxed">
+                                Une équipe technique dédiée pour vous accompagner dans vos projets les plus complexes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final CTA: Striking & Convergent -->
+            <section id="contact" class="relative py-32 px-6 overflow-hidden">
+                <div class="absolute inset-0 bg-primary">
+                    <!-- Background image overlay -->
+                    <div class="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30 grayscale saturate-0"
+                        style='background-image: url("images/grains.webp");'></div>
+                    <!-- Circular Mask -->
+                    <div
+                        class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]">
+                    </div>
+                    <!-- Pattern -->
+                    <div
+                        class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_2px,transparent_2px)] [background-size:24px_24px]">
+                    </div>
+                </div>
+
+                <div class="relative z-10 max-w-5xl mx-auto text-center fade-up">
+                    <h2 class="text-white text-4xl md:text-5xl lg:text-8xl font-brand font-black mb-10 leading-none">
+                        Bâtissons Votre <br />Futur Industriel
+                    </h2>
+                    <p
+                        class="text-emerald-50 text-xl lg:text-2xl mb-16 max-w-2xl mx-auto font-ui font-medium opacity-90">
+                        Prêt à optimiser vos infrastructures avec des solutions plastiques de pointe ?
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <button
+                            class="w-full sm:w-auto bg-slate-900 text-white px-16 py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl hover:bg-slate-800 hover:-translate-y-2 transition-all duration-500">
+                            Obtenir un Devis Gratuit
+                        </button>
+                        <button
+                            class="w-full sm:w-auto bg-white/10 backdrop-blur-xl text-white border-2 border-white/20 px-16 py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-white/20 transition-all duration-500">
+                            Parler à un Expert
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer: Refined & Deep -->
+        <footer class="bg-slate-950 text-white pt-32 pb-12 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-6 lg:px-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-20 mb-32">
+                    <div class="col-span-1 lg:col-span-1">
+                        <div class="flex items-center gap-4 mb-10 group">
+                            <div
+                                class="bg-white dark:bg-slate-800 p-2 rounded-xl shadow-lg group-hover:rotate-3 transition-transform">
+                                <img src="image.jpg" alt="AlphaMegaPlast Logo" class="h-8 w-auto object-contain" />
+                            </div>
+                            <h2 class="text-white text-xl font-brand font-black tracking-tight">AlphaMega<span
+                                    class="text-primary">Plast</span></h2>
+                        </div>
+                        <p class="text-slate-500 text-sm leading-relaxed font-ui mb-10">
+                            Pionnier de la fabrication de plastiques industriels haute performance. <br />
+                            Qualité certifiée, innovation durable.
+                        </p>
+                        <div class="flex gap-4">
+                            <a class="size-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-primary transition-all duration-500"
+                                href="#">
+                                <span class="material-symbols-outlined text-xl">share</span>
+                            </a>
+                            <a class="size-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-primary transition-all duration-500"
+                                href="#">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-primary uppercase tracking-[0.3em] mb-10 font-ui">Nos
+                            Produits</h4>
+                        <ul class="space-y-6 text-slate-500 text-sm font-ui">
+                            <li><a class="hover:text-white hover:translate-x-2 inline-block transition-all"
+                                    href="#">Systèmes PVC</a></li>
+                            <li><a class="hover:text-white hover:translate-x-2 inline-block transition-all"
+                                    href="#">Réseaux Polyéthylène</a></li>
+                            <li><a class="hover:text-white hover:translate-x-2 inline-block transition-all"
+                                    href="#">Conduits Télécoms</a></li>
+                            <li><a class="hover:text-white hover:translate-x-2 inline-block transition-all"
+                                    href="#">Accessoires & Raccords</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-primary uppercase tracking-[0.3em] mb-10 font-ui">
+                            L'Entreprise</h4>
+                        <ul class="space-y-6 text-slate-500 text-sm font-ui">
+                            <li><a class="hover:text-white hover:translate-x-2 inline-block transition-all" href="#">À
+                                    propos de nous</a></li>
+                            <li><a class="hover:text-white hover:translate-x-2 inline-block transition-all"
+                                    href="#">Centre technique</a></li>
+                            <li><a class="hover:text-white hover:translate-x-2 inline-block transition-all"
+                                    href="#">Développement Durable</a></li>
+                            <li><a class="hover:text-white hover:translate-x-2 inline-block transition-all"
+                                    href="#">Carrières industrielles</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-primary uppercase tracking-[0.3em] mb-10 font-ui">Nous
+                            contacter</h4>
+                        <ul class="space-y-4 text-slate-400 text-sm">
+                            <li class="flex items-start gap-4">
+                                <span class="material-symbols-outlined text-primary text-xl">location_on</span>
+                                <span class="opacity-80">Zone Industrielle, Lot 42<br />Casablanca, Maroc</span>
+                            </li>
+                            <li class="flex items-center gap-4">
+                                <span class="material-symbols-outlined text-primary text-xl">call</span>
+                                <span class="opacity-80">+212 522-000000</span>
+                            </li>
+                            <li class="flex items-center gap-4">
+                                <span class="material-symbols-outlined text-primary text-xl">mail</span>
+                                <span class="opacity-80 break-all">contact@alphamegaplast.com</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-5">
+                    <p class="text-slate-600 text-[10px] font-bold uppercase tracking-[0.2em]">© 2024 AlphaMegaPlast
+                        Manufacturing. Excellence certifiée.</p>
+                    <div class="flex gap-10">
+                        <a class="text-slate-600 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-colors"
+                            href="#">Confidentialité</a>
+                        <a class="text-slate-600 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-colors"
+                            href="#">Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
