@@ -64,28 +64,19 @@ const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNG2
 
 let currentNumBon = '...';
 function updateNumBonDisplay() {
-    if (numBonDisplay) numBonDisplay.textContent = currentNumBon;
+    if (numBonDisplay) numBonDisplay.textContent = 'BL ' + currentNumBon;
 }
-updateNumBonDisplay();
 
-// Fetch current N° Bon from Google Sheets
-async function fetchNumBon() {
-    try {
-        const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL + "?action=getNumBon");
-        const data = await response.json();
-        if (data && data.numBon) {
-            currentNumBon = parseInt(data.numBon);
-            updateNumBonDisplay();
-            localStorage.setItem('num-bon', currentNumBon);
-        }
-    } catch (e) {
-        console.error("Erreur lors de la récupération du numéro de bon:", e);
-        // Fallback to local storage if network fails
-        currentNumBon = parseInt(localStorage.getItem('num-bon')) || 100230;
-        updateNumBonDisplay();
-    }
+function generateNumBon() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    currentNumBon = `100${hh}${mm}${ss}`;
+    updateNumBonDisplay();
 }
-fetchNumBon();
+
+generateNumBon();
 
 // === Load Clients and Autocomplete ===
 async function fetchClients() {
@@ -426,6 +417,7 @@ btnPdf.addEventListener('click', async function () {
     this.disabled = true;
 
     // Préparation des données
+    generateNumBon(); // On regénère au moment exact du clic pour être sûr d'avoir l'heure exacte
     const totalG = items.reduce((sum, item) => sum + item.total, 0);
     const dateParts = dateBonInput.value.split('/'); // DD/MM/YYYY
     const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // YYYY-MM-DD
@@ -498,14 +490,8 @@ btnPdf.addEventListener('click', async function () {
             this.textContent = '✓ PDF Téléchargé !';
             this.style.background = '#2dc770';
 
-            // Mettre à jour le numéro avec la nouvelle valeur renvoyée par le serveur ou l'incrémenter
-            if (result.nextNumBon) {
-                currentNumBon = parseInt(result.nextNumBon);
-            } else {
-                currentNumBon++;
-            }
-            localStorage.setItem('num-bon', currentNumBon);
-            updateNumBonDisplay();
+            // Mettre à jour avec un nouveau numéro temporel pour le prochain bon
+            generateNumBon();
 
             // Clear items and inputs after successful save & download for a clean workflow
             items = [];

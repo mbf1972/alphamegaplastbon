@@ -1,0 +1,10 @@
+# Agent config
+.agent/
+.gemini/
+
+# System files
+PROJECT_STATUS.md
+*.pyc
+__pycache__/
+.DS_Store
+Thumbs.db

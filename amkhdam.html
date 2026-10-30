@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Ouvriers & RH — AMplast">
+    <meta name="theme-color" content="#1b4332">
+    <title>Ouvriers — AMplast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-light: #2d6a4f;
+            --primary-soft: #52b788;
+            --accent: #e8651a;
+            --bg-color: #f1f8f4;
+            --bg-body: #e0ebe4;
+            --card-bg: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #6b7280;
+            --amount-color: #e8651a;
+
+            --status-regle: #2d6a4f;
+            --status-regle-bg: #d8f3dc;
+            --status-echu: #c1121f;
+            --status-echu-bg: #fde2e4;
+            --status-attente: #e8651a;
+            --status-attente-bg: #fde8d8;
+            /* Nuance spécifique Ouvriers : Bleu Cyan / Azur & Océan */
+            --page-accent: #0891b2;
+            --page-accent-light: #22d3ee;
+            --page-accent-bg: #ecfeff;
+            --page-accent-border: rgba(8, 145, 178, 0.22);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        /* ===== HEADER IDENTIQUE À CLIENTSAM ===== */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 16px 16px 20px 16px;
+            border-radius: 0 0 24px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 16px rgba(27, 67, 50, 0.25);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateX(-2px);
+        }
+        .back-btn:active { transform: scale(0.94); }
+
+        .brand-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #67e8f9;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .header-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-new {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 6px rgba(8, 145, 178, 0.35);
+            transition: all 0.15s;
+        }
+        .btn-new:hover { filter: brightness(1.08); }
+        .btn-new:active { transform: scale(0.95); }
+
+        .total-badge {
+            background: rgba(255,255,255,0.15);
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+        }
+
+        /* Bannière Solde/KPI en-tête */
+        .total-solde {
+            background: rgba(255,255,255,0.12);
+            padding: 12px 14px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(4px);
+        }
+
+        .total-label {
+            font-size: 12px;
+            opacity: 0.95;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .total-amount {
+            font-family: 'Outfit', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffb088;
+        }
+
+        /* Barre de recherche */
+        .search-container {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px 10px 38px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.97);
+            font-size: 13px;
+            color: var(--text-main);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            font-weight: 600;
+        }
+        .search-input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 2px var(--page-accent-light);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            font-size: 13px;
+        }
+
+        /* Onglets filtres */
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .filter-tabs::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            white-space: nowrap;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: none;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.85);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--page-accent);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ===== MINI STATS BAR (3 CARTES) ===== */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 12px 14px 4px 14px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(82, 183, 136, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(27, 67, 50, 0.04);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .stat-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== LISTE DES OUVRIERS ===== */
+        .items-list {
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 12px 14px;
+            box-shadow: 0 1px 4px rgba(27, 67, 50, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.15s;
+            border: 1px solid rgba(82, 183, 136, 0.12);
+            cursor: pointer;
+        }
+        .item-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(8, 145, 178, 0.08);
+            border-color: var(--page-accent-light);
+        }
+        .item-card:active { transform: scale(0.98); }
+
+        .item-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+        }
+        .item-card.regle::before { background: var(--status-regle); }
+        .item-card.echu::before { background: var(--status-echu); }
+        .item-card.attente::before { background: var(--status-attente); }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            color: white;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #0891b2 0%, #22d3ee 100%);
+            box-shadow: 0 2px 6px rgba(8, 145, 178, 0.25);
+        }
+
+        .card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #1a1a1a;
+        }
+
+        .item-meta-line {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .cat-tag {
+            background: var(--page-accent-bg);
+            color: var(--page-accent);
+            border: 1px solid var(--page-accent-border);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .amount-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .amount {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--amount-color);
+        }
+
+        .status-pill {
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .pill-regle { background: var(--status-regle-bg); color: var(--status-regle); }
+        .pill-echu { background: var(--status-echu-bg); color: var(--status-echu); }
+        .pill-attente { background: var(--status-attente-bg); color: var(--status-attente); }
+
+        .eco-footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.8;
+            margin-top: auto;
+        }
+
+        /* ===== MODAL BOTTOM SHEET (STYLE CLIENTSAM) ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-sheet {
+            background: var(--bg-color);
+            width: 100%;
+            max-width: 480px;
+            max-height: 88vh;
+            border-radius: 28px 28px 0 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.25s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 16px 18px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.3); }
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 2px;
+            padding-right: 36px;
+        }
+
+        .modal-subtitle {
+            font-size: 11px;
+            color: #95d5b2;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 16px 18px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 1px 4px rgba(27, 67, 50, 0.05);
+            border: 1px solid rgba(82, 183, 136, 0.14);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1.5px solid #d1d5db;
+            font-size: 13px;
+            background: #fff;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-control:focus {
+            border-color: var(--page-accent);
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.14);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn-submit {
+            padding: 11px 16px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(8, 145, 178, 0.3);
+            transition: all 0.15s;
+            margin-top: 6px;
+        }
+        .btn-submit:hover { filter: brightness(1.1); }
+        .btn-submit:active { transform: scale(0.98); }
+
+        .btn-action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .btn-action-sheet {
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-action-sheet:active { transform: scale(0.96); }
+
+        .btn-call {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .btn-status-act {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            box-shadow: 0 2px 6px rgba(8, 145, 178, 0.25);
+        }
+
+        .btn-delete-item {
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-top">
+            <div class="header-left">
+                <a href="index.html" class="back-btn" title="Retour au Menu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </a>
+                <div class="brand-meta">
+                    <div class="brand-name">ÉQUIPE & RH</div>
+                    <div class="header-title">Ouvriers & Collaborateurs</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-new" onclick="openAddModal()">+ Nouveau</button>
+                <span class="total-badge" id="kpi-count">5 employés</span>
+            </div>
+        </div>
+
+        <div class="total-solde">
+            <span class="total-label">💼 Masse Salariale Mensuelle</span>
+            <span class="total-amount" id="highlight-masse">0 DH</span>
+        </div>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="search-input" placeholder="Rechercher nom, poste, matricule..." autocomplete="off">
+        </div>
+
+        <div class="filter-tabs">
+            <button class="tab-btn active" data-filter="all">Tous</button>
+            <button class="tab-btn" data-filter="Extrusion">Extrusion</button>
+            <button class="tab-btn" data-filter="Maintenance">Maintenance</button>
+            <button class="tab-btn" data-filter="Manutention">Manutention</button>
+            <button class="tab-btn" data-filter="Contrôle Qualité">Qualité</button>
+        </div>
+    </header>
+
+    <!-- Quick mini stats -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <span class="stat-label" style="color: #2d6a4f;">✓ Présents</span>
+            <span class="stat-val" id="kpi-presents" style="color: #1b4332;">-</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label" style="color: #e8651a;">⏳ En Congé</span>
+            <span class="stat-val" id="kpi-conges" style="color: #e8651a;">-</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label" style="color: #c1121f;">⚠️ Absents</span>
+            <span class="stat-val" id="kpi-absents" style="color: #c1121f;">0</span>
+        </div>
+    </div>
+
+    <!-- Items Cards Grid -->
+    <div class="items-list" id="items-list"></div>
+
+    <div class="eco-footer">🌿 AM • Gestion écologique & responsable</div>
+</div>
+
+<!-- ===== MODAL DETAIL OUVRIER (BOTTOM SHEET) ===== -->
+<div class="modal-overlay" id="detail-modal">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <button class="modal-close" onclick="closeDetail()">×</button>
+            <div class="modal-title" id="det-name">Employé</div>
+            <div class="modal-subtitle" id="det-cat">Poste &amp; Matricule</div>
+        </div>
+        <div class="modal-body" id="detail-body">
+            <!-- Content injected dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL NOUVEAU OUVRIER (BOTTOM SHEET) ===== -->
+<div class="modal-overlay" id="add-modal">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <button class="modal-close" onclick="closeAddModal()">×</button>
+            <div class="modal-title">Nouvel Ouvrier</div>
+            <div class="modal-subtitle">Enregistrement RH</div>
+        </div>
+        <form id="add-form" class="modal-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Matricule *</label>
+                    <input type="text" id="f-mat" class="form-control" placeholder="EMP-006" required>
+                </div>
+                <div class="form-group">
+                    <label>Nom &amp; Prénom *</label>
+                    <input type="text" id="f-name" class="form-control" placeholder="Nom complet" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Poste occupé *</label>
+                <input type="text" id="f-poste" class="form-control" placeholder="Ex: Opérateur Extrudeuse" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Département *</label>
+                    <select id="f-cat" class="form-control" required>
+                        <option value="Extrusion">Extrusion</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Manutention">Manutention</option>
+                        <option value="Contrôle Qualité">Contrôle Qualité</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Shift / Équipe</label>
+                    <select id="f-shift" class="form-control">
+                        <option value="Équipe Matin (6h-14h)">Équipe Matin (6h-14h)</option>
+                        <option value="Équipe Soir (14h-22h)">Équipe Soir (14h-22h)</option>
+                        <option value="Équipe Nuit (22h-6h)">Équipe Nuit (22h-6h)</option>
+                        <option value="Journée Normale">Journée Normale</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="f-phone" class="form-control" placeholder="0661-000000">
+                </div>
+                <div class="form-group">
+                    <label>Salaire de base (DH)</label>
+                    <input type="number" id="f-salary" class="form-control" placeholder="5000" value="5000">
+                </div>
+            </div>
+            <button type="submit" class="btn-submit">Enregistrer l'Employé</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const DEFAULT_DATA = [
+        { id: 1, matricule: "EMP-001", name: "Mohamed El Amrani", poste: "Chef d'équipe Extrusion", cat: "Extrusion", shift: "Équipe Matin (6h-14h)", phone: "+212 661 23 45 67", salary: 6500, status: "Présent" },
+        { id: 2, matricule: "EMP-002", name: "Youssef Bennani", poste: "Opérateur Ligne 1", cat: "Extrusion", shift: "Équipe Matin (6h-14h)", phone: "+212 662 34 56 78", salary: 4800, status: "Présent" },
+        { id: 3, matricule: "EMP-003", name: "Karim Tazi", poste: "Technicien Électromécanicien", cat: "Maintenance", shift: "Journée Normale", phone: "+212 663 45 67 89", salary: 7200, status: "Présent" },
+        { id: 4, matricule: "EMP-004", name: "Hamid Chraibi", poste: "Opérateur Broyeur & Silos", cat: "Manutention", shift: "Équipe Soir (14h-22h)", phone: "+212 664 56 78 90", salary: 4500, status: "Présent" },
+        { id: 5, matricule: "EMP-005", name: "Salma Mansouri", poste: "Contrôleuse Qualité Tuyaux", cat: "Contrôle Qualité", shift: "Journée Normale", phone: "+212 665 67 89 01", salary: 5400, status: "Congé" }
+    ];
+    const STORAGE_KEY = 'amplast_ouvriers';
+
+    function getItems() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (data) {
+            try { return JSON.parse(data); } catch(e) {}
+        }
+        return DEFAULT_DATA;
+    }
+
+    function saveItems(list) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        renderList();
+        updateKPIs();
+    }
+
+    let currentFilter = 'all';
+
+    function renderList() {
+        const list = getItems();
+        const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+        const container = document.getElementById('items-list');
+
+        const filtered = list.filter(item => {
+            const str = JSON.stringify(item).toLowerCase();
+            const matchSearch = str.includes(searchVal);
+            const matchFilter = currentFilter === 'all' || item.cat === currentFilter;
+            return matchSearch && matchFilter;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                    <p style="font-size: 28px; margin-bottom: 6px;">👷</p>
+                    <p style="font-weight: 700; font-size: 13px;">Aucun employé trouvé</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = filtered.map(item => {
+            const isPresent = item.status === 'Présent';
+            const isConge = item.status === 'Congé';
+            const cardClass = isPresent ? 'regle' : (isConge ? 'attente' : 'echu');
+            const pillClass = isPresent ? 'pill-regle' : (isConge ? 'pill-attente' : 'pill-echu');
+
+            return `
+                <div class="item-card ${cardClass}" onclick="openDetail(${item.id})">
+                    <div class="avatar">${item.name.charAt(0)}</div>
+                    <div class="card-content">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-meta-line">
+                            <span class="cat-tag">${item.cat}</span>
+                            <span>• ${item.poste}</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="amount">${Number(item.salary).toLocaleString('fr-FR')} <span style="font-size:10px;font-weight:700;">DH/m</span></span>
+                            <span class="status-pill ${pillClass}">${item.status}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateKPIs() {
+        const list = getItems();
+        document.getElementById('kpi-count').textContent = `${list.length} employés`;
+
+        const presents = list.filter(o => o.status === 'Présent').length;
+        const conges = list.filter(o => o.status === 'Congé').length;
+        const absents = list.filter(o => o.status === 'Absent').length;
+
+        document.getElementById('kpi-presents').textContent = `${presents} présents`;
+        document.getElementById('kpi-conges').textContent = `${conges} congés`;
+        document.getElementById('kpi-absents').textContent = `${absents}`;
+
+        const totalPaie = list.reduce((s, o) => s + (Number(o.salary) || 0), 0);
+        document.getElementById('highlight-masse').textContent = `${totalPaie.toLocaleString('fr-FR')} DH`;
+    }
+
+    function openAddModal() {
+        document.getElementById('add-modal').classList.add('open');
+    }
+
+    function closeAddModal() {
+        document.getElementById('add-modal').classList.remove('open');
+    }
+
+    document.getElementById('add-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const list = getItems();
+        const newItem = {
+            id: Date.now(),
+            matricule: document.getElementById('f-mat').value.trim() || ('EMP-' + Date.now().toString().slice(-3)),
+            name: document.getElementById('f-name').value.trim(),
+            poste: document.getElementById('f-poste').value.trim(),
+            cat: document.getElementById('f-cat').value,
+            shift: document.getElementById('f-shift').value,
+            phone: document.getElementById('f-phone').value.trim() || '+212 600 00 00 00',
+            salary: parseFloat(document.getElementById('f-salary').value) || 5000,
+            status: 'Présent'
+        };
+
+        list.unshift(newItem);
+        saveItems(list);
+        document.getElementById('add-form').reset();
+        closeAddModal();
+    });
+
+    function openDetail(id) {
+        const list = getItems();
+        const item = list.find(x => x.id === id);
+        if (!item) return;
+
+        document.getElementById('det-name').textContent = item.name;
+        document.getElementById('det-cat').textContent = `${item.matricule} • ${item.cat}`;
+
+        const isPresent = item.status === 'Présent';
+        const isConge = item.status === 'Congé';
+        const pillClass = isPresent ? 'pill-regle' : (isConge ? 'pill-attente' : 'pill-echu');
+
+        const body = document.getElementById('detail-body');
+        body.innerHTML = `
+            <div class="info-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Poste &amp; Statut</span>
+                    <span class="status-pill ${pillClass}">${item.status}</span>
+                </div>
+                <div style="font-family:'Outfit'; font-size:18px; font-weight:800; color:var(--text-main); margin-top:4px;">
+                    ${item.poste}
+                </div>
+                <div style="font-size:13px; font-weight:800; color:var(--amount-color); margin-top:2px;">
+                    💰 ${Number(item.salary).toLocaleString('fr-FR')} DH / mois
+                </div>
+            </div>
+
+            <div class="info-card" style="font-size:12px; gap:8px;">
+                <div><strong>⏰ Shift :</strong> ${item.shift}</div>
+                <div><strong>📞 Téléphone :</strong> <a href="tel:${item.phone}" style="color:var(--primary-light); text-decoration:none; font-weight:700;">${item.phone}</a></div>
+                <div><strong>🏢 Département :</strong> <span class="cat-tag">${item.cat}</span></div>
+                <div><strong>🔢 Matricule :</strong> ${item.matricule}</div>
+            </div>
+
+            <div class="btn-action-row">
+                <a href="tel:${item.phone}" class="btn-action-sheet btn-call">
+                    📞 Appeler
+                </a>
+                <button onclick="toggleStatut(${item.id})" class="btn-action-sheet btn-status-act">
+                    🔄 Statut
+                </button>
+            </div>
+
+            <button onclick="deleteItem(${item.id})" class="btn-delete-item">
+                🗑️ Supprimer cet employé
+            </button>
+        `;
+
+        document.getElementById('detail-modal').classList.add('open');
+    }
+
+    function closeDetail() {
+        document.getElementById('detail-modal').classList.remove('open');
+    }
+
+    function toggleStatut(id) {
+        const list = getItems();
+        const o = list.find(x => x.id === id);
+        if (o) {
+            const opt = prompt("Nouveau statut :\n1 = Présent\n2 = Congé\n3 = Absent");
+            if (opt === '1') o.status = 'Présent';
+            else if (opt === '2') o.status = 'Congé';
+            else if (opt === '3') o.status = 'Absent';
+            saveItems(list);
+            openDetail(id);
+        }
+    }
+
+    function deleteItem(id) {
+        if (confirm("Confirmer la suppression de cet employé ?")) {
+            let list = getItems();
+            list = list.filter(x => x.id !== id);
+            saveItems(list);
+            closeDetail();
+        }
+    }
+
+    // Filtres & Recherche
+    document.getElementById('search-input').addEventListener('input', renderList);
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            renderList();
+        });
+    });
+
+    // Close on overlay click
+    [document.getElementById('add-modal'), document.getElementById('detail-modal')].forEach(m => {
+        m.addEventListener('click', (e) => {
+            if (e.target === m) m.classList.remove('open');
+        });
+    });
+
+    // Init
+    renderList();
+    updateKPIs();
+</script>
+</body>
+</html>

@@ -188,25 +188,16 @@ function doPost(e) {
     // Convertir en Base64
     var pdfBase64 = Utilities.base64Encode(response_bon.getBlob().getBytes());
 
-    // 4. INCREMENTER le numéro de bon dans le tableau Google Sheet (ex: 200 devient 201)
-    if (!data.noIncrement) {
-      var nextNum = parseInt(num) + 1;
-      sheet.getRange("F4").setValue(nextNum);
-      SpreadsheetApp.flush(); // On sauvegarde l'incrémentation
-    }
-
-    // 5. Renvoyer la réponse à l'application web avec le nouveau numéro
+    // 4. SUPPRIMÉ : L'incrémentation automatique n'est plus nécessaire car le frontend envoie un numéro unique basé sur l'heure (ex: 100143055)
+    // Nous avons juste injecté ce numéro dans F4 pour le PDF (lignes 139).
+    
+    // 5. Renvoyer la réponse à l'application web
     var fileName = isDevis ? ("Devis_" + num + ".pdf") : ("Bon_Livraison_" + num + ".pdf");
     var responseObj = {
       "status": "Success",
       "base64": pdfBase64,
       "fileName": fileName
     };
-    if (isDevis) {
-      responseObj.nextNumDevis = nextNum;
-    } else {
-      responseObj.nextNumBon = nextNum;
-    }
     return ContentService.createTextOutput(JSON.stringify(responseObj)).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {

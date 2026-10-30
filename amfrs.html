@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Gestion des Fournisseurs — AMplast">
+    <meta name="theme-color" content="#1b4332">
+    <title>Fournisseurs — AMplast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-light: #2d6a4f;
+            --primary-soft: #52b788;
+            --accent: #e8651a;
+            --bg-color: #f1f8f4;
+            --bg-body: #e0ebe4;
+            --card-bg: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #6b7280;
+            --amount-color: #e8651a;
+
+            --status-regle: #2d6a4f;
+            --status-regle-bg: #d8f3dc;
+            --status-echu: #c1121f;
+            --status-echu-bg: #fde2e4;
+            --status-attente: #e8651a;
+            --status-attente-bg: #fde8d8;
+            /* Nuance spécifique Fournisseurs : Violet / Améthyste */
+            --page-accent: #7c3aed;
+            --page-accent-light: #a78bfa;
+            --page-accent-bg: #f5f3ff;
+            --page-accent-border: rgba(124, 58, 237, 0.22);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        /* ===== HEADER IDENTIQUE À CLIENTSAM (VERT FORÊT AVEC TOUCHE THÉMATIQUE) ===== */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 16px 16px 20px 16px;
+            border-radius: 0 0 24px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 16px rgba(27, 67, 50, 0.25);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateX(-2px);
+        }
+        .back-btn:active { transform: scale(0.94); }
+
+        .brand-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #c4b5fd;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .header-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-new {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+            transition: all 0.15s;
+        }
+        .btn-new:hover { filter: brightness(1.08); }
+        .btn-new:active { transform: scale(0.95); }
+
+        .total-badge {
+            background: rgba(255,255,255,0.15);
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+        }
+
+        /* Bannière Solde/KPI en-tête */
+        .total-solde {
+            background: rgba(255,255,255,0.12);
+            padding: 12px 14px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.14);
+            backdrop-filter: blur(4px);
+        }
+
+        .total-label {
+            font-size: 12px;
+            opacity: 0.95;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .total-amount {
+            font-family: 'Outfit', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffb088;
+        }
+
+        /* Barre de recherche */
+        .search-container {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px 10px 38px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.97);
+            font-size: 13px;
+            color: var(--text-main);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            font-weight: 600;
+        }
+        .search-input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 2px var(--page-accent-light);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            font-size: 13px;
+        }
+
+        /* Onglets filtres */
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .filter-tabs::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            white-space: nowrap;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: none;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.85);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--page-accent);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ===== MINI STATS BAR (3 CARTES) ===== */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 12px 14px 4px 14px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(82, 183, 136, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(27, 67, 50, 0.04);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .stat-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== LISTE DES FOURNISSEURS ===== */
+        .suppliers-list {
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .supplier-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 12px 14px;
+            box-shadow: 0 1px 4px rgba(27, 67, 50, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.15s;
+            border: 1px solid rgba(82, 183, 136, 0.12);
+            cursor: pointer;
+        }
+        .supplier-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
+            border-color: var(--page-accent-light);
+        }
+        .supplier-card:active { transform: scale(0.98); }
+
+        .supplier-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+        }
+        .supplier-card.regle::before { background: var(--status-regle); }
+        .supplier-card.echu::before { background: var(--status-echu); }
+        .supplier-card.attente::before { background: var(--page-accent); }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            color: white;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+        }
+
+        .card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .supplier-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #1a1a1a;
+        }
+
+        .supplier-meta-line {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .cat-tag {
+            background: var(--page-accent-bg);
+            color: var(--page-accent);
+            border: 1px solid var(--page-accent-border);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .amount-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .amount {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--amount-color);
+        }
+
+        .status-pill {
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .pill-regle { background: var(--status-regle-bg); color: var(--status-regle); }
+        .pill-echu { background: var(--status-echu-bg); color: var(--status-echu); }
+        .pill-attente { background: var(--status-attente-bg); color: var(--status-attente); }
+
+        .eco-footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.8;
+            margin-top: auto;
+        }
+
+        /* ===== MODAL BOTTOM SHEET (STYLE CLIENTSAM) ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-sheet {
+            background: var(--bg-color);
+            width: 100%;
+            max-width: 480px;
+            max-height: 88vh;
+            border-radius: 28px 28px 0 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.25s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 16px 18px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.3); }
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 2px;
+            padding-right: 36px;
+        }
+
+        .modal-subtitle {
+            font-size: 11px;
+            color: #95d5b2;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 16px 18px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 1px 4px rgba(27, 67, 50, 0.05);
+            border: 1px solid rgba(82, 183, 136, 0.14);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1.5px solid #d1d5db;
+            font-size: 13px;
+            background: #fff;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-control:focus {
+            border-color: var(--page-accent);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.14);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn-submit {
+            padding: 11px 16px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(124, 58, 237, 0.3);
+            transition: all 0.15s;
+            margin-top: 6px;
+        }
+        .btn-submit:hover { filter: brightness(1.1); }
+        .btn-submit:active { transform: scale(0.98); }
+
+        .btn-action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .btn-action-sheet {
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-action-sheet:active { transform: scale(0.96); }
+
+        .btn-call {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .btn-pay {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+        }
+
+        .btn-delete-item {
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-top">
+            <div class="header-left">
+                <a href="index.html" class="back-btn" title="Retour au Menu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </a>
+                <div class="brand-meta">
+                    <div class="brand-name">ACHATS &amp; FOURNISSEURS</div>
+                    <div class="header-title">Fournisseurs</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-new" onclick="openAddModal()">+ Nouveau</button>
+                <span class="total-badge" id="kpi-count">6 comptes</span>
+            </div>
+        </div>
+
+        <div class="total-solde">
+            <span class="total-label">📈 Total Solde Dû</span>
+            <span class="total-amount" id="kpi-total">0 DH</span>
+        </div>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="search-suppliers" placeholder="Rechercher nom, catégorie, ville..." autocomplete="off">
+        </div>
+
+        <div class="filter-tabs">
+            <button class="tab-btn active" data-filter="all">Tous</button>
+            <button class="tab-btn" data-filter="Matières PE">Matières PE</button>
+            <button class="tab-btn" data-filter="Additifs">Additifs</button>
+            <button class="tab-btn" data-filter="Outillage">Outillage</button>
+            <button class="tab-btn" data-filter="Emballage">Emballage</button>
+            <button class="tab-btn" data-filter="Services">Services</button>
+        </div>
+    </header>
+
+    <!-- Quick mini stats -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <span class="stat-label" style="color: #2d6a4f;">✓ Actifs</span>
+            <span class="stat-val" id="kpi-actifs" style="color: #1b4332;">-</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label" style="color: #c1121f;">⚠️ Avec Solde</span>
+            <span class="stat-val" id="kpi-avec-solde" style="color: #c1121f;">-</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label" style="color: #e8651a;">⏳ Secteurs</span>
+            <span class="stat-val" id="kpi-categories" style="color: #e8651a;">5 catégories</span>
+        </div>
+    </div>
+
+    <!-- Suppliers Cards Grid -->
+    <div class="suppliers-list" id="suppliers-list"></div>
+
+    <div class="eco-footer">🌿 AM • Gestion écologique & responsable</div>
+</div>
+
+<!-- ===== MODAL DETAIL FOURNISSEUR (BOTTOM SHEET) ===== -->
+<div class="modal-overlay" id="detail-modal">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <button class="modal-close" onclick="closeDetail()">×</button>
+            <div class="modal-title" id="det-name">Fournisseur</div>
+            <div class="modal-subtitle" id="det-cat">Catégorie</div>
+        </div>
+        <div class="modal-body" id="detail-body">
+            <!-- Content injected dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL NOUVEAU FOURNISSEUR (BOTTOM SHEET) ===== -->
+<div class="modal-overlay" id="add-modal">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <button class="modal-close" onclick="closeAddModal()">×</button>
+            <div class="modal-title">Nouveau Fournisseur</div>
+            <div class="modal-subtitle">Enregistrement d'un partenaire</div>
+        </div>
+        <form id="add-supplier-form" class="modal-body">
+            <div class="form-group">
+                <label>Raison Sociale / Nom *</label>
+                <input type="text" id="sup-name" class="form-control" placeholder="Ex: Maghreb Polymères SARL" required>
+            </div>
+            <div class="form-group">
+                <label>Catégorie de Produits *</label>
+                <select id="sup-cat" class="form-control" required>
+                    <option value="Matières PE">Matières Plastiques (PEBD / PEHD)</option>
+                    <option value="Additifs">Colorants & Additifs (Masterbatch)</option>
+                    <option value="Outillage">Outillage & Pièces d'extrusion</option>
+                    <option value="Emballage">Emballages & Mandrins</option>
+                    <option value="Services">Services & Maintenance</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Téléphone *</label>
+                    <input type="tel" id="sup-phone" class="form-control" placeholder="0522-000000" required>
+                </div>
+                <div class="form-group">
+                    <label>Ville</label>
+                    <input type="text" id="sup-city" class="form-control" placeholder="Casablanca...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Solde Initial / En cours (DH)</label>
+                <input type="number" id="sup-balance" class="form-control" placeholder="0" value="0">
+            </div>
+            <button type="submit" class="btn-submit">Enregistrer le Fournisseur</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const DEFAULT_SUPPLIERS = [
+        {
+            id: 1,
+            name: "SABIC Petrochemicals Maghreb",
+            category: "Matières PE",
+            product: "Granulés PEBD 2420D / PEHD F00952",
+            phone: "+212 522 34 56 78",
+            city: "Casablanca, Z.I.",
+            balance: 54200,
+            status: "Actif",
+            rating: "A+"
+        },
+        {
+            id: 2,
+            name: "TotalEnergies Polymers & Additives",
+            category: "Matières PE",
+            product: "Polymères vierges & haute résistance",
+            phone: "+212 522 98 12 34",
+            city: "Tanger Free Zone",
+            balance: 38400,
+            status: "Actif",
+            rating: "A"
+        },
+        {
+            id: 3,
+            name: "Maghreb Colorants & Masterbatch",
+            category: "Additifs",
+            product: "Colorant blanc opaque, bleu, stabilisants UV",
+            phone: "+212 523 45 67 89",
+            city: "Mohammedia",
+            balance: 14500,
+            status: "Actif",
+            rating: "A"
+        },
+        {
+            id: 4,
+            name: "Plast-Outillage Maroc",
+            category: "Outillage",
+            product: "Filières d'extrusion, anneaux de soufflage, lames",
+            phone: "+212 522 11 22 33",
+            city: "Ain Sebaa, Casa",
+            balance: 21750,
+            status: "Actif",
+            rating: "B+"
+        },
+        {
+            id: 5,
+            name: "Cartonnerie Atlas Emballages",
+            category: "Emballage",
+            product: "Mandrins carton pour bobines, rouleaux adhésifs",
+            phone: "+212 522 77 88 99",
+            city: "Berrechid",
+            balance: 9200,
+            status: "Actif",
+            rating: "A"
+        },
+        {
+            id: 6,
+            name: "Trans-Logistique Express",
+            category: "Services",
+            product: "Livraison conteneurs matières & fret",
+            phone: "+212 539 32 10 00",
+            city: "Tanger Med",
+            balance: 4800,
+            status: "Actif",
+            rating: "A"
+        }
+    ];
+
+    function getSuppliers() {
+        const data = localStorage.getItem('amplast_suppliers');
+        if (data) {
+            try { return JSON.parse(data); } catch(e) {}
+        }
+        return DEFAULT_SUPPLIERS;
+    }
+
+    function saveSuppliers(list) {
+        localStorage.setItem('amplast_suppliers', JSON.stringify(list));
+        renderSuppliers();
+        updateKPIs();
+    }
+
+    let currentFilter = 'all';
+
+    function renderSuppliers() {
+        const list = getSuppliers();
+        const searchVal = document.getElementById('search-suppliers').value.toLowerCase().trim();
+        const container = document.getElementById('suppliers-list');
+
+        const filtered = list.filter(sup => {
+            const matchesSearch = sup.name.toLowerCase().includes(searchVal) ||
+                                 sup.category.toLowerCase().includes(searchVal) ||
+                                 (sup.product && sup.product.toLowerCase().includes(searchVal)) ||
+                                 (sup.city && sup.city.toLowerCase().includes(searchVal));
+            const matchesFilter = currentFilter === 'all' || sup.category === currentFilter;
+            return matchesSearch && matchesFilter;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                    <p style="font-size: 28px; margin-bottom: 6px;">🔍</p>
+                    <p style="font-weight: 700; font-size: 13px;">Aucun fournisseur trouvé</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = filtered.map(sup => {
+            const hasBalance = Number(sup.balance) > 0;
+            const statusClass = hasBalance ? 'attente' : 'regle';
+            const pillClass = hasBalance ? 'pill-attente' : 'pill-regle';
+            const statusLabel = hasBalance ? 'À Régler' : 'À jour';
+
+            return `
+                <div class="supplier-card ${statusClass}" onclick="openDetail(${sup.id})">
+                    <div class="avatar">${sup.name.charAt(0)}</div>
+                    <div class="card-content">
+                        <div class="supplier-name">${sup.name}</div>
+                        <div class="supplier-meta-line">
+                            <span class="cat-tag">${sup.category}</span>
+                            <span>📍 ${sup.city || 'Maroc'}</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="amount">${Number(sup.balance).toLocaleString('fr-FR')} <span style="font-size:10px;font-weight:700;">DH</span></span>
+                            <span class="status-pill ${pillClass}">${statusLabel}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateKPIs() {
+        const list = getSuppliers();
+        document.getElementById('kpi-count').textContent = `${list.length} comptes`;
+        
+        const total = list.reduce((sum, s) => sum + (Number(s.balance) || 0), 0);
+        document.getElementById('kpi-total').textContent = total.toLocaleString('fr-FR') + ' DH';
+
+        const avecSolde = list.filter(s => Number(s.balance) > 0).length;
+        document.getElementById('kpi-actifs').textContent = `${list.length} actifs`;
+        document.getElementById('kpi-avec-solde').textContent = `${avecSolde} comptes`;
+    }
+
+    function openAddModal() {
+        document.getElementById('add-modal').classList.add('open');
+    }
+
+    function closeAddModal() {
+        document.getElementById('add-modal').classList.remove('open');
+    }
+
+    document.getElementById('add-supplier-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const list = getSuppliers();
+        const newSup = {
+            id: Date.now(),
+            name: document.getElementById('sup-name').value.trim(),
+            category: document.getElementById('sup-cat').value,
+            product: "Approvisionnement matières & composants",
+            phone: document.getElementById('sup-phone').value.trim(),
+            city: document.getElementById('sup-city').value.trim() || "Maroc",
+            balance: parseFloat(document.getElementById('sup-balance').value) || 0,
+            status: "Actif",
+            rating: "A"
+        };
+
+        list.unshift(newSup);
+        saveSuppliers(list);
+        document.getElementById('add-supplier-form').reset();
+        closeAddModal();
+    });
+
+    function openDetail(id) {
+        const list = getSuppliers();
+        const sup = list.find(s => s.id === id);
+        if (!sup) return;
+
+        document.getElementById('det-name').textContent = sup.name;
+        document.getElementById('det-cat').textContent = sup.category + " • " + (sup.city || "Maroc");
+
+        const body = document.getElementById('detail-body');
+        body.innerHTML = `
+            <div class="info-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Solde Dû</span>
+                    <span class="status-pill ${Number(sup.balance) > 0 ? 'pill-attente' : 'pill-regle'}">
+                        ${Number(sup.balance) > 0 ? 'En cours' : 'Soldé'}
+                    </span>
+                </div>
+                <div style="font-family:'Outfit'; font-size:22px; font-weight:800; color:var(--amount-color); margin-top:2px;">
+                    ${Number(sup.balance).toLocaleString('fr-FR')} <span style="font-size:13px;">DH</span>
+                </div>
+            </div>
+
+            <div class="info-card" style="font-size:12px; gap:8px;">
+                <div><strong>📞 Contact :</strong> <a href="tel:${sup.phone}" style="color:var(--primary-light); text-decoration:none; font-weight:700;">${sup.phone}</a></div>
+                <div><strong>📍 Adresse :</strong> ${sup.city || 'Maroc'}</div>
+                <div><strong>📦 Spécialité :</strong> ${sup.product || 'N/A'}</div>
+                <div><strong>⭐ Notation :</strong> <span style="color:#e8651a; font-weight:800;">${sup.rating || 'A'}</span></div>
+            </div>
+
+            <div class="btn-action-row">
+                <a href="tel:${sup.phone}" class="btn-action-sheet btn-call">
+                    📞 Appeler
+                </a>
+                <button onclick="recordPayment(${sup.id})" class="btn-action-sheet btn-pay">
+                    💵 Régler
+                </button>
+            </div>
+
+            <button onclick="deleteSupplier(${sup.id})" class="btn-delete-item">
+                🗑️ Supprimer ce fournisseur
+            </button>
+        `;
+
+        document.getElementById('detail-modal').classList.add('open');
+    }
+
+    function closeDetail() {
+        document.getElementById('detail-modal').classList.remove('open');
+    }
+
+    function recordPayment(id) {
+        const amount = prompt("Montant du règlement effectué (DH) :");
+        if (amount && !isNaN(amount)) {
+            const list = getSuppliers();
+            const sup = list.find(s => s.id === id);
+            if (sup) {
+                sup.balance = Math.max(0, sup.balance - parseFloat(amount));
+                saveSuppliers(list);
+                openDetail(id);
+            }
+        }
+    }
+
+    function deleteSupplier(id) {
+        if (confirm("Confirmer la suppression de ce fournisseur ?")) {
+            let list = getSuppliers();
+            list = list.filter(s => s.id !== id);
+            saveSuppliers(list);
+            closeDetail();
+        }
+    }
+
+    // Filtres & Recherche
+    document.getElementById('search-suppliers').addEventListener('input', renderSuppliers);
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            renderSuppliers();
+        });
+    });
+
+    // Close on overlay click
+    [document.getElementById('add-modal'), document.getElementById('detail-modal')].forEach(m => {
+        m.addEventListener('click', (e) => {
+            if (e.target === m) m.classList.remove('open');
+        });
+    });
+
+    // Init
+    renderSuppliers();
+    updateKPIs();
+</script>
+</body>
+</html>

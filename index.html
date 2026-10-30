@@ -3,97 +3,764 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Menu Principal - AMplast">
-    <meta name="theme-color" content="#0f172a">
-    <title>Menu Principal - AMplast</title>
+    <meta name="description" content="Menu Principal — AMplast Système de Gestion">
+    <meta name="theme-color" content="#0f2417">
+    <title>Menu Principal — AMplast</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Couleurs AMplast */
+            --primary:        #1b4332;
+            --primary-mid:    #2d6a4f;
+            --primary-light:  #40916c;
+            --primary-soft:   #52b788;
+            --accent:         #e8651a;
+            --accent-light:   #ff8c42;
+            --bg-body:        #c8ddd0;
+            --bg-app:         #eef6f1;
+            --card-bg:        #ffffff;
+            --text-main:      #0f1f16;
+            --text-muted:     #6b8c78;
+            --shadow-deep:    rgba(10, 31, 15, 0.22);
+        }
+
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            color: var(--text-main);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient background orbs */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 55% 45% at 78% 4%,  rgba(45,106,79,0.30) 0%, transparent 65%),
+                radial-gradient(ellipse 40% 35% at 10% 92%, rgba(232,101,26,0.14) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 108%,rgba(82,183,136,0.18) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: ambientPulse 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes ambientPulse {
+            from { opacity: 0.65; }
+            to   { opacity: 1.00; }
+        }
+
+        /* ===== Conteneur principal ===== */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100dvh;
+            background: var(--bg-app);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 80px var(--shadow-deep), 0 0 0 1px rgba(255,255,255,0.55) inset;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== HEADER AMplast ===== */
+        .app-header {
+            background: linear-gradient(160deg, #07180d 0%, #0f2417 28%, #1b4332 62%, #245c43 100%);
+            color: white;
+            padding: 18px 18px 20px;
+            border-radius: 0 0 32px 32px;
+            flex-shrink: 0;
+            box-shadow:
+                0 12px 40px rgba(7,24,13,0.50),
+                0 2px 0 rgba(82,183,136,0.30) inset;
+            position: relative;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        /* Shimmer bottom line on header */
+        .header-shimmer {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(82,183,136,0.65) 38%, rgba(232,101,26,0.45) 72%, transparent 100%);
+        }
+
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -30px;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, rgba(82,183,136,0.18) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .app-header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px; left: -10px;
+            width: 130px; height: 130px;
+            background: radial-gradient(circle, rgba(232,101,26,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-badge {
+            width: 46px; height: 46px;
+            background: white;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.28), 0 0 0 1.5px rgba(82,183,136,0.35);
+            overflow: hidden;
+            padding: 5px;
+            flex-shrink: 0;
+        }
+
+        .logo-badge img {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+
+        .brand-meta { display: flex; flex-direction: column; gap: 1px; }
+
+        .brand-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 10.5px; font-weight: 900;
+            letter-spacing: 2.5px; color: #74c69d;
+            text-transform: uppercase; line-height: 1;
+        }
+
+        .app-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 17px; font-weight: 900; color: #fff;
+            letter-spacing: -0.5px; line-height: 1.1;
+        }
+
+        /* Pill date */
+        .date-pill {
+            background: rgba(255,255,255,0.10);
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 11px; font-weight: 700;
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.16);
+            color: #d8f3dc;
+            text-transform: capitalize;
+            letter-spacing: 0.2px;
+        }
+
+        /* Status banner */
+        .system-banner {
+            background: rgba(255,255,255,0.08);
+            padding: 10px 14px;
+            border-radius: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid rgba(255,255,255,0.10);
+            position: relative; z-index: 1;
+            backdrop-filter: blur(6px);
+        }
+
+        .banner-left {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; font-weight: 700; color: #c8f0da;
+        }
+
+        .status-dot {
+            width: 8px; height: 8px;
+            background: #52b788; border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(82,183,136,0.25), 0 0 10px #52b788aa;
+            animation: pulseDot 2.4s cubic-bezier(0.4,0,0.6,1) infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.65; transform: scale(0.78); }
+        }
+
+        .banner-right {
+            font-size: 10.5px; font-weight: 800;
+            color: var(--accent-light); letter-spacing: 0.8px; text-transform: uppercase;
+        }
+
+        /* ===== SECTION HEADER ===== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px 6px;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, rgba(45,106,79,0.35), transparent);
+        }
+
+        /* ===== CONTENEUR DE LA GRILLE ===== */
+        .main-content {
+            flex: 1;
+            min-height: 0;
+            padding: 6px 16px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 13px;
+            flex: 1;
+            min-height: 0;
+            align-content: stretch;
+        }
+
+        /* ===== BOUTONS CARRÉS ARRONDIS GLASSMORPHISM NÉON ===== */
+        .btn-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 10px 6px;
+            border-radius: 24px;
+            /* Glassmorphism fond sombre teinté par couleur du bouton */
+            background: linear-gradient(155deg,
+                rgba(var(--btn-rgb), 0.13) 0%,
+                rgba(15,36,23,0.95) 42%,
+                rgba(8,20,13,0.98) 100%
+            );
+            border: 1.5px solid rgba(var(--btn-rgb), 0.62);
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow:
+                0 8px 20px rgba(0,0,0,0.28),
+                0 0 0 0.5px rgba(var(--btn-rgb), 0.28) inset,
+                0 0 16px rgba(var(--btn-rgb), 0.20),
+                inset 0 1px 0 rgba(255,255,255,0.10);
+            transition:
+                transform 0.22s cubic-bezier(0.16,1,0.3,1),
+                box-shadow 0.22s cubic-bezier(0.16,1,0.3,1),
+                border-color 0.22s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Inner gloss shine stripe */
+        .btn-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%;
+            height: 44%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.00) 100%);
+            border-radius: 0 0 50% 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Outer glow halo on hover */
+        .btn-card::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 28px;
+            background: radial-gradient(circle at center, rgba(var(--btn-rgb), 0.35) 0%, transparent 70%);
+            opacity: 0;
+            filter: blur(10px);
+            z-index: -1;
+            pointer-events: none;
+            transition: opacity 0.24s ease;
+        }
+
+        /* Hover */
+        .btn-card:hover {
+            transform: translateY(-5px) scale(1.04);
+            border-color: rgba(var(--btn-rgb), 0.90);
+            box-shadow:
+                0 14px 28px rgba(0,0,0,0.36),
+                0 0 28px rgba(var(--btn-rgb), 0.42),
+                0 0 0 1px rgba(var(--btn-rgb), 0.50) inset,
+                inset 0 1px 0 rgba(255,255,255,0.18);
+        }
+
+        .btn-card:hover::after { opacity: 1; }
+
+        /* Active */
+        .btn-card:active {
+            transform: translateY(2px) scale(0.97);
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.30),
+                0 0 12px rgba(var(--btn-rgb), 0.28),
+                inset 0 1px 4px rgba(0,0,0,0.20);
+            transition-duration: 0.08s;
+        }
+
+        /* Icône dans son badge néon */
+        .btn-card .btn-icon {
+            position: relative;
+            z-index: 1;
+            width: 46px;
+            height: 46px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(var(--btn-rgb), 0.14);
+            border: 1px solid rgba(var(--btn-rgb), 0.30);
+            color: rgb(var(--btn-rgb));
+            filter: drop-shadow(0 0 7px rgba(var(--btn-rgb), 0.70));
+            flex-shrink: 0;
+            transition: transform 0.24s cubic-bezier(0.16,1,0.3,1), background 0.22s ease;
+        }
+
+        .btn-card:hover .btn-icon {
+            transform: scale(1.14) translateY(-2px);
+            background: rgba(var(--btn-rgb), 0.22);
+        }
+
+        .btn-card .btn-icon svg {
+            width: 22px;
+            height: 22px;
+            display: block;
+        }
+
+        /* Texte du bouton */
+        .btn-card .btn-label {
+            position: relative;
+            z-index: 1;
+            font-family: 'Outfit', 'Nunito', sans-serif;
+            font-size: clamp(10px, 2.6vw, 11.5px);
+            font-weight: 800;
+            color: rgba(255,255,255,0.92);
+            letter-spacing: 0.2px;
+            text-align: center;
+            line-height: 1.2;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.70);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 96%;
+        }
+
+        /* ===== THÈMES (RGB triplets pour rgba() composition) ===== */
+        .theme-clients     { --btn-rgb: 59,130,246; }
+        .theme-fournisseurs{ --btn-rgb: 139,92,246; }
+        .theme-matieres    { --btn-rgb: 16,185,129; }
+        .theme-produits    { --btn-rgb: 245,158,11; }
+        .theme-materiels   { --btn-rgb: 225,29,72; }
+        .theme-ouvriers    { --btn-rgb: 6,182,212; }
+        .theme-depenses    { --btn-rgb: 244,63,94; }
+        .theme-situation   { --btn-rgb: 13,148,136; }
+        .theme-production  { --btn-rgb: 232,101,26; }
+
+        /* Animation d'entrée — blur + slide */
+        .btn-card { animation: cardIn 0.45s cubic-bezier(0.16,1,0.3,1) both; }
+        .btn-card:nth-child(1) { animation-delay: 0.04s; }
+        .btn-card:nth-child(2) { animation-delay: 0.08s; }
+        .btn-card:nth-child(3) { animation-delay: 0.12s; }
+        .btn-card:nth-child(4) { animation-delay: 0.16s; }
+        .btn-card:nth-child(5) { animation-delay: 0.20s; }
+        .btn-card:nth-child(6) { animation-delay: 0.24s; }
+        .btn-card:nth-child(7) { animation-delay: 0.28s; }
+        .btn-card:nth-child(8) { animation-delay: 0.32s; }
+        .btn-card:nth-child(9) { animation-delay: 0.36s; }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.92); filter: blur(2px); }
+            to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        /* ===== FOOTER ===== */
+        .eco-footer {
+            text-align: center;
+            padding: 8px 16px 14px;
+            font-size: 10.5px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .eco-footer strong { color: var(--primary-mid); font-weight: 900; }
+
+        .footer-dot {
+            width: 3px; height: 3px;
+            background: var(--primary-soft);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        /* ===== AUTH OVERLAY ===== */
+        .auth-overlay {
+            position: fixed; inset: 0;
+            background: rgba(7,22,14,0.80);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(14px) saturate(1.4);
+            transition: opacity 0.35s ease;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            width: 100%; max-width: 340px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 28px 70px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.5) inset;
+            animation: modalIn 0.32s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.88) translateY(20px); opacity: 0; }
+            to   { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .auth-header {
+            background: linear-gradient(160deg, #07180d 0%, #0f2417 35%, #1b4332 75%, #245c43 100%);
+            color: white;
+            padding: 28px 22px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            top: -30px; right: -30px;
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(82,183,136,0.18) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .auth-icon-wrap {
+            width: 58px; height: 58px;
+            background: rgba(255,255,255,0.13);
+            border-radius: 20px;
+            margin: 0 auto 14px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255,255,255,0.20);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        }
+
+        .auth-icon-wrap svg { width: 26px; height: 26px; color: white; }
+
+        .auth-header h2 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 900; margin-bottom: 4px; position: relative; z-index: 1; }
+        .auth-header p  { font-size: 11.5px; color: #7dd3a8; font-weight: 600; position: relative; z-index: 1; }
+
+        .auth-body {
+            padding: 24px 22px 26px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+
+        .auth-body label { font-size: 12px; font-weight: 700; color: #374151; display: block; }
+
+        .auth-input {
+            width: 100%; margin-top: 7px;
+            padding: 13px 15px;
+            border-radius: 14px; border: 1.5px solid #e5e7eb;
+            font-size: 14px; font-weight: 700; outline: none;
+            background: #f9fafb; transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .auth-input:focus {
+            border-color: var(--primary-light); background: white;
+            box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.14);
+        }
+
+        .auth-submit {
+            background: linear-gradient(135deg, #e8651a 0%, #ff8c42 100%);
+            color: white; border: none;
+            padding: 14px; border-radius: 14px;
+            font-size: 13.5px; font-weight: 800; cursor: pointer;
+            box-shadow: 0 4px 18px rgba(232,101,26,0.40);
+            transition: all 0.2s; margin-top: 2px;
+        }
+
+        .auth-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 7px 22px rgba(232,101,26,0.50);
+        }
+        .auth-submit:active { transform: scale(0.97); transition-duration: 0.08s; }
+
+        .auth-error {
+            color: #be123c; background: #fff1f2;
+            padding: 9px 13px; border-radius: 10px;
+            font-size: 11.5px; font-weight: 700; text-align: center;
+            display: none; border: 1px solid #fecdd3;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%       { transform: translateX(-9px); }
+            40%       { transform: translateX(9px); }
+            60%       { transform: translateX(-5px); }
+            80%       { transform: translateX(5px); }
+        }
+
+        /* Toast notification */
+        .toast-msg {
+            position: fixed; bottom: 28px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: linear-gradient(135deg, #0f2417, #1b4332);
+            color: #d8f3dc;
+            padding: 11px 24px; border-radius: 30px;
+            font-size: 12px; font-weight: 700;
+            box-shadow: 0 8px 28px rgba(7,22,14,0.40);
+            z-index: 999; white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.24s, transform 0.24s;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(82,183,136,0.28);
+        }
+    </style>
 </head>
 <body>
-    <div class="menu-container">
-        <div class="menu-content">
-            <div class="logo-container">
-            <div class="logo-wrapper">
-                <img src="logo.png" alt="AMplast Logo" class="logo">
-            </div>
-            <h1 class="company-name">AMplast</h1>
-        </div>
-        
-        <div class="menu-grid">
-            <button onclick="window.location.href='bon.html'" class="menu-btn">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                Bon de Livraison
-            </button>
-            <button onclick="window.location.href='devis.html'" class="menu-btn">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-                Devis
-            </button>
-            <button onclick="window.location.href='dashboard.html'" class="menu-btn">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                Dashboard
-            </button>
-            <button onclick="window.location.href='tarif.html'" class="menu-btn">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-                Tarif
-            </button>
-            <button onclick="window.location.href='clients.html'" class="menu-btn">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                Clients
-            </button>
-            <button class="menu-btn" disabled style="opacity: 0.6; cursor: not-allowed;">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                Salaire
-            </button>
-            <button class="menu-btn" disabled style="opacity: 0.6; cursor: not-allowed;">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-                Dépense
-            </button>
-            <button class="menu-btn" disabled style="opacity: 0.6; cursor: not-allowed;">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                Matières
-            </button>
-            <button class="menu-btn" disabled style="opacity: 0.6; cursor: not-allowed;">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                Stock
-            </button>
-            <button class="menu-btn" disabled style="opacity: 0.6; cursor: not-allowed;">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-                Matériel
-            </button>
-        </div>
-    </div>
-    </div>
+    <div class="app-container">
 
-    <!-- Auth Overlay -->
+        <!-- ===== HEADER ===== -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="logo-container">
+                    <div class="logo-badge">
+                        <img src="logo.png" alt="AMplast Logo">
+                    </div>
+                    <div class="brand-meta">
+                        <span class="brand-name">AMplast</span>
+                        <span class="app-title">Menu Principal</span>
+                    </div>
+                </div>
+                <div id="current-date" class="date-pill">Chargement...</div>
+            </div>
+
+            <div class="system-banner">
+                <div class="banner-left">
+                    <div class="status-dot"></div>
+                    <span>Système de Gestion</span>
+                </div>
+                <div class="banner-right">En ligne · v2.5</div>
+            </div>
+            <div class="header-shimmer"></div>
+        </header>
+
+        <!-- Section label -->
+        <div class="section-header">
+            <span class="section-title">Modules</span>
+            <div class="section-line"></div>
+        </div>
+
+        <!-- ===== GRILLE DES BOUTONS CARRÉS ARRONDIS NÉON ===== -->
+        <main class="main-content">
+            <div class="buttons-grid">
+
+                <!-- 1. Clients -->
+                <a href="amclts.html" class="btn-card theme-clients" id="btn-clients" title="Gestion des Clients">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Clients</span>
+                </a>
+
+                <!-- 2. Fournisseurs -->
+                <a href="amfrs.html" class="btn-card theme-fournisseurs" id="btn-fournisseurs" title="Gestion des Fournisseurs">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="3" width="15" height="13"/>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                            <circle cx="5.5" cy="18.5" r="2.5"/>
+                            <circle cx="18.5" cy="18.5" r="2.5"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Fournisseurs</span>
+                </a>
+
+                <!-- 3. Matières -->
+                <a href="amatiere.html" class="btn-card theme-matieres" id="btn-matieres" title="Matières Premières">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                            <line x1="12" y1="22.08" x2="12" y2="12"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Matières</span>
+                </a>
+
+                <!-- 4. Produits -->
+                <a href="amstock.html" class="btn-card theme-produits" id="btn-produits" title="Catalogue Produits">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                            <polyline points="2 17 12 22 22 17"/>
+                            <polyline points="2 12 12 17 22 12"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Produits</span>
+                </a>
+
+                <!-- 5. Matériels -->
+                <a href="amachine.html" class="btn-card theme-materiels" id="btn-materiels" title="Parc Matériels">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Matériels</span>
+                </a>
+
+                <!-- 6. Ouvriers -->
+                <a href="amkhdam.html" class="btn-card theme-ouvriers" id="btn-ouvriers" title="Gestion des Ouvriers">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="7"/>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Ouvriers</span>
+                </a>
+
+                <!-- 7. Dépenses -->
+                <div class="btn-card theme-depenses" id="btn-depenses" onclick="comingSoon('Dépenses &amp; Charges')" title="Dépenses & Charges">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Dépenses</span>
+                </div>
+
+                <!-- 8. Situation -->
+                <a href="amdocs.html" class="btn-card theme-situation" id="btn-situation" title="Tableau de bord / Situation">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6"  y1="20" x2="6"  y2="14"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Docs</span>
+                </a>
+
+                <!-- 9. Production -->
+                <div class="btn-card theme-production" id="btn-production" onclick="comingSoon('Production &amp; Mélange')" title="Production & Mélange">
+                    <div class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <span class="btn-label">Production</span>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="eco-footer">
+            <strong>AMplast</strong>
+            <div class="footer-dot"></div>
+            <span>Gestion Intégrée Éco-Responsable</span>
+        </footer>
+
+    </div><!-- .app-container -->
+
+    <!-- ===== AUTH OVERLAY ===== -->
     <div id="auth-overlay" class="auth-overlay">
-        <div class="auth-box">
-            <h2>Accès Sécurisé</h2>
-            <p>Veuillez entrer le mot de passe</p>
-            <input type="password" id="auth-password" placeholder="Mot de passe">
-            <button id="auth-btn" class="btn-shine">Valider</button>
-            <p id="auth-error" style="color: #e74c3c; display: none; margin-top: 10px; font-size: 0.9rem;">Mot de passe incorrect</p>
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </div>
+                <h2>Accès Sécurisé</h2>
+                <p>Système de Gestion AMplast</p>
+            </div>
+            <div class="auth-body">
+                <div>
+                    <label for="auth-password">Mot de passe administrateur</label>
+                    <input type="password" id="auth-password" class="auth-input"
+                           placeholder="Entrez le mot de passe" autocomplete="current-password">
+                </div>
+                <div id="auth-error" class="auth-error">Mot de passe incorrect. Veuillez réessayer.</div>
+                <button id="auth-btn" class="auth-submit">Déverrouiller l'accès</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // === Auth Logic ===
-        const authOverlay = document.getElementById('auth-overlay');
+        /* ===== AUTHENTICATION ===== */
+        const authOverlay  = document.getElementById('auth-overlay');
         const authPassword = document.getElementById('auth-password');
-        const authBtn = document.getElementById('auth-btn');
-        const authError = document.getElementById('auth-error');
+        const authBtn      = document.getElementById('auth-btn');
+        const authError    = document.getElementById('auth-error');
 
+        // SHA-256 du mot de passe actuel
         const EXPECTED_HASH = "d30ea69ba67ff9c8c9d52a2d202edb26d1a619b0baed813de401ec2dbf392448";
 
-        // Check Auth Status from localStorage (lasts 12 hours)
         function checkAuthStatus() {
-            const authData = JSON.parse(localStorage.getItem('auth_data') || '{}');
-            const now = new Date().getTime();
-            if (authData.passed === 'true' && (now - authData.time < 12 * 60 * 60 * 1000)) {
-                return true;
-            }
-            return false;
+            try {
+                const d = JSON.parse(localStorage.getItem('auth_data') || '{}');
+                return d.passed === 'true' && (Date.now() - d.time < 12 * 3600 * 1000);
+            } catch { return false; }
         }
 
         if (checkAuthStatus()) {
@@ -101,66 +768,68 @@
         }
 
         async function hashString(str) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
         }
 
         async function checkAuth() {
             const pwd = authPassword.value;
-            if (!pwd) return;
-            
+            if (!pwd) { authPassword.focus(); return; }
+
             authBtn.textContent = 'Vérification...';
             authBtn.disabled = true;
-            
-            const hash = await hashString(pwd);
-            if (hash === EXPECTED_HASH) {
-                const now = new Date().getTime();
-                localStorage.setItem('auth_data', JSON.stringify({ passed: 'true', time: now }));
-                authOverlay.style.opacity = '0';
-                setTimeout(() => {
-                    authOverlay.style.display = 'none';
-                }, 300);
-            } else {
-                authError.style.display = 'block';
-                authPassword.value = '';
-                authPassword.focus();
-                
-                // Shake animation
-                authBtn.style.animation = 'none';
-                void authBtn.offsetWidth;
-                authBtn.style.animation = 'shake 0.4s ease';
-            }
-            
-            authBtn.textContent = 'Valider';
-            authBtn.disabled = false;
-        }
 
-        if (authBtn) {
-            authBtn.addEventListener('click', checkAuth);
-            authPassword.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') checkAuth();
-            });
-        }
-        
-        // Setup shake keyframes if not present
-        if (!document.getElementById('shake-style')) {
-            const shakeStyle = document.createElement('style');
-            shakeStyle.id = 'shake-style';
-            shakeStyle.textContent = `
-                @keyframes shake {
-                    0%, 100% { transform: translateX(0); }
-                    20% { transform: translateX(-8px); }
-                    40% { transform: translateX(8px); }
-                    60% { transform: translateX(-5px); }
-                    80% { transform: translateX(5px); }
+            try {
+                const hash = await hashString(pwd);
+                if (hash === EXPECTED_HASH) {
+                    localStorage.setItem('auth_data', JSON.stringify({ passed: 'true', time: Date.now() }));
+                    authOverlay.style.opacity = '0';
+                    setTimeout(() => authOverlay.style.display = 'none', 350);
+                } else {
+                    authError.style.display = 'block';
+                    authPassword.value = '';
+                    authPassword.focus();
+                    const card = document.querySelector('.auth-card');
+                    card.style.animation = 'none';
+                    void card.offsetWidth;
+                    card.style.animation = 'shake 0.4s ease';
                 }
-            `;
-            document.head.appendChild(shakeStyle);
+            } catch (err) { console.error(err); }
+            finally {
+                authBtn.textContent = "Déverrouiller l'accès";
+                authBtn.disabled = false;
+            }
         }
 
+        authBtn.addEventListener('click', checkAuth);
+        authPassword.addEventListener('keypress', e => { if (e.key === 'Enter') checkAuth(); });
+
+        /* ===== DATE ===== */
+        const el = document.getElementById('current-date');
+        if (el) {
+            const s = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'short' });
+            el.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
+        /* ===== COMING SOON TOAST ===== */
+        function comingSoon(name) {
+            document.querySelectorAll('.toast-msg').forEach(t => t.remove());
+            const toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.textContent = `🚧 ${name} — Module en déploiement`;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateX(-50%) translateY(0)';
+                });
+            });
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(20px)';
+                setTimeout(() => toast.remove(), 280);
+            }, 2600);
+        }
     </script>
 </body>
 </html>
