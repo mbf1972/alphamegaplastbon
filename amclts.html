@@ -2315,7 +2315,7 @@
         if (sr) designation += ` ${sr}`;
         if (color) designation += ` — ${color}`;
 
-        bonLines.push({ designation, qte, diam, long, prix, sr, color, total: qte * prix });
+        bonLines.push({ designation, qte, diam, long, prix, sr, color, total: qte * prix * (parseFloat(long) || 1) });
 
         ['bonQte','bonDiam','bonLong','bonPrix','bonColor'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('bonSr').value = 'S1';
