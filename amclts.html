@@ -817,10 +817,10 @@
             padding-right: 2px;
         }
         .bon-body .bon-lines-table {
-            flex-shrink: 0;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            height: 225px;
+            min-height: 0;
             border: 1.5px solid #d1d5db;
             border-radius: 8px;
             background: white;
@@ -830,27 +830,32 @@
         .bon-body .bon-lines-header {
             flex-shrink: 0;
             display: grid;
-            grid-template-columns: 2fr 0.6fr 0.9fr 0.9fr 0.4fr;
+            grid-template-columns: 1fr auto auto auto auto;
+            gap: 4px;
             background: var(--bg-color);
-            padding: 5px 8px;
-            font-size: 9px;
+            padding: 5px 6px;
+            font-size: 8.5px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.3px;
             color: var(--text-muted);
             border-bottom: 1px solid #e5e7eb;
         }
+        .bon-body .bon-lines-header > div:nth-child(2) { min-width: 28px; text-align: center; }
+        .bon-body .bon-lines-header > div:nth-child(3) { min-width: 42px; text-align: right; }
+        .bon-body .bon-lines-header > div:nth-child(4) { min-width: 52px; text-align: right; }
+        .bon-body .bon-lines-header > div:nth-child(5) { min-width: 20px; }
         .bon-body .bon-lines-header .bl-total { color: var(--accent); }
         .bon-body #bonLinesBody {
             flex: 1;
-            overflow-y: scroll;
+            overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: var(--primary-soft) #f1f8f4;
             min-height: 0;
             -webkit-overflow-scrolling: touch;
         }
         .bon-body #bonLinesBody::-webkit-scrollbar {
-            width: 6px;
+            width: 5px;
         }
         .bon-body #bonLinesBody::-webkit-scrollbar-track {
             background: #f1f8f4;
@@ -864,32 +869,41 @@
         }
         .bon-body .bon-line-row {
             display: grid;
-            grid-template-columns: 2fr 0.6fr 0.9fr 0.9fr 0.4fr;
-            padding: 4px 8px;
+            grid-template-columns: 1fr auto auto auto auto;
+            gap: 4px;
+            padding: 4px 6px;
             font-size: 10px;
             font-weight: 600;
             border-top: 1px solid #f0f5f1;
             align-items: center;
         }
+        .bon-body .bon-line-row > div:nth-child(1) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .bon-body .bon-line-row > div:nth-child(2) { min-width: 28px; text-align: center; }
+        .bon-body .bon-line-row > div:nth-child(3) { min-width: 42px; text-align: right; }
+        .bon-body .bon-line-row > div:nth-child(4) { min-width: 52px; text-align: right; }
         .bon-body .bon-line-row:first-child {
             border-top: none;
         }
         .bon-body .bon-line-row .bl-total { color: var(--amount-color); font-weight: 800; }
-        .bon-body .bon-line-del { background:none; border:none; color:#c1121f; font-size:13px; cursor:pointer; text-align:right; }
+        .bon-body .bon-line-del { background:none; border:none; color:#c1121f; font-size:12px; cursor:pointer; padding: 0 2px; min-width: 20px; text-align: center; }
         .bon-body .bon-lines-empty { padding: 14px 8px; text-align:center; color: var(--text-muted); font-size: 10.5px; font-style: italic; }
         .bon-body .bon-grand-total {
             flex-shrink: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 10px;
+            padding: 5px 8px;
             background: #f8faf9;
             border-top: 1.5px solid #e5e7eb;
             font-size: 11px;
             font-weight: 800;
         }
         .bon-body .bon-grand-total span:last-child { color: var(--amount-color); font-size: 12.5px; }
-        .bon-body .btn-submit[onclick="addBonLine()"] { padding: 7px; margin-top: 2px; flex-shrink: 0; }
+        .bon-body .btn-submit[onclick="addBonLine()"] { padding: 6px; margin-top: 2px; flex-shrink: 0; }
 
         /* Actions fixes en bas pour le bonModal */
         .bon-box .bon-footer {
@@ -1108,17 +1122,30 @@
                 gap: 3px;
             }
             .bon-body .bon-lines-table {
-                height: 200px;
+                min-height: 0;
             }
+            .bon-body .bon-lines-header,
+            .bon-body .bon-line-row {
+                gap: 3px;
+                padding: 3px 5px;
+            }
+            .bon-body .bon-lines-header > div:nth-child(2),
+            .bon-body .bon-line-row > div:nth-child(2) { min-width: 24px; }
+            .bon-body .bon-lines-header > div:nth-child(3),
+            .bon-body .bon-line-row > div:nth-child(3) { min-width: 36px; }
+            .bon-body .bon-lines-header > div:nth-child(4),
+            .bon-body .bon-line-row > div:nth-child(4) { min-width: 46px; }
+            .bon-body .bon-lines-header > div:nth-child(5),
+            .bon-body .bon-line-row > div:nth-child(5) { min-width: 18px; }
             .bon-article-card {
                 padding: 5px 7px;
                 gap: 2px;
             }
-            .bon-lines-header,
-            .bon-line-row {
+            .bon-body .bon-lines-header {
+                font-size: 7.5px;
+            }
+            .bon-body .bon-line-row {
                 font-size: 9px;
-                padding: 4px 6px;
-                gap: 2px;
             }
             .bon-grand-total {
                 padding: 5px 8px;
