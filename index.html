@@ -259,162 +259,210 @@
             align-content: stretch;
         }
 
-        /* ===== BOUTONS CARRÉS ARRONDIS GLASSMORPHISM NÉON ===== */
+        /* ===== BOUTONS MODULES — DESIGN MODERNE, ATTRAYANT & PROFESSIONNEL ===== */
         .btn-card {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 7px;
-            padding: 10px 6px;
-            border-radius: 24px;
-            /* Glassmorphism fond sombre teinté par couleur du bouton */
-            background: linear-gradient(155deg,
-                rgba(var(--btn-rgb), 0.13) 0%,
-                rgba(15,36,23,0.95) 42%,
-                rgba(8,20,13,0.98) 100%
-            );
-            border: 1.5px solid rgba(var(--btn-rgb), 0.62);
-            color: #ffffff;
+            gap: 8px;
+            padding: 10px 6px 12px;
+            border-radius: 20px;
+            /* Fond carte moderne blanc doux avec reflet subtil teinté */
+            background: linear-gradient(165deg, #ffffff 0%, #fafdff 55%, rgba(var(--btn-rgb), 0.05) 100%);
+            border: 1px solid rgba(var(--btn-rgb), 0.22);
+            color: #12281c;
             text-decoration: none;
             cursor: pointer;
             overflow: hidden;
             box-shadow:
-                0 8px 20px rgba(0,0,0,0.28),
-                0 0 0 0.5px rgba(var(--btn-rgb), 0.28) inset,
-                0 0 16px rgba(var(--btn-rgb), 0.20),
-                inset 0 1px 0 rgba(255,255,255,0.10);
+                0 4px 14px -2px rgba(15, 35, 22, 0.06),
+                0 8px 20px -4px rgba(var(--btn-rgb), 0.16),
+                inset 0 1px 0 rgba(255, 255, 255, 0.95);
             transition:
-                transform 0.22s cubic-bezier(0.16,1,0.3,1),
-                box-shadow 0.22s cubic-bezier(0.16,1,0.3,1),
+                transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.22s ease;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Inner gloss shine stripe */
+        /* Ligne de brillance supérieure élégante teintée */
         .btn-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 10%; right: 10%;
-            height: 44%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.00) 100%);
-            border-radius: 0 0 50% 50%;
+            top: 0; left: 18%; right: 18%;
+            height: 2.5px;
+            background: linear-gradient(90deg, transparent 0%, rgb(var(--btn-rgb)) 50%, transparent 100%);
+            border-radius: 2px;
+            opacity: 0.85;
+            transition: all 0.25s ease;
             pointer-events: none;
-            z-index: 0;
+            z-index: 2;
         }
 
-        /* Outer glow halo on hover */
+        /* Halo lumineux doux en arrière-plan */
         .btn-card::after {
             content: '';
             position: absolute;
-            inset: -5px;
-            border-radius: 28px;
-            background: radial-gradient(circle at center, rgba(var(--btn-rgb), 0.35) 0%, transparent 70%);
+            inset: -4px;
+            border-radius: 24px;
+            background: radial-gradient(circle at 50% 35%, rgba(var(--btn-rgb), 0.25) 0%, transparent 70%);
             opacity: 0;
-            filter: blur(10px);
+            filter: blur(8px);
             z-index: -1;
             pointer-events: none;
-            transition: opacity 0.24s ease;
+            transition: opacity 0.25s ease;
         }
 
-        /* Hover */
+        /* Survol (Hover) */
         .btn-card:hover {
-            transform: translateY(-5px) scale(1.04);
-            border-color: rgba(var(--btn-rgb), 0.90);
+            transform: translateY(-4px) scale(1.02);
+            border-color: rgba(var(--btn-rgb), 0.50);
             box-shadow:
-                0 14px 28px rgba(0,0,0,0.36),
-                0 0 28px rgba(var(--btn-rgb), 0.42),
-                0 0 0 1px rgba(var(--btn-rgb), 0.50) inset,
-                inset 0 1px 0 rgba(255,255,255,0.18);
+                0 12px 26px -4px rgba(var(--btn-rgb), 0.28),
+                0 4px 12px rgba(15, 35, 22, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
         }
 
-        .btn-card:hover::after { opacity: 1; }
+        .btn-card:hover::before {
+            left: 8%;
+            right: 8%;
+            opacity: 1;
+            height: 3px;
+        }
 
-        /* Active */
+        .btn-card:hover::after {
+            opacity: 1;
+        }
+
+        /* Clic / Toucher actif (Active haptic feedback) */
         .btn-card:active {
-            transform: translateY(2px) scale(0.97);
+            transform: scale(0.94);
             box-shadow:
-                0 4px 10px rgba(0,0,0,0.30),
-                0 0 12px rgba(var(--btn-rgb), 0.28),
-                inset 0 1px 4px rgba(0,0,0,0.20);
+                0 2px 8px rgba(var(--btn-rgb), 0.22),
+                inset 0 2px 4px rgba(0, 0, 0, 0.06);
             transition-duration: 0.08s;
         }
 
-        /* Icône dans son badge néon */
+        /* Capsule d'icône vibrante en dégradé */
         .btn-card .btn-icon {
             position: relative;
             z-index: 1;
-            width: 46px;
-            height: 46px;
-            border-radius: 15px;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(var(--btn-rgb), 0.14);
-            border: 1px solid rgba(var(--btn-rgb), 0.30);
-            color: rgb(var(--btn-rgb));
-            filter: drop-shadow(0 0 7px rgba(var(--btn-rgb), 0.70));
+            background: linear-gradient(135deg, rgb(var(--btn-rgb)) 0%, rgba(var(--btn-rgb), 0.82) 100%);
+            color: #ffffff;
+            box-shadow:
+                0 6px 14px -2px rgba(var(--btn-rgb), 0.42),
+                inset 0 1px 1px rgba(255, 255, 255, 0.45);
             flex-shrink: 0;
-            transition: transform 0.24s cubic-bezier(0.16,1,0.3,1), background 0.22s ease;
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
         }
 
         .btn-card:hover .btn-icon {
-            transform: scale(1.14) translateY(-2px);
-            background: rgba(var(--btn-rgb), 0.22);
+            transform: scale(1.08) translateY(-2px);
+            box-shadow:
+                0 8px 18px -2px rgba(var(--btn-rgb), 0.55),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
         }
 
         .btn-card .btn-icon svg {
             width: 22px;
             height: 22px;
             display: block;
+            color: #ffffff;
+            stroke: #ffffff;
+            filter: drop-shadow(0 1.5px 3px rgba(0, 0, 0, 0.22));
         }
 
-        /* Texte du bouton */
+        /* Libellé du bouton */
         .btn-card .btn-label {
             position: relative;
             z-index: 1;
             font-family: 'Outfit', 'Nunito', sans-serif;
-            font-size: clamp(10px, 2.6vw, 11.5px);
+            font-size: clamp(10.5px, 2.7vw, 12px);
             font-weight: 800;
-            color: rgba(255,255,255,0.92);
-            letter-spacing: 0.2px;
+            color: #12281c;
+            letter-spacing: -0.2px;
             text-align: center;
             line-height: 1.2;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.70);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 96%;
+            transition: color 0.2s ease;
         }
 
-        /* ===== THÈMES (RGB triplets pour rgba() composition) ===== */
-        .theme-clients     { --btn-rgb: 59,130,246; }
-        .theme-fournisseurs{ --btn-rgb: 139,92,246; }
-        .theme-matieres    { --btn-rgb: 16,185,129; }
-        .theme-produits    { --btn-rgb: 245,158,11; }
-        .theme-materiels   { --btn-rgb: 225,29,72; }
-        .theme-ouvriers    { --btn-rgb: 6,182,212; }
-        .theme-depenses    { --btn-rgb: 244,63,94; }
-        .theme-situation   { --btn-rgb: 13,148,136; }
-        .theme-production  { --btn-rgb: 232,101,26; }
+        .btn-card:hover .btn-label {
+            color: rgb(var(--btn-rgb));
+        }
 
-        /* Animation d'entrée — blur + slide */
-        .btn-card { animation: cardIn 0.45s cubic-bezier(0.16,1,0.3,1) both; }
-        .btn-card:nth-child(1) { animation-delay: 0.04s; }
-        .btn-card:nth-child(2) { animation-delay: 0.08s; }
-        .btn-card:nth-child(3) { animation-delay: 0.12s; }
-        .btn-card:nth-child(4) { animation-delay: 0.16s; }
-        .btn-card:nth-child(5) { animation-delay: 0.20s; }
-        .btn-card:nth-child(6) { animation-delay: 0.24s; }
-        .btn-card:nth-child(7) { animation-delay: 0.28s; }
-        .btn-card:nth-child(8) { animation-delay: 0.32s; }
-        .btn-card:nth-child(9) { animation-delay: 0.36s; }
+        /* Badge 'Bientôt' pour les modules en cours */
+        .btn-badge-soon {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            font-size: 7.5px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 1.5px 5px;
+            border-radius: 6px;
+            background: rgba(var(--btn-rgb), 0.12);
+            color: rgb(var(--btn-rgb));
+            border: 0.5px solid rgba(var(--btn-rgb), 0.28);
+            line-height: 1.1;
+            z-index: 2;
+        }
+
+        /* ===== THÈMES HARMONIEUX (RGB triplets) ===== */
+        .theme-clients      { --btn-rgb: 37, 99, 235; }  /* Bleu Royal */
+        .theme-fournisseurs { --btn-rgb: 124, 58, 237; } /* Violet Moderne */
+        .theme-matieres     { --btn-rgb: 5, 150, 105; }  /* Vert Émeraude */
+        .theme-produits     { --btn-rgb: 217, 119, 6; }  /* Ambre Chaleureux */
+        .theme-materiels    { --btn-rgb: 225, 29, 72; }  /* Rouge Rubis */
+        .theme-ouvriers     { --btn-rgb: 8, 145, 178; }  /* Cyan Océan */
+        .theme-depenses     { --btn-rgb: 234, 88, 12; }  /* Corail / Mandarine */
+        .theme-situation    { --btn-rgb: 13, 148, 136; } /* Sarcelle / Teal */
+        .theme-production   { --btn-rgb: 45, 106, 79; }  /* Vert Forêt AMplast */
+
+        /* Animation d'entrée fluide avec échelonnement */
+        .btn-card { animation: cardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .btn-card:nth-child(1) { animation-delay: 0.03s; }
+        .btn-card:nth-child(2) { animation-delay: 0.06s; }
+        .btn-card:nth-child(3) { animation-delay: 0.09s; }
+        .btn-card:nth-child(4) { animation-delay: 0.12s; }
+        .btn-card:nth-child(5) { animation-delay: 0.15s; }
+        .btn-card:nth-child(6) { animation-delay: 0.18s; }
+        .btn-card:nth-child(7) { animation-delay: 0.21s; }
+        .btn-card:nth-child(8) { animation-delay: 0.24s; }
+        .btn-card:nth-child(9) { animation-delay: 0.27s; }
 
         @keyframes cardIn {
-            from { opacity: 0; transform: translateY(18px) scale(0.92); filter: blur(2px); }
+            from { opacity: 0; transform: translateY(14px) scale(0.94); filter: blur(2px); }
             to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        /* Responsive petits écrans */
+        @media (max-height: 690px) {
+            .buttons-grid { gap: 9px; }
+            .btn-card { padding: 8px 4px 10px; border-radius: 17px; gap: 6px; }
+            .btn-card .btn-icon { width: 38px; height: 38px; border-radius: 12px; }
+            .btn-card .btn-icon svg { width: 19px; height: 19px; }
+            .btn-card .btn-label { font-size: 10px; }
+        }
+        @media (max-width: 360px) {
+            .buttons-grid { gap: 8px; }
+            .btn-card { padding: 8px 4px 9px; border-radius: 16px; }
+            .btn-card .btn-icon { width: 36px; height: 36px; border-radius: 11px; }
+            .btn-card .btn-icon svg { width: 18px; height: 18px; }
+            .btn-card .btn-label { font-size: 9.5px; }
         }
 
         /* ===== FOOTER ===== */
@@ -678,6 +726,7 @@
 
                 <!-- 7. Dépenses -->
                 <div class="btn-card theme-depenses" id="btn-depenses" onclick="comingSoon('Dépenses &amp; Charges')" title="Dépenses & Charges">
+                    <span class="btn-badge-soon">Bientôt</span>
                     <div class="btn-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="12" y1="1" x2="12" y2="23"/>
@@ -701,6 +750,7 @@
 
                 <!-- 9. Production -->
                 <div class="btn-card theme-production" id="btn-production" onclick="comingSoon('Production &amp; Mélange')" title="Production & Mélange">
+                    <span class="btn-badge-soon">Bientôt</span>
                     <div class="btn-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
