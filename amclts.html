@@ -676,20 +676,23 @@
         .submodal-header {
             background: var(--primary);
             color: white;
-            padding: 14px 16px;
+            padding: 10px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
+            flex-shrink: 0;
         }
 
         .submodal-body {
-            padding: 16px;
+            padding: 10px 12px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 7px;
+            flex: 1;
+            min-height: 0;
         }
 
         .form-group {
@@ -713,26 +716,30 @@
         .bon-box {
             width: 100%;
             max-width: 440px;
-            height: 90vh;
-            max-height: 690px;
+            height: 92vh;
+            max-height: 700px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         .bon-body {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 14px;
-            gap: 6px;
+            padding: 8px 10px;
+            gap: 4px;
             min-height: 0;
+            display: flex;
+            flex-direction: column;
         }
-        .bon-body .form-group { gap: 2px; }
-        .bon-body .form-group label { font-size: 9px; margin-bottom: 1px; }
+        .bon-body .form-group { gap: 1px; }
+        .bon-body .form-group label { font-size: 8.5px; margin-bottom: 0px; }
         .bon-body input, .bon-body select {
-            padding: 5px 6px;
+            padding: 4px 6px;
             font-size: 11px;
             min-width: 0;
             box-sizing: border-box;
             width: 100%;
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid #d1d5db;
             outline: none;
             background: white;
@@ -745,13 +752,14 @@
         }
         .bon-article-card {
             background: rgba(82, 183, 136, 0.08);
-            padding: 8px 10px;
-            border-radius: 10px;
+            padding: 6px 8px;
+            border-radius: 8px;
             border: 1px solid rgba(82, 183, 136, 0.25);
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
             margin-top: 2px;
+            flex-shrink: 0;
         }
         #bonProduitSelect {
             background: linear-gradient(135deg, #eaf8ee 0%, #d8f3dc 100%) !important;
@@ -784,24 +792,119 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(82, 183, 136, 0.25);
         }
-        .bon-body .form-row3 { gap: 4px; }
-        .bon-body .form-row { gap: 4px; }
-        .bon-body .bon-lines-table {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-            overflow: hidden;
+        .bon-body .form-row3 { gap: 3px; }
+        .bon-body .form-row { gap: 3px; flex-shrink: 0; }
+        .bon-article-card { flex-shrink: 0; }
+
+        /* Grilles compactes pour les champs numériques du bon */
+        .bon-fields-row1 {
+            display: grid;
+            grid-template-columns: 1.6fr 0.65fr 0.65fr;
+            gap: 3px;
             margin-top: 2px;
         }
+        .bon-fields-row2 {
+            display: grid;
+            grid-template-columns: 1.8fr 0.55fr 0.55fr;
+            gap: 3px;
+            margin-top: 2px;
+        }
+        /* Inputs centrés pour les champs à contenu court (Diam, Long, SR, Couleur) */
+        .bon-fields-row1 input:not(:first-child),
+        .bon-fields-row2 input:not(:first-child) {
+            text-align: center;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+        .bon-body .bon-lines-table {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            height: 225px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            overflow: hidden;
+            margin-top: 3px;
+        }
+        .bon-body .bon-lines-header {
+            flex-shrink: 0;
+            display: grid;
+            grid-template-columns: 2fr 0.6fr 0.9fr 0.9fr 0.4fr;
+            background: var(--bg-color);
+            padding: 5px 8px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .bon-body .bon-lines-header .bl-total { color: var(--accent); }
         .bon-body #bonLinesBody {
             flex: 1;
-            overflow-y: auto;
-            min-height: 30px;
+            overflow-y: scroll;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-soft) #f1f8f4;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
         }
-        .bon-body .bon-lines-empty { padding: 8px; }
-        .bon-body .btn-submit[onclick="addBonLine()"] { padding: 9px; margin-top: 2px; }
-        .bon-body .form-actions { flex-shrink: 0; margin-top: 4px; }
+        .bon-body #bonLinesBody::-webkit-scrollbar {
+            width: 6px;
+        }
+        .bon-body #bonLinesBody::-webkit-scrollbar-track {
+            background: #f1f8f4;
+        }
+        .bon-body #bonLinesBody::-webkit-scrollbar-thumb {
+            background: #52b788;
+            border-radius: 4px;
+        }
+        .bon-body #bonLinesBody::-webkit-scrollbar-thumb:hover {
+            background: #2d6a4f;
+        }
+        .bon-body .bon-line-row {
+            display: grid;
+            grid-template-columns: 2fr 0.6fr 0.9fr 0.9fr 0.4fr;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            border-top: 1px solid #f0f5f1;
+            align-items: center;
+        }
+        .bon-body .bon-line-row:first-child {
+            border-top: none;
+        }
+        .bon-body .bon-line-row .bl-total { color: var(--amount-color); font-weight: 800; }
+        .bon-body .bon-line-del { background:none; border:none; color:#c1121f; font-size:13px; cursor:pointer; text-align:right; }
+        .bon-body .bon-lines-empty { padding: 14px 8px; text-align:center; color: var(--text-muted); font-size: 10.5px; font-style: italic; }
+        .bon-body .bon-grand-total {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            background: #f8faf9;
+            border-top: 1.5px solid #e5e7eb;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .bon-body .bon-grand-total span:last-child { color: var(--amount-color); font-size: 12.5px; }
+        .bon-body .btn-submit[onclick="addBonLine()"] { padding: 7px; margin-top: 2px; flex-shrink: 0; }
+
+        /* Actions fixes en bas pour le bonModal */
+        .bon-box .bon-footer {
+            flex-shrink: 0;
+            margin: 0;
+            padding: 8px 12px;
+            background: white;
+            border-top: 1px solid rgba(82, 183, 136, 0.25);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+            z-index: 10;
+        }
 
         .form-row {
             display: grid;
@@ -830,46 +933,6 @@
             cursor: pointer;
         }
 
-        .bon-lines-table {
-            border: 1.5px solid #e5e7eb;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 2px;
-        }
-        .bon-lines-header {
-            display: grid;
-            grid-template-columns: 2fr 0.6fr 0.9fr 0.9fr 0.4fr;
-            background: var(--bg-color);
-            padding: 8px 10px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            color: var(--text-muted);
-        }
-        .bon-lines-header .bl-total { color: var(--accent); }
-        .bon-line-row {
-            display: grid;
-            grid-template-columns: 2fr 0.6fr 0.9fr 0.9fr 0.4fr;
-            padding: 8px 10px;
-            font-size: 11.5px;
-            font-weight: 600;
-            border-top: 1px solid #f0f5f1;
-            align-items: center;
-        }
-        .bon-line-row .bl-total { color: var(--amount-color); font-weight: 800; }
-        .bon-line-del { background:none; border:none; color:#c1121f; font-size:14px; cursor:pointer; text-align:right; }
-        .bon-lines-empty { padding: 14px; text-align:center; color: var(--text-muted); font-size: 11.5px; }
-        .bon-grand-total {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 12px;
-            background: var(--bg-color);
-            border-top: 1.5px solid #e5e7eb;
-            font-size: 12.5px;
-            font-weight: 800;
-        }
-        .bon-grand-total span:last-child { color: var(--amount-color); font-size: 14px; }
 
         .form-actions {
             display: flex;
@@ -1031,15 +1094,46 @@
                 grid-column: 1 / -1;
             }
             .form-row {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
             .bon-box {
-                padding: 14px 10px;
+                height: 95vh;
+                max-height: 100vh;
+            }
+            .bon-box .bon-footer {
+                padding: 6px 10px;
+            }
+            .bon-body {
+                padding: 6px 8px;
+                gap: 3px;
+            }
+            .bon-body .bon-lines-table {
+                height: 200px;
+            }
+            .bon-article-card {
+                padding: 5px 7px;
+                gap: 2px;
             }
             .bon-lines-header,
             .bon-line-row {
-                font-size: 10px;
-                gap: 4px;
+                font-size: 9px;
+                padding: 4px 6px;
+                gap: 2px;
+            }
+            .bon-grand-total {
+                padding: 5px 8px;
+                font-size: 10.5px;
+            }
+            .submodal-header {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            .form-actions {
+                margin-top: 4px;
+            }
+            .btn-cancel, .btn-submit {
+                padding: 6px 10px;
+                font-size: 11px;
             }
         }
 
@@ -1186,88 +1280,94 @@
             <button onclick="closeSubmodals()" style="background:none;border:none;color:white;cursor:pointer;font-size:18px;">×</button>
         </div>
         <div class="submodal-body bon-body">
-            <div class="form-row">
+            <div style="display:grid; grid-template-columns: 0.9fr 1.1fr; gap:3px; flex-shrink:0;">
                 <div class="form-group">
                     <label>Date</label>
                     <input type="date" id="bonDate">
                 </div>
                 <div class="form-group">
-                    <label>N° Bon</label>
-                    <input type="text" id="bonRef" placeholder="BC-4822" style="color:var(--accent); font-weight:800;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label style="margin:0;">N° Bon</label>
+                        <span id="bonRefBadge" style="font-size:8px; background:rgba(82,183,136,0.2); color:var(--primary); font-weight:800; padding:1px 5px; border-radius:6px;">Auto</span>
+                    </div>
+                    <div style="position:relative; display:flex; align-items:center; margin-top:2px;">
+                        <input type="text" id="bonRef" placeholder="N°..." style="color:var(--accent); font-weight:800; padding-right:28px; width:100%;">
+                        <button type="button" onclick="generateAndSetNextNumBon(true)" title="Recalculer" style="position:absolute; right:4px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:12px; padding:2px; border-radius:4px;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'">🔄</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-row">
+            <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:3px; flex-shrink:0;">
                 <div class="form-group">
                     <label>Client</label>
                     <input type="text" id="bonClientNom" placeholder="Nom du client">
                 </div>
                 <div class="form-group">
                     <label>Adresse</label>
-                    <input type="text" id="bonClientAdresse" placeholder="Adresse du client">
+                    <input type="text" id="bonClientAdresse" placeholder="Adresse">
                 </div>
             </div>
 
             <div class="bon-article-card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <label style="font-weight:800; color:var(--primary); font-size:10px; display:flex; align-items:center; gap:5px;">
-                        <span>📦 CHOISIR UN PRODUIT</span>
-                        <span id="bonProduitCount" style="background:var(--primary-soft); color:white; font-size:8.5px; padding:1px 5px; border-radius:8px; font-weight:700;">0</span>
+                    <label style="font-weight:800; color:var(--primary); font-size:9px; display:flex; align-items:center; gap:4px;">
+                        <span>📦 PRODUIT</span>
+                        <span id="bonProduitCount" style="background:var(--primary-soft); color:white; font-size:8px; padding:1px 4px; border-radius:8px; font-weight:700;">0</span>
                     </label>
-                    <span id="bonProduitLoading" style="font-size:9px; color:var(--text-muted); display:none;">🔄 Chargement...</span>
+                    <span id="bonProduitLoading" style="font-size:8px; color:var(--text-muted); display:none;">🔄</span>
                 </div>
 
                 <!-- Champ de recherche produit -->
-                <div style="position:relative; margin-top:1px;">
-                    <input type="text" id="bonProduitSearch" placeholder="🔍 Filtrer (ex: 32, Noir, S1, L100)..." 
+                <div style="position:relative; margin-top:0px;">
+                    <input type="text" id="bonProduitSearch" placeholder="🔍 Filtrer (32, Noir, S1...)" 
                            oninput="onSearchBonProduits(this.value)" 
                            onkeydown="onSearchBonProduitsKey(event)"
                            autocomplete="off">
                     <button type="button" id="bonProduitClearBtn" onclick="clearBonProduitSearch()" 
-                            style="position:absolute; right:6px; top:50%; transform:translateY(-50%); background:none; border:none; color:#6b7280; font-size:12px; cursor:pointer; display:none; padding:2px;">✕</button>
+                            style="position:absolute; right:4px; top:50%; transform:translateY(-50%); background:none; border:none; color:#6b7280; font-size:11px; cursor:pointer; display:none; padding:1px;">✕</button>
                 </div>
 
-                <div class="form-group" style="margin-top:2px;">
+                <div class="form-group" style="margin-top:1px;">
                     <select id="bonProduitSelect" onchange="onSelectBonProduit(this.value)">
-                        <option value="">-- Choisir un produit du catalogue --</option>
+                        <option value="">-- Choisir un produit --</option>
                     </select>
                 </div>
 
-                <div class="form-row3" style="margin-top:2px;">
+                <div class="bon-fields-row1">
                     <div class="form-group">
-                        <label style="font-size:9.5px; font-weight:800; color:#2d6a4f;">Qté *</label>
-                        <input type="number" id="bonQte" placeholder="0" min="1" style="font-weight:800; border-color:#52b788;">
+                        <label style="font-size:8.5px; font-weight:800; color:#2d6a4f;">Qté *</label>
+                        <input type="number" id="bonQte" placeholder="0" min="1" style="font-weight:800; border-color:#52b788; text-align:center;" onkeydown="if(event.key==='Enter'){event.preventDefault();addBonLine();}">
                     </div>
                     <div class="form-group">
-                        <label style="font-size:9.5px;">Diam (Ø)</label>
-                        <input type="text" id="bonDiam" placeholder="0">
+                        <label style="font-size:8.5px;">Ø mm</label>
+                        <input type="text" id="bonDiam" placeholder="32" onkeydown="if(event.key==='Enter'){event.preventDefault();addBonLine();}">
                     </div>
                     <div class="form-group">
-                        <label style="font-size:9.5px;">Long (m)</label>
-                        <input type="text" id="bonLong" placeholder="0">
+                        <label style="font-size:8.5px;">L (m)</label>
+                        <input type="text" id="bonLong" placeholder="6" onkeydown="if(event.key==='Enter'){event.preventDefault();addBonLine();}">
                     </div>
                 </div>
-                <div class="form-row3" style="margin-top:2px;">
+                <div class="bon-fields-row2">
                     <div class="form-group">
-                        <label style="font-size:9.5px; font-weight:800; color:#2d6a4f;">Prix (DH) *</label>
-                        <input type="number" id="bonPrix" placeholder="0" step="any" style="font-weight:800; border-color:#52b788;">
+                        <label style="font-size:8.5px; font-weight:800; color:#2d6a4f;">Prix DH *</label>
+                        <input type="number" id="bonPrix" placeholder="0" step="any" style="font-weight:800; border-color:#52b788;" onkeydown="if(event.key==='Enter'){event.preventDefault();addBonLine();}">
                     </div>
                     <div class="form-group">
-                        <label style="font-size:9.5px;">Série (SR)</label>
-                        <input type="text" id="bonSr" placeholder="S1" value="S1">
+                        <label style="font-size:8.5px;">SR</label>
+                        <input type="text" id="bonSr" placeholder="S1" value="S1" onkeydown="if(event.key==='Enter'){event.preventDefault();addBonLine();}">
                     </div>
                     <div class="form-group">
-                        <label style="font-size:9.5px;">Couleur</label>
-                        <input type="text" id="bonColor" placeholder="Noir">
+                        <label style="font-size:8.5px;">Couleur</label>
+                        <input type="text" id="bonColor" placeholder="Noir" onkeydown="if(event.key==='Enter'){event.preventDefault();addBonLine();}">
                     </div>
                 </div>
             </div>
 
-            <button class="btn-submit" style="width:100%;" onclick="addBonLine()">VALIDER</button>
+            <button class="btn-submit" style="width:100%; padding:6px; font-size:11px; letter-spacing:0.5px;" onclick="addBonLine()">➕ AJOUTER À LA LISTE</button>
 
             <div class="bon-lines-table">
                 <div class="bon-lines-header">
-                    <div>Désignation</div>
+                    <div id="bonLinesCountHeader">Articles</div>
                     <div>Qté</div>
                     <div>P.U.</div>
                     <div class="bl-total">Total</div>
@@ -1280,11 +1380,11 @@
                     <span id="bonGrandTotal">0,00</span>
                 </div>
             </div>
+        </div>
 
-            <div class="form-actions">
-                <button class="btn-cancel" onclick="closeSubmodals()">Annuler</button>
-                <button class="btn-submit" onclick="submitBon()">Enregistrer le bon</button>
-            </div>
+        <div class="form-actions bon-footer">
+            <button class="btn-cancel" onclick="closeSubmodals()">Annuler</button>
+            <button class="btn-submit" onclick="submitBon()">Enregistrer le bon</button>
         </div>
     </div>
 </div>
@@ -2124,14 +2224,58 @@
         qteInput.select();
     }
 
+    // ========================================================
+    //   NUMÉROTATION SÉQUENTIELLE FIABLE ET PRO (SUPABASE)
+    // ========================================================
+    let cachedLastNumBon = 0;
+
+    async function fetchNextNumBon() {
+        try {
+            // Requête du numéro de bon le plus élevé dans la base Supabase
+            const res = await supabase('GET', '/bons?select=num_bon&order=num_bon.desc&limit=1');
+            let maxDb = 0;
+            if (Array.isArray(res) && res.length > 0 && res[0].num_bon) {
+                maxDb = parseInt(res[0].num_bon, 10) || 0;
+            }
+            
+            // Fallback localStorage pour éviter tout doublon local
+            const storedLast = parseInt(localStorage.getItem('amp_last_num_bon') || '0', 10);
+            const highest = Math.max(maxDb, storedLast, 1024946);
+            
+            const nextNum = highest + 1;
+            cachedLastNumBon = nextNum;
+            return nextNum;
+        } catch (err) {
+            console.warn("Erreur fetchNextNumBon, utilisation fallback:", err);
+            const storedLast = parseInt(localStorage.getItem('amp_last_num_bon') || '1024946', 10);
+            const nextNum = Math.max(storedLast, 1024946) + 1;
+            cachedLastNumBon = nextNum;
+            return nextNum;
+        }
+    }
+
+    async function generateAndSetNextNumBon(forceRefresh = false) {
+        const input = document.getElementById('bonRef');
+        if (!input) return;
+
+        input.placeholder = "Chargement N°...";
+        if (forceRefresh || !input.value) {
+            input.value = "";
+        }
+
+        const nextNum = await fetchNextNumBon();
+        input.value = nextNum;
+        input.placeholder = String(nextNum);
+    }
+
     function openAddBonModal() {
         if (!currentClient) return;
         bonLines = [];
         const now = new Date();
-        const hh = String(now.getHours()).padStart(2, '0');
-        const mm = String(now.getMinutes()).padStart(2, '0');
-        const ss = String(now.getSeconds()).padStart(2, '0');
-        document.getElementById('bonRef').value = `100${hh}${mm}${ss}`;
+        
+        // Attribution automatique du numéro séquentiel continu
+        generateAndSetNextNumBon(true);
+
         document.getElementById('bonDate').value = now.toISOString().split('T')[0];
         document.getElementById('bonClientNom').value = currentClient.name || '';
         document.getElementById('bonClientAdresse').value = currentClient.adresse || '';
@@ -2198,6 +2342,10 @@
     function renderBonLines() {
         const body = document.getElementById('bonLinesBody');
         const empty = document.getElementById('bonLinesEmpty');
+        const countHeader = document.getElementById('bonLinesCountHeader');
+        if (countHeader) {
+            countHeader.textContent = bonLines.length > 0 ? `Articles (${bonLines.length})` : 'Articles';
+        }
         if (bonLines.length === 0) {
             body.innerHTML = '';
             empty.style.display = 'block';
@@ -2215,6 +2363,9 @@
         }
         const grand = bonLines.reduce((s, l) => s + l.total, 0);
         document.getElementById('bonGrandTotal').textContent = formatAmount(grand);
+        if (bonLines.length > 0) {
+            body.scrollTop = body.scrollHeight;
+        }
     }
 
     async function submitBon() {
@@ -2224,13 +2375,20 @@
 
         const dateVal = document.getElementById('bonDate').value;
         if (!dateVal) return alert('Veuillez spécifier la date');
-        const numBon = document.getElementById('bonRef').value.trim() || ('BC-' + Date.now());
+
+        // Sécurisation du N° de bon : extraction numérique stricte pour la colonne bigint
+        const rawNum = document.getElementById('bonRef').value.trim();
+        let numBonVal = parseInt(rawNum.replace(/\D/g, ''), 10);
+        if (!numBonVal || isNaN(numBonVal) || numBonVal <= 0) {
+            numBonVal = await fetchNextNumBon();
+        }
+
         const clientNom = document.getElementById('bonClientNom').value.trim() || currentClient.name;
         const clientAdresse = document.getElementById('bonClientAdresse').value.trim() || currentClient.adresse;
 
         const bonData = {
             client_id: parseInt(currentClient.id),
-            num_bon: numBon,
+            num_bon: numBonVal,
             date_bon: dateVal,
             client_nom: clientNom,
             client_adresse: clientAdresse,
@@ -2255,7 +2413,10 @@
                 await supabase('POST', '/bon_items', itemsData);
             }
 
-            showToast('✓ Bon de livraison enregistré !');
+            // Mémoriser le dernier numéro utilisé pour incrémentation immédiate
+            localStorage.setItem('amp_last_num_bon', String(numBonVal));
+
+            showToast(`✓ Bon de livraison N° ${numBonVal} enregistré !`);
             await loadClients();
             currentClient = clients.find(c => c.id === currentClient.id);
             if (currentClient) {
