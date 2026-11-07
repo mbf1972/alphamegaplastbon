@@ -713,14 +713,22 @@
             box-shadow: 0 0 0 2px rgba(27,67,50,0.15);
         }
 
+        #bonModal.submodal-overlay {
+            padding: 20px 12px;
+            box-sizing: border-box;
+        }
         .bon-box {
             width: 100%;
             max-width: 440px;
-            height: 92vh;
-            max-height: 700px;
+            height: calc(100vh - 40px);
+            height: calc(100dvh - 40px);
+            max-height: 720px;
+            margin: auto;
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         .bon-body {
             flex: 1;
@@ -1110,9 +1118,15 @@
             .form-row {
                 grid-template-columns: 1fr 1fr;
             }
+            #bonModal.submodal-overlay {
+                padding: 16px 8px;
+            }
             .bon-box {
-                height: 95vh;
-                max-height: 100vh;
+                height: calc(100vh - 32px);
+                height: calc(100dvh - 32px);
+                max-height: calc(100vh - 32px);
+                max-height: calc(100dvh - 32px);
+                border-radius: 14px;
             }
             .bon-box .bon-footer {
                 padding: 6px 10px;
