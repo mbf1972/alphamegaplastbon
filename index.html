@@ -4,26 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Menu Principal — AMplast Système de Gestion">
-    <meta name="theme-color" content="#0f2417">
+    <meta name="theme-color" content="#15573a">
     <title>Menu Principal — AMplast</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Couleurs AMplast */
-            --primary:        #1b4332;
-            --primary-mid:    #2d6a4f;
-            --primary-light:  #40916c;
-            --primary-soft:   #52b788;
-            --accent:         #e8651a;
-            --accent-light:   #ff8c42;
-            --bg-body:        #c8ddd0;
-            --bg-app:         #eef6f1;
+            /* Charte AMplast : Vert Léger, Blanc Pur & Orange Professionnel */
+            --primary:        #15573a;
+            --primary-mid:    #1e7550;
+            --primary-light:  #2ea371;
+            --primary-soft:   #4ade80;
+            --green-subtle:   #e8f6ee;
+            --green-tint:     #f0fdf4;
+            
+            --accent-orange:  #f97316;
+            --accent-deep:    #ea580c;
+            --accent-soft:    #ffedd5;
+            --accent-glow:    rgba(249, 115, 22, 0.28);
+            
+            --bg-body:        #e3f1e9;
+            --bg-app:         #f4faf6;
             --card-bg:        #ffffff;
-            --text-main:      #0f1f16;
-            --text-muted:     #6b8c78;
-            --shadow-deep:    rgba(10, 31, 15, 0.22);
+            
+            --text-main:      #0e261a;
+            --text-muted:     #4d735f;
+            --text-dim:       #7c9c8c;
+            
+            --shadow-card:    0 4px 16px -2px rgba(16, 56, 36, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+            --shadow-hover:   0 14px 28px -4px rgba(16, 56, 36, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+            --shadow-app:     0 20px 60px rgba(16, 56, 36, 0.12), 0 0 0 1px rgba(22, 101, 52, 0.08);
         }
 
         *, *::before, *::after {
@@ -47,15 +58,15 @@
             overflow: hidden;
         }
 
-        /* Ambient background orbs */
+        /* Ambient background orbs - vert menthe et orange pastel */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(ellipse 55% 45% at 78% 4%,  rgba(45,106,79,0.30) 0%, transparent 65%),
-                radial-gradient(ellipse 40% 35% at 10% 92%, rgba(232,101,26,0.14) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 40% at 50% 108%,rgba(82,183,136,0.18) 0%, transparent 60%);
+                radial-gradient(ellipse 60% 50% at 85% 6%,  rgba(74, 222, 128, 0.28) 0%, transparent 65%),
+                radial-gradient(ellipse 45% 40% at 10% 92%, rgba(249, 115, 22, 0.18) 0%, transparent 60%),
+                radial-gradient(ellipse 55% 45% at 50% 110%, rgba(134, 239, 172, 0.25) 0%, transparent 65%);
             pointer-events: none;
             z-index: 0;
             animation: ambientPulse 9s ease-in-out infinite alternate;
@@ -74,7 +85,7 @@
             background: var(--bg-app);
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 80px var(--shadow-deep), 0 0 0 1px rgba(255,255,255,0.55) inset;
+            box-shadow: var(--shadow-app);
             overflow: hidden;
             position: relative;
             z-index: 1;
@@ -82,14 +93,14 @@
 
         /* ===== HEADER AMplast ===== */
         .app-header {
-            background: linear-gradient(160deg, #07180d 0%, #0f2417 28%, #1b4332 62%, #245c43 100%);
+            background: linear-gradient(150deg, #0e3d28 0%, #15573a 45%, #1e7550 100%);
             color: white;
             padding: 18px 18px 20px;
             border-radius: 0 0 32px 32px;
             flex-shrink: 0;
             box-shadow:
-                0 12px 40px rgba(7,24,13,0.50),
-                0 2px 0 rgba(82,183,136,0.30) inset;
+                0 12px 36px rgba(10, 40, 24, 0.28),
+                0 1px 0 rgba(255, 255, 255, 0.20) inset;
             position: relative;
             overflow: hidden;
             z-index: 5;
@@ -99,8 +110,8 @@
         .header-shimmer {
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(82,183,136,0.65) 38%, rgba(232,101,26,0.45) 72%, transparent 100%);
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #4ade80 32%, #f97316 68%, transparent 100%);
         }
 
         .app-header::before {
@@ -108,7 +119,7 @@
             position: absolute;
             top: -50px; right: -30px;
             width: 180px; height: 180px;
-            background: radial-gradient(circle, rgba(82,183,136,0.18) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(134, 239, 172, 0.22) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
         }
@@ -117,7 +128,7 @@
             position: absolute;
             bottom: -50px; left: -10px;
             width: 130px; height: 130px;
-            background: radial-gradient(circle, rgba(232,101,26,0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.22) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
         }
@@ -138,13 +149,13 @@
         }
 
         .logo-badge {
-            width: 46px; height: 46px;
-            background: white;
+            width: 48px; height: 48px;
+            background: #ffffff;
             border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.28), 0 0 0 1.5px rgba(82,183,136,0.35);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(249, 115, 22, 0.35);
             overflow: hidden;
-            padding: 5px;
+            padding: 6px;
             flex-shrink: 0;
         }
 
@@ -156,51 +167,91 @@
 
         .brand-name {
             font-family: 'Outfit', sans-serif;
-            font-size: 10.5px; font-weight: 900;
-            letter-spacing: 2.5px; color: #74c69d;
+            font-size: 11px; font-weight: 900;
+            letter-spacing: 2.8px; color: #a7f3d0;
             text-transform: uppercase; line-height: 1;
         }
 
         .app-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 17px; font-weight: 900; color: #fff;
-            letter-spacing: -0.5px; line-height: 1.1;
+            font-size: 17.5px; font-weight: 900; color: #ffffff;
+            letter-spacing: -0.4px; line-height: 1.15;
         }
 
-        /* Pill date */
+        /* Pill date & Actions */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .date-pill {
-            background: rgba(255,255,255,0.10);
+            background: rgba(255, 255, 255, 0.16);
             padding: 7px 13px;
             border-radius: 20px;
-            font-size: 11px; font-weight: 700;
+            font-size: 11px; font-weight: 800;
             backdrop-filter: blur(8px);
             white-space: nowrap;
-            border: 1px solid rgba(255,255,255,0.16);
-            color: #d8f3dc;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            color: #f0fdf4;
             text-transform: capitalize;
             letter-spacing: 0.2px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        .btn-lock {
+            width: 33px;
+            height: 33px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .btn-lock:hover {
+            background: rgba(249, 115, 22, 0.35);
+            border-color: rgba(249, 115, 22, 0.60);
+            transform: scale(1.08);
+            color: #ffedd5;
+        }
+
+        .btn-lock:active {
+            transform: scale(0.92);
+        }
+
+        .btn-lock svg {
+            width: 15px;
+            height: 15px;
         }
 
         /* Status banner */
         .system-banner {
-            background: rgba(255,255,255,0.08);
-            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 9px 14px;
             border-radius: 16px;
             display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid rgba(255,255,255,0.10);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             position: relative; z-index: 1;
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(8px);
         }
 
         .banner-left {
             display: flex; align-items: center; gap: 8px;
-            font-size: 12px; font-weight: 700; color: #c8f0da;
+            font-size: 12px; font-weight: 700; color: #f0fdf4;
         }
 
         .status-dot {
             width: 8px; height: 8px;
-            background: #52b788; border-radius: 50%;
-            box-shadow: 0 0 0 3px rgba(82,183,136,0.25), 0 0 10px #52b788aa;
+            background: #4ade80; border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.35), 0 0 10px #4ade80;
             animation: pulseDot 2.4s cubic-bezier(0.4,0,0.6,1) infinite;
             flex-shrink: 0;
         }
@@ -211,8 +262,13 @@
         }
 
         .banner-right {
-            font-size: 10.5px; font-weight: 800;
-            color: var(--accent-light); letter-spacing: 0.8px; text-transform: uppercase;
+            font-size: 10px; font-weight: 800;
+            color: #ffffff;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            padding: 3px 9px;
+            border-radius: 12px;
+            letter-spacing: 0.5px; text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35);
         }
 
         /* ===== SECTION HEADER ===== */
@@ -226,17 +282,31 @@
 
         .section-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 10.5px;
-            font-weight: 800;
+            font-size: 11px;
+            font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: var(--text-muted);
+            color: #175438;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #f97316;
+            box-shadow: 0 0 6px rgba(249, 115, 22, 0.5);
         }
 
         .section-line {
             flex: 1;
-            height: 1px;
-            background: linear-gradient(to right, rgba(45,106,79,0.35), transparent);
+            height: 1.5px;
+            background: linear-gradient(to right, rgba(46, 163, 113, 0.35), rgba(249, 115, 22, 0.30), transparent);
+            border-radius: 2px;
         }
 
         /* ===== CONTENEUR DE LA GRILLE ===== */
@@ -259,7 +329,7 @@
             align-content: stretch;
         }
 
-        /* ===== BOUTONS CARRÉS ARRONDIS GLASSMORPHISM NÉON (VERSION MOBILE) ===== */
+        /* ===== BOUTONS CARRÉS ARRONDIS BLANC & ACCENTS VERT / ORANGE ===== */
         .btn-card {
             position: relative;
             display: flex;
@@ -267,24 +337,19 @@
             align-items: center;
             justify-content: center;
             gap: 7px;
-            padding: 10px 6px;
+            padding: 11px 6px 9px;
             border-radius: 22px;
-            /* Glassmorphism fond sombre teinté par la couleur exacte du bouton */
-            background: linear-gradient(155deg,
-                rgba(var(--btn-rgb), 0.14) 0%,
-                rgba(15, 36, 23, 0.95) 42%,
-                rgba(8, 20, 13, 0.98) 100%
-            );
-            border: 1.5px solid rgba(var(--btn-rgb), 0.62);
-            color: #ffffff;
+            /* Fond blanc pur avec lueur subtile */
+            background: #ffffff;
+            border: 1.5px solid rgba(var(--btn-rgb), 0.16);
+            color: var(--text-main);
             text-decoration: none;
             cursor: pointer;
             overflow: hidden;
             box-shadow:
-                0 8px 20px rgba(0, 0, 0, 0.28),
-                0 0 0 0.5px rgba(var(--btn-rgb), 0.30) inset,
-                0 0 16px rgba(var(--btn-rgb), 0.20),
-                inset 0 1px 0 rgba(255, 255, 255, 0.10);
+                0 4px 16px -2px rgba(16, 56, 36, 0.06),
+                0 1px 3px rgba(0, 0, 0, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
             transition:
                 transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
@@ -293,27 +358,27 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Ligne de brillance intérieure */
+        /* Ligne de brillance supérieure douce */
         .btn-card::before {
             content: '';
             position: absolute;
             top: 0; left: 10%; right: 10%;
-            height: 44%;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.00) 100%);
+            height: 38%;
+            background: linear-gradient(180deg, rgba(var(--btn-rgb), 0.06) 0%, rgba(255, 255, 255, 0.00) 100%);
             border-radius: 0 0 50% 50%;
             pointer-events: none;
             z-index: 0;
         }
 
-        /* Halo néon doux en arrière-plan */
+        /* Halo subtil en arrière-plan au survol */
         .btn-card::after {
             content: '';
             position: absolute;
             inset: -5px;
             border-radius: 26px;
-            background: radial-gradient(circle at center, rgba(var(--btn-rgb), 0.35) 0%, transparent 70%);
+            background: radial-gradient(circle at center, rgba(var(--btn-rgb), 0.22) 0%, transparent 70%);
             opacity: 0;
-            filter: blur(10px);
+            filter: blur(8px);
             z-index: -1;
             pointer-events: none;
             transition: opacity 0.24s ease;
@@ -321,56 +386,56 @@
 
         /* Survol (Hover) */
         .btn-card:hover {
-            transform: translateY(-4px) scale(1.03);
-            border-color: rgba(var(--btn-rgb), 0.90);
+            transform: translateY(-4px) scale(1.025);
+            border-color: rgba(var(--btn-rgb), 0.55);
             box-shadow:
-                0 14px 28px rgba(0, 0, 0, 0.36),
-                0 0 28px rgba(var(--btn-rgb), 0.42),
-                0 0 0 1px rgba(var(--btn-rgb), 0.50) inset,
-                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+                0 14px 28px -4px rgba(var(--btn-rgb), 0.20),
+                0 4px 12px rgba(16, 56, 36, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
         }
 
         .btn-card:hover::after { opacity: 1; }
 
         /* Clic / Toucher actif (Active) */
         .btn-card:active {
-            transform: translateY(2px) scale(0.97);
+            transform: translateY(1.5px) scale(0.975);
             box-shadow:
-                0 4px 10px rgba(0, 0, 0, 0.30),
-                0 0 12px rgba(var(--btn-rgb), 0.28),
-                inset 0 1px 4px rgba(0, 0, 0, 0.20);
+                0 2px 6px rgba(16, 56, 36, 0.08),
+                inset 0 1px 3px rgba(0, 0, 0, 0.04);
             transition-duration: 0.08s;
         }
 
-        /* Icône dans son badge néon lumineux */
+        /* Icône dans son badge épuré */
         .btn-card .btn-icon {
             position: relative;
             z-index: 1;
-            width: 46px;
-            height: 46px;
-            border-radius: 15px;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(var(--btn-rgb), 0.14);
-            border: 1px solid rgba(var(--btn-rgb), 0.30);
+            background: linear-gradient(135deg, rgba(var(--btn-rgb), 0.12) 0%, rgba(var(--btn-rgb), 0.05) 100%);
+            border: 1.5px solid rgba(var(--btn-rgb), 0.24);
             color: rgb(var(--btn-rgb));
-            filter: drop-shadow(0 0 7px rgba(var(--btn-rgb), 0.70));
             flex-shrink: 0;
-            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), background 0.22s ease;
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), background 0.22s ease, box-shadow 0.22s ease;
         }
 
         .btn-card:hover .btn-icon {
-            transform: scale(1.12) translateY(-2px);
-            background: rgba(var(--btn-rgb), 0.22);
+            transform: scale(1.10) translateY(-2px);
+            background: linear-gradient(135deg, rgba(var(--btn-rgb), 0.20) 0%, rgba(var(--btn-rgb), 0.10) 100%);
+            border-color: rgba(var(--btn-rgb), 0.45);
+            box-shadow: 0 6px 14px rgba(var(--btn-rgb), 0.22);
         }
 
         .btn-card .btn-icon svg {
-            width: 22px;
-            height: 22px;
+            width: 23px;
+            height: 23px;
             display: block;
             color: rgb(var(--btn-rgb));
             stroke: rgb(var(--btn-rgb));
+            transition: stroke 0.2s ease;
         }
 
         /* Texte du bouton */
@@ -378,47 +443,52 @@
             position: relative;
             z-index: 1;
             font-family: 'Outfit', 'Nunito', sans-serif;
-            font-size: clamp(10px, 2.6vw, 11.5px);
+            font-size: clamp(10.5px, 2.7vw, 12px);
             font-weight: 800;
-            color: rgba(255, 255, 255, 0.95);
-            letter-spacing: 0.2px;
+            color: #0f291e;
+            letter-spacing: -0.2px;
             text-align: center;
             line-height: 1.2;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.70);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 96%;
+            transition: color 0.2s ease;
         }
 
-        /* Badge 'Bientôt' discret */
+        .btn-card:hover .btn-label {
+            color: rgb(var(--btn-rgb));
+        }
+
+        /* Badge 'Bientôt' discret en orange */
         .btn-badge-soon {
             position: absolute;
-            top: 7px;
-            right: 7px;
+            top: 6px;
+            right: 6px;
             font-size: 7.5px;
-            font-weight: 800;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
-            padding: 1.5px 5px;
-            border-radius: 6px;
-            background: rgba(var(--btn-rgb), 0.20);
-            color: rgb(var(--btn-rgb));
-            border: 0.5px solid rgba(var(--btn-rgb), 0.40);
+            letter-spacing: 0.5px;
+            padding: 2px 5.5px;
+            border-radius: 7px;
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            color: #ea580c;
+            border: 1px solid #fed7aa;
             line-height: 1.1;
             z-index: 2;
+            box-shadow: 0 2px 6px rgba(234, 88, 12, 0.16);
         }
 
-        /* ===== THÈMES IDENTIQUES VERSION MOBILE (RGB triplets) ===== */
-        .theme-clients     { --btn-rgb: 59,130,246; }  /* Bleu */
-        .theme-fournisseurs{ --btn-rgb: 139,92,246; } /* Violet */
-        .theme-matieres    { --btn-rgb: 16,185,129; } /* Vert émeraude */
-        .theme-produits    { --btn-rgb: 245,158,11; } /* Jaune ambre */
-        .theme-materiels   { --btn-rgb: 225,29,72; }  /* Rouge carmin */
-        .theme-ouvriers    { --btn-rgb: 6,182,212; }  /* Cyan */
-        .theme-depenses    { --btn-rgb: 244,63,94; }  /* Rose/Rouge */
-        .theme-situation   { --btn-rgb: 13,148,136; } /* Sarcelle / Teal */
-        .theme-production  { --btn-rgb: 232,101,26; } /* Orange AMplast */
+        /* ===== THÈMES HARMONISÉS VERT LÉGER, BLANC & ORANGE ===== */
+        .theme-clients     { --btn-rgb: 16, 149, 93; }  /* Vert Émeraude Élégant */
+        .theme-fournisseurs{ --btn-rgb: 234, 88, 12; }  /* Orange AMplast Signature */
+        .theme-matieres    { --btn-rgb: 13, 148, 110; } /* Vert Jade Doux */
+        .theme-produits    { --btn-rgb: 245, 114, 20; } /* Orange Ambre Lumineux */
+        .theme-materiels   { --btn-rgb: 22, 122, 74; }  /* Vert Forêt Moderne */
+        .theme-ouvriers    { --btn-rgb: 217, 85, 10; }  /* Orange Chaud Énergique */
+        .theme-depenses    { --btn-rgb: 225, 95, 35; }  /* Orange Corail */
+        .theme-situation   { --btn-rgb: 15, 140, 120; } /* Vert Menthe Fraîche */
+        .theme-production  { --btn-rgb: 249, 115, 22; } /* Orange Vif AMplast */
 
         /* Animation d'entrée — blur + slide */
         .btn-card { animation: cardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
@@ -457,32 +527,33 @@
         .eco-footer {
             text-align: center;
             padding: 8px 16px 14px;
-            font-size: 10.5px;
-            color: var(--text-muted);
+            font-size: 11px;
+            color: #4b735c;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 7px;
+            font-weight: 600;
         }
 
-        .eco-footer strong { color: var(--primary-mid); font-weight: 900; }
+        .eco-footer strong { color: #14532d; font-weight: 900; }
 
         .footer-dot {
-            width: 3px; height: 3px;
-            background: var(--primary-soft);
+            width: 4px; height: 4px;
+            background: #f97316;
             border-radius: 50%;
-            opacity: 0.6;
+            box-shadow: 0 0 5px rgba(249, 115, 22, 0.5);
         }
 
         /* ===== AUTH OVERLAY ===== */
         .auth-overlay {
             position: fixed; inset: 0;
-            background: rgba(7,22,14,0.80);
+            background: rgba(14, 45, 28, 0.60);
             z-index: 1000;
             display: flex; align-items: center; justify-content: center;
             padding: 20px;
-            backdrop-filter: blur(14px) saturate(1.4);
+            backdrop-filter: blur(14px) saturate(1.2);
             transition: opacity 0.35s ease;
         }
 
@@ -491,7 +562,8 @@
             width: 100%; max-width: 340px;
             border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 28px 70px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.5) inset;
+            border: 1px solid rgba(46, 163, 113, 0.20);
+            box-shadow: 0 28px 70px rgba(10, 40, 24, 0.25), 0 0 0 1px rgba(255,255,255,0.7) inset;
             animation: modalIn 0.32s cubic-bezier(0.16,1,0.3,1);
         }
 
@@ -501,7 +573,7 @@
         }
 
         .auth-header {
-            background: linear-gradient(160deg, #07180d 0%, #0f2417 35%, #1b4332 75%, #245c43 100%);
+            background: linear-gradient(150deg, #0e3d28 0%, #15573a 50%, #1e7550 100%);
             color: white;
             padding: 28px 22px 20px;
             text-align: center;
@@ -514,17 +586,25 @@
             position: absolute;
             top: -30px; right: -30px;
             width: 120px; height: 120px;
-            background: radial-gradient(circle, rgba(82,183,136,0.18) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(134, 239, 172, 0.22) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .auth-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px; left: -20px;
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.20) 0%, transparent 70%);
             border-radius: 50%;
         }
 
         .auth-icon-wrap {
             width: 58px; height: 58px;
-            background: rgba(255,255,255,0.13);
+            background: rgba(255,255,255,0.16);
             border-radius: 20px;
             margin: 0 auto 14px;
             display: flex; align-items: center; justify-content: center;
-            border: 1px solid rgba(255,255,255,0.20);
+            border: 1.5px solid rgba(255,255,255,0.28);
             position: relative;
             z-index: 1;
             box-shadow: 0 4px 16px rgba(0,0,0,0.18);
@@ -532,42 +612,43 @@
 
         .auth-icon-wrap svg { width: 26px; height: 26px; color: white; }
 
-        .auth-header h2 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 900; margin-bottom: 4px; position: relative; z-index: 1; }
-        .auth-header p  { font-size: 11.5px; color: #7dd3a8; font-weight: 600; position: relative; z-index: 1; }
+        .auth-header h2 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 900; margin-bottom: 4px; position: relative; z-index: 1; color: #ffffff; }
+        .auth-header p  { font-size: 11.5px; color: #a7f3d0; font-weight: 700; position: relative; z-index: 1; }
 
         .auth-body {
             padding: 24px 22px 26px;
             display: flex; flex-direction: column; gap: 14px;
+            background: #ffffff;
         }
 
-        .auth-body label { font-size: 12px; font-weight: 700; color: #374151; display: block; }
+        .auth-body label { font-size: 12px; font-weight: 700; color: #16422d; display: block; }
 
         .auth-input {
             width: 100%; margin-top: 7px;
             padding: 13px 15px;
-            border-radius: 14px; border: 1.5px solid #e5e7eb;
+            border-radius: 14px; border: 1.5px solid #d0e7da;
             font-size: 14px; font-weight: 700; outline: none;
-            background: #f9fafb; transition: all 0.2s;
-            color: var(--text-main);
+            background: #f7faf8; transition: all 0.2s;
+            color: #0f291e;
         }
 
         .auth-input:focus {
-            border-color: var(--primary-light); background: white;
-            box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.14);
+            border-color: #16a34a; background: #ffffff;
+            box-shadow: 0 0 0 3.5px rgba(34, 197, 94, 0.18);
         }
 
         .auth-submit {
-            background: linear-gradient(135deg, #e8651a 0%, #ff8c42 100%);
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
             color: white; border: none;
             padding: 14px; border-radius: 14px;
             font-size: 13.5px; font-weight: 800; cursor: pointer;
-            box-shadow: 0 4px 18px rgba(232,101,26,0.40);
+            box-shadow: 0 4px 18px rgba(234, 88, 12, 0.38);
             transition: all 0.2s; margin-top: 2px;
         }
 
         .auth-submit:hover {
             transform: translateY(-1px);
-            box-shadow: 0 7px 22px rgba(232,101,26,0.50);
+            box-shadow: 0 7px 22px rgba(234, 88, 12, 0.48);
         }
         .auth-submit:active { transform: scale(0.97); transition-duration: 0.08s; }
 
@@ -590,16 +671,16 @@
         .toast-msg {
             position: fixed; bottom: 28px; left: 50%;
             transform: translateX(-50%) translateY(20px);
-            background: linear-gradient(135deg, #0f2417, #1b4332);
-            color: #d8f3dc;
+            background: linear-gradient(135deg, #0e3d28, #185e3c);
+            color: #ffffff;
             padding: 11px 24px; border-radius: 30px;
             font-size: 12px; font-weight: 700;
-            box-shadow: 0 8px 28px rgba(7,22,14,0.40);
+            box-shadow: 0 8px 28px rgba(10, 40, 24, 0.35);
             z-index: 999; white-space: nowrap;
             opacity: 0;
             transition: opacity 0.24s, transform 0.24s;
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(82,183,136,0.28);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(249, 115, 22, 0.45);
         }
     </style>
 </head>
@@ -618,7 +699,15 @@
                         <span class="app-title">Menu Principal</span>
                     </div>
                 </div>
-                <div id="current-date" class="date-pill">Chargement...</div>
+                <div class="header-actions">
+                    <div id="current-date" class="date-pill">Chargement...</div>
+                    <button id="btn-lock-session" class="btn-lock" title="Verrouiller la session" aria-label="Verrouiller la session">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <div class="system-banner">
