@@ -2,879 +2,633 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Menu Principal — AMplast Système de Gestion">
-    <meta name="theme-color" content="#15573a">
+    <meta name="theme-color" content="#0f4630">
     <title>Menu Principal — AMplast</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Évite le flash de l'écran de verrouillage si la session est déjà ouverte -->
+    <script>
+        try {
+            var d = JSON.parse(localStorage.getItem('auth_data') || '{}');
+            if (d.passed === 'true' && (Date.now() - d.time < 12 * 3600 * 1000)) {
+                document.documentElement.classList.add('authed');
+            }
+        } catch (e) {}
+    </script>
+
     <style>
         :root {
-            /* Charte AMplast : Vert Léger, Blanc Pur & Orange Professionnel */
-            --primary:        #15573a;
-            --primary-mid:    #1e7550;
-            --primary-light:  #2ea371;
-            --primary-soft:   #4ade80;
-            --green-subtle:   #e8f6ee;
-            --green-tint:     #f0fdf4;
-            
-            --accent-orange:  #f97316;
-            --accent-deep:    #ea580c;
-            --accent-soft:    #ffedd5;
-            --accent-glow:    rgba(249, 115, 22, 0.28);
-            
-            --bg-body:        #e3f1e9;
-            --bg-app:         #f4faf6;
-            --card-bg:        #ffffff;
-            
-            --text-main:      #0e261a;
-            --text-muted:     #4d735f;
-            --text-dim:       #7c9c8c;
-            
-            --shadow-card:    0 4px 16px -2px rgba(16, 56, 36, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
-            --shadow-hover:   0 14px 28px -4px rgba(16, 56, 36, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
-            --shadow-app:     0 20px 60px rgba(16, 56, 36, 0.12), 0 0 0 1px rgba(22, 101, 52, 0.08);
+            --green-900: #0b3322;
+            --green-800: #0f4630;
+            --green-700: #15573a;
+            --green-600: #1e7550;
+            --green-400: #4ade80;
+            --green-100: #dcf3e6;
+            --green-50:  #f1faf5;
+
+            --orange-500: #f97316;
+            --orange-600: #ea580c;
+            --orange-100: #ffedd5;
+
+            --bg:        #eaf4ee;
+            --surface:   #ffffff;
+            --ink:       #0e261a;
+            --ink-soft:  #4d735f;
+            --ink-dim:   #86a595;
+            --line:      rgba(21, 87, 58, 0.10);
+
+            --radius-card: 22px;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         *, *::before, *::after {
             margin: 0; padding: 0; box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
+        html, body { height: 100%; overflow: hidden; }
 
         body {
-            background: var(--bg-body);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
             display: flex;
             justify-content: center;
             align-items: stretch;
-            color: var(--text-main);
             position: relative;
-            overflow: hidden;
         }
 
-        /* Ambient background orbs - vert menthe et orange pastel */
+        /* Fond d'ambiance (visible surtout sur grand écran) */
         body::before {
             content: '';
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background:
-                radial-gradient(ellipse 60% 50% at 85% 6%,  rgba(74, 222, 128, 0.28) 0%, transparent 65%),
-                radial-gradient(ellipse 45% 40% at 10% 92%, rgba(249, 115, 22, 0.18) 0%, transparent 60%),
-                radial-gradient(ellipse 55% 45% at 50% 110%, rgba(134, 239, 172, 0.25) 0%, transparent 65%);
+                radial-gradient(ellipse 55% 45% at 90% 0%,   rgba(74, 222, 128, 0.30), transparent 65%),
+                radial-gradient(ellipse 45% 40% at 0% 100%,  rgba(249, 115, 22, 0.16), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 115%, rgba(134, 239, 172, 0.28), transparent 65%);
             pointer-events: none;
             z-index: 0;
-            animation: ambientPulse 9s ease-in-out infinite alternate;
         }
 
-        @keyframes ambientPulse {
-            from { opacity: 0.65; }
-            to   { opacity: 1.00; }
+        button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+
+        :focus-visible {
+            outline: 3px solid var(--orange-500);
+            outline-offset: 3px;
         }
 
-        /* ===== Conteneur principal ===== */
-        .app-container {
-            width: 100%;
-            max-width: 480px;
+        /* ===== CONTENEUR ===== */
+        .app {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 480px;
             height: 100dvh;
-            background: var(--bg-app);
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow-app);
+            display: flex; flex-direction: column;
+            background: linear-gradient(180deg, #f6fbf8 0%, #eef7f2 100%);
+            box-shadow: 0 24px 70px rgba(11, 51, 34, 0.14), 0 0 0 1px rgba(21, 87, 58, 0.06);
             overflow: hidden;
-            position: relative;
-            z-index: 1;
         }
 
-        /* ===== HEADER AMplast ===== */
-        .app-header {
-            background: linear-gradient(150deg, #0e3d28 0%, #15573a 45%, #1e7550 100%);
-            color: white;
-            padding: 18px 18px 20px;
-            border-radius: 0 0 32px 32px;
+        /* ===== HEADER ===== */
+        .header {
+            position: relative;
             flex-shrink: 0;
-            box-shadow:
-                0 12px 36px rgba(10, 40, 24, 0.28),
-                0 1px 0 rgba(255, 255, 255, 0.20) inset;
-            position: relative;
+            padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px 54px;
+            color: #fff;
+            background:
+                radial-gradient(circle at 88% -10%, rgba(74, 222, 128, 0.35), transparent 50%),
+                radial-gradient(circle at 5% 120%,  rgba(249, 115, 22, 0.30), transparent 45%),
+                linear-gradient(155deg, var(--green-900) 0%, var(--green-700) 55%, var(--green-600) 100%);
+            border-radius: 0 0 36px 36px;
             overflow: hidden;
-            z-index: 5;
         }
 
-        /* Shimmer bottom line on header */
-        .header-shimmer {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent 0%, #4ade80 32%, #f97316 68%, transparent 100%);
-        }
-
-        .app-header::before {
+        /* Motif discret de points */
+        .header::before {
             content: '';
-            position: absolute;
-            top: -50px; right: -30px;
-            width: 180px; height: 180px;
-            background: radial-gradient(circle, rgba(134, 239, 172, 0.22) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .app-header::after {
-            content: '';
-            position: absolute;
-            bottom: -50px; left: -10px;
-            width: 130px; height: 130px;
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.22) 0%, transparent 70%);
-            border-radius: 50%;
+            position: absolute; inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1.3px);
+            background-size: 16px 16px;
+            mask-image: linear-gradient(135deg, #000 0%, transparent 60%);
+            -webkit-mask-image: linear-gradient(135deg, #000 0%, transparent 60%);
             pointer-events: none;
         }
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
+        .header-row {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; justify-content: space-between;
             gap: 10px;
         }
 
-        .logo-badge {
-            width: 48px; height: 48px;
-            background: #ffffff;
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+        .logo {
+            width: 50px; height: 50px; flex-shrink: 0;
+            background: #fff;
             border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(249, 115, 22, 0.35);
-            overflow: hidden;
             padding: 6px;
-            flex-shrink: 0;
+            display: grid; place-items: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.22), 0 0 0 2px rgba(249, 115, 22, 0.45);
+            overflow: hidden;
         }
+        .logo img { width: 100%; height: 100%; object-fit: contain; }
 
-        .logo-badge img {
-            width: 100%; height: 100%; object-fit: contain;
-        }
-
-        .brand-meta { display: flex; flex-direction: column; gap: 1px; }
-
+        .brand-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
         .brand-name {
             font-family: 'Outfit', sans-serif;
-            font-size: 11px; font-weight: 900;
-            letter-spacing: 2.8px; color: #a7f3d0;
-            text-transform: uppercase; line-height: 1;
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 3px; text-transform: uppercase;
+            color: #a7f3d0;
         }
-
-        .app-title {
+        .brand-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 17.5px; font-weight: 900; color: #ffffff;
-            letter-spacing: -0.4px; line-height: 1.15;
-        }
-
-        /* Pill date & Actions */
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .date-pill {
-            background: rgba(255, 255, 255, 0.16);
-            padding: 7px 13px;
-            border-radius: 20px;
-            font-size: 11px; font-weight: 800;
-            backdrop-filter: blur(8px);
-            white-space: nowrap;
-            border: 1px solid rgba(255, 255, 255, 0.24);
-            color: #f0fdf4;
-            text-transform: capitalize;
-            letter-spacing: 0.2px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            font-size: 19px; font-weight: 800; letter-spacing: -0.3px;
+            line-height: 1.1;
         }
 
         .btn-lock {
-            width: 33px;
-            height: 33px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.16);
-            border: 1px solid rgba(255, 255, 255, 0.24);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-            padding: 0;
-            flex-shrink: 0;
-        }
-
-        .btn-lock:hover {
-            background: rgba(249, 115, 22, 0.35);
-            border-color: rgba(249, 115, 22, 0.60);
-            transform: scale(1.08);
-            color: #ffedd5;
-        }
-
-        .btn-lock:active {
-            transform: scale(0.92);
-        }
-
-        .btn-lock svg {
-            width: 15px;
-            height: 15px;
-        }
-
-        /* Status banner */
-        .system-banner {
-            background: rgba(255, 255, 255, 0.12);
-            padding: 9px 14px;
-            border-radius: 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            position: relative; z-index: 1;
+            width: 40px; height: 40px; flex-shrink: 0;
+            border-radius: 14px;
+            display: grid; place-items: center;
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.24);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: background 0.2s, transform 0.2s var(--ease), border-color 0.2s;
+        }
+        .btn-lock:hover { background: rgba(249,115,22,0.40); border-color: rgba(249,115,22,0.7); transform: scale(1.06); }
+        .btn-lock:active { transform: scale(0.92); }
+        .btn-lock svg { width: 18px; height: 18px; }
+
+        .greeting {
+            position: relative; z-index: 1;
+            margin-top: 22px;
+        }
+        .greeting-hello {
+            font-family: 'Outfit', sans-serif;
+            font-size: 26px; font-weight: 800; letter-spacing: -0.6px;
+            line-height: 1.1;
+        }
+        .greeting-date {
+            margin-top: 5px;
+            font-size: 13px; font-weight: 700;
+            color: #c9f5dc;
         }
 
-        .banner-left {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 12px; font-weight: 700; color: #f0fdf4;
+        /* ===== BANDEAU STATUT (chevauche le header) ===== */
+        .status {
+            position: relative; z-index: 6;
+            flex-shrink: 0;
+            margin: -28px 18px 0;
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 12px 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 10px 28px -6px rgba(11, 51, 34, 0.20), 0 0 0 1px var(--line);
         }
-
+        .status-left { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; color: var(--green-800); }
         .status-dot {
-            width: 8px; height: 8px;
-            background: #4ade80; border-radius: 50%;
-            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.35), 0 0 10px #4ade80;
-            animation: pulseDot 2.4s cubic-bezier(0.4,0,0.6,1) infinite;
+            width: 9px; height: 9px; border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34,197,94,0.20);
+            animation: pulse 2.4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.25);} 50% { box-shadow: 0 0 0 7px rgba(34,197,94,0.06);} }
+        .status-version {
+            font-size: 10.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
+            color: #fff;
+            background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+            padding: 4px 10px; border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(234, 88, 12, 0.35);
+        }
+
+        /* ===== TITRE DE SECTION ===== */
+        .section {
             flex-shrink: 0;
+            display: flex; align-items: center; gap: 10px;
+            padding: 16px 22px 8px;
         }
-
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50%       { opacity: 0.65; transform: scale(0.78); }
-        }
-
-        .banner-right {
-            font-size: 10px; font-weight: 800;
-            color: #ffffff;
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            padding: 3px 9px;
-            border-radius: 12px;
-            letter-spacing: 0.5px; text-transform: uppercase;
-            box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35);
-        }
-
-        /* ===== SECTION HEADER ===== */
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 18px 6px;
-            flex-shrink: 0;
-        }
-
         .section-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #175438;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            font-size: 12px; font-weight: 800;
+            letter-spacing: 2.2px; text-transform: uppercase;
+            color: var(--green-800);
+            display: flex; align-items: center; gap: 8px;
         }
-
         .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #f97316;
-            box-shadow: 0 0 6px rgba(249, 115, 22, 0.5);
+            content: ''; width: 7px; height: 7px; border-radius: 50%;
+            background: var(--orange-500);
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.18);
         }
-
         .section-line {
-            flex: 1;
-            height: 1.5px;
-            background: linear-gradient(to right, rgba(46, 163, 113, 0.35), rgba(249, 115, 22, 0.30), transparent);
-            border-radius: 2px;
+            flex: 1; height: 2px; border-radius: 2px;
+            background: linear-gradient(90deg, rgba(46,163,113,0.35), rgba(249,115,22,0.28), transparent);
         }
 
-        /* ===== CONTENEUR DE LA GRILLE ===== */
-        .main-content {
-            flex: 1;
-            min-height: 0;
-            padding: 6px 16px 14px;
+        /* ===== GRILLE ===== */
+        .main {
+            flex: 1; min-height: 0;
+            padding: 4px 16px 6px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
-
-        .buttons-grid {
+        .grid {
+            flex: 1; min-height: 0;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 13px;
-            flex: 1;
-            min-height: 0;
-            align-content: stretch;
+            gap: 12px;
         }
 
-        /* ===== BOUTONS CARRÉS ARRONDIS BLANC & ACCENTS VERT / ORANGE ===== */
-        .btn-card {
+        .card {
+            --c: 16, 149, 93;
+            --c2: 46, 163, 113;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            padding: 11px 6px 9px;
-            border-radius: 22px;
-            /* Fond blanc pur avec lueur subtile */
-            background: #ffffff;
-            border: 1.5px solid rgba(var(--btn-rgb), 0.16);
-            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 9px;
+            padding: 10px 4px;
+            border-radius: var(--radius-card);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            color: var(--ink);
             text-decoration: none;
-            cursor: pointer;
             overflow: hidden;
-            box-shadow:
-                0 4px 16px -2px rgba(16, 56, 36, 0.06),
-                0 1px 3px rgba(0, 0, 0, 0.03),
-                inset 0 1px 0 rgba(255, 255, 255, 1);
-            transition:
-                transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 0.22s ease;
             user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 6px 18px -6px rgba(11, 51, 34, 0.12), 0 1px 2px rgba(0,0,0,0.03);
+            transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s;
+            animation: cardIn 0.5s var(--ease) both;
         }
-
-        /* Ligne de brillance supérieure douce */
-        .btn-card::before {
+        /* Liseré coloré en bas */
+        .card::after {
             content: '';
-            position: absolute;
-            top: 0; left: 10%; right: 10%;
-            height: 38%;
-            background: linear-gradient(180deg, rgba(var(--btn-rgb), 0.06) 0%, rgba(255, 255, 255, 0.00) 100%);
-            border-radius: 0 0 50% 50%;
-            pointer-events: none;
-            z-index: 0;
+            position: absolute; left: 22%; right: 22%; bottom: 0;
+            height: 3px; border-radius: 3px 3px 0 0;
+            background: linear-gradient(90deg, rgb(var(--c)), rgb(var(--c2)));
+            opacity: 0.55;
+            transition: left 0.25s var(--ease), right 0.25s var(--ease), opacity 0.25s;
         }
-
-        /* Halo subtil en arrière-plan au survol */
-        .btn-card::after {
+        /* Lueur douce en haut */
+        .card::before {
             content: '';
-            position: absolute;
-            inset: -5px;
-            border-radius: 26px;
-            background: radial-gradient(circle at center, rgba(var(--btn-rgb), 0.22) 0%, transparent 70%);
-            opacity: 0;
-            filter: blur(8px);
-            z-index: -1;
+            position: absolute; inset: 0;
+            background: radial-gradient(120% 70% at 50% 0%, rgba(var(--c), 0.09), transparent 70%);
             pointer-events: none;
-            transition: opacity 0.24s ease;
         }
 
-        /* Survol (Hover) */
-        .btn-card:hover {
-            transform: translateY(-4px) scale(1.025);
-            border-color: rgba(var(--btn-rgb), 0.55);
-            box-shadow:
-                0 14px 28px -4px rgba(var(--btn-rgb), 0.20),
-                0 4px 12px rgba(16, 56, 36, 0.06),
-                inset 0 1px 0 rgba(255, 255, 255, 1);
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(var(--c), 0.40);
+            box-shadow: 0 16px 30px -8px rgba(var(--c), 0.34), 0 2px 6px rgba(0,0,0,0.04);
         }
+        .card:hover::after { left: 0; right: 0; opacity: 1; }
+        .card:active { transform: translateY(1px) scale(0.97); transition-duration: 0.08s; }
 
-        .btn-card:hover::after { opacity: 1; }
-
-        /* Clic / Toucher actif (Active) */
-        .btn-card:active {
-            transform: translateY(1.5px) scale(0.975);
-            box-shadow:
-                0 2px 6px rgba(16, 56, 36, 0.08),
-                inset 0 1px 3px rgba(0, 0, 0, 0.04);
-            transition-duration: 0.08s;
+        .icon {
+            position: relative; z-index: 1;
+            width: 50px; height: 50px;
+            border-radius: 17px;
+            display: grid; place-items: center;
+            color: #fff;
+            background: linear-gradient(145deg, rgb(var(--c2)) 0%, rgb(var(--c)) 100%);
+            box-shadow: 0 8px 16px -4px rgba(var(--c), 0.50), inset 0 1px 0 rgba(255,255,255,0.35);
+            transition: transform 0.3s var(--ease);
         }
+        .card:hover .icon { transform: scale(1.08) rotate(-3deg); }
+        .icon svg { width: 24px; height: 24px; }
 
-        /* Icône dans son badge épuré */
-        .btn-card .btn-icon {
-            position: relative;
-            z-index: 1;
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(var(--btn-rgb), 0.12) 0%, rgba(var(--btn-rgb), 0.05) 100%);
-            border: 1.5px solid rgba(var(--btn-rgb), 0.24);
-            color: rgb(var(--btn-rgb));
-            flex-shrink: 0;
-            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), background 0.22s ease, box-shadow 0.22s ease;
-        }
-
-        .btn-card:hover .btn-icon {
-            transform: scale(1.10) translateY(-2px);
-            background: linear-gradient(135deg, rgba(var(--btn-rgb), 0.20) 0%, rgba(var(--btn-rgb), 0.10) 100%);
-            border-color: rgba(var(--btn-rgb), 0.45);
-            box-shadow: 0 6px 14px rgba(var(--btn-rgb), 0.22);
-        }
-
-        .btn-card .btn-icon svg {
-            width: 23px;
-            height: 23px;
-            display: block;
-            color: rgb(var(--btn-rgb));
-            stroke: rgb(var(--btn-rgb));
-            transition: stroke 0.2s ease;
-        }
-
-        /* Texte du bouton */
-        .btn-card .btn-label {
-            position: relative;
-            z-index: 1;
-            font-family: 'Outfit', 'Nunito', sans-serif;
-            font-size: clamp(10.5px, 2.7vw, 12px);
-            font-weight: 800;
-            color: #0f291e;
-            letter-spacing: -0.2px;
-            text-align: center;
-            line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 96%;
-            transition: color 0.2s ease;
-        }
-
-        .btn-card:hover .btn-label {
-            color: rgb(var(--btn-rgb));
-        }
-
-        /* Badge 'Bientôt' discret en orange */
-        .btn-badge-soon {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            font-size: 7.5px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 2px 5.5px;
-            border-radius: 7px;
-            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-            color: #ea580c;
-            border: 1px solid #fed7aa;
+        .label {
+            position: relative; z-index: 1;
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(11px, 2.9vw, 13px);
+            font-weight: 700; letter-spacing: -0.1px;
             line-height: 1.1;
-            z-index: 2;
-            box-shadow: 0 2px 6px rgba(234, 88, 12, 0.16);
+            max-width: 94%;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        /* ===== THÈMES HARMONISÉS VERT LÉGER, BLANC & ORANGE ===== */
-        .theme-clients     { --btn-rgb: 16, 149, 93; }  /* Vert Émeraude Élégant */
-        .theme-fournisseurs{ --btn-rgb: 234, 88, 12; }  /* Orange AMplast Signature */
-        .theme-matieres    { --btn-rgb: 13, 148, 110; } /* Vert Jade Doux */
-        .theme-produits    { --btn-rgb: 245, 114, 20; } /* Orange Ambre Lumineux */
-        .theme-materiels   { --btn-rgb: 22, 122, 74; }  /* Vert Forêt Moderne */
-        .theme-ouvriers    { --btn-rgb: 217, 85, 10; }  /* Orange Chaud Énergique */
-        .theme-depenses    { --btn-rgb: 225, 95, 35; }  /* Orange Corail */
-        .theme-situation   { --btn-rgb: 15, 140, 120; } /* Vert Menthe Fraîche */
-        .theme-production  { --btn-rgb: 249, 115, 22; } /* Orange Vif AMplast */
+        /* Modules à venir : un peu plus discrets */
+        .card.soon { font: inherit; }
+        .card.soon .icon { filter: saturate(0.85); }
+        .badge-soon {
+            position: absolute; top: 8px; right: 8px; z-index: 2;
+            font-size: 8px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+            padding: 3px 6px; border-radius: 8px; line-height: 1;
+            color: var(--orange-600);
+            background: var(--orange-100);
+            border: 1px solid #fed7aa;
+        }
 
-        /* Animation d'entrée — blur + slide */
-        .btn-card { animation: cardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
-        .btn-card:nth-child(1) { animation-delay: 0.04s; }
-        .btn-card:nth-child(2) { animation-delay: 0.08s; }
-        .btn-card:nth-child(3) { animation-delay: 0.12s; }
-        .btn-card:nth-child(4) { animation-delay: 0.16s; }
-        .btn-card:nth-child(5) { animation-delay: 0.20s; }
-        .btn-card:nth-child(6) { animation-delay: 0.24s; }
-        .btn-card:nth-child(7) { animation-delay: 0.28s; }
-        .btn-card:nth-child(8) { animation-delay: 0.32s; }
-        .btn-card:nth-child(9) { animation-delay: 0.36s; }
+        /* Thèmes : [couleur principale] / [couleur claire] */
+        .t-clients      { --c: 16, 149, 93;  --c2: 52, 190, 126; }
+        .t-fournisseurs { --c: 234, 88, 12;  --c2: 251, 146, 60; }
+        .t-matieres     { --c: 13, 148, 110; --c2: 45, 190, 156; }
+        .t-produits     { --c: 245, 114, 20; --c2: 251, 165, 80; }
+        .t-materiels    { --c: 22, 122, 74;  --c2: 52, 168, 110; }
+        .t-ouvriers     { --c: 217, 85, 10;  --c2: 244, 130, 50; }
+        .t-depenses     { --c: 225, 95, 35;  --c2: 248, 145, 85; }
+        .t-situation    { --c: 15, 140, 120; --c2: 40, 186, 163; }
+        .t-production   { --c: 249, 115, 22; --c2: 253, 164, 80; }
 
         @keyframes cardIn {
-            from { opacity: 0; transform: translateY(18px) scale(0.92); filter: blur(2px); }
-            to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+            from { opacity: 0; transform: translateY(16px) scale(0.94); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
         }
-
-        /* Responsive petits écrans */
-        @media (max-height: 690px) {
-            .buttons-grid { gap: 9px; }
-            .btn-card { padding: 8px 4px; border-radius: 18px; gap: 5px; }
-            .btn-card .btn-icon { width: 40px; height: 40px; border-radius: 12px; }
-            .btn-card .btn-icon svg { width: 20px; height: 20px; }
-            .btn-card .btn-label { font-size: 10px; }
-        }
-        @media (max-width: 360px) {
-            .buttons-grid { gap: 8px; }
-            .btn-card { padding: 8px 4px; border-radius: 16px; }
-            .btn-card .btn-icon { width: 36px; height: 36px; border-radius: 11px; }
-            .btn-card .btn-icon svg { width: 18px; height: 18px; }
-            .btn-card .btn-label { font-size: 9.5px; }
-        }
+        .card:nth-child(1) { animation-delay: .04s; } .card:nth-child(2) { animation-delay: .08s; }
+        .card:nth-child(3) { animation-delay: .12s; } .card:nth-child(4) { animation-delay: .16s; }
+        .card:nth-child(5) { animation-delay: .20s; } .card:nth-child(6) { animation-delay: .24s; }
+        .card:nth-child(7) { animation-delay: .28s; } .card:nth-child(8) { animation-delay: .32s; }
+        .card:nth-child(9) { animation-delay: .36s; }
 
         /* ===== FOOTER ===== */
-        .eco-footer {
-            text-align: center;
-            padding: 8px 16px 14px;
-            font-size: 11px;
-            color: #4b735c;
+        .footer {
             flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
+            font-size: 11px; font-weight: 700; color: var(--ink-soft);
+        }
+        .footer strong { color: var(--green-800); font-weight: 800; }
+        .footer-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--orange-500); }
+
+        /* ===== ÉCRANS COMPACTS ===== */
+        @media (max-height: 720px) {
+            .header { padding-bottom: 46px; }
+            .greeting { margin-top: 14px; }
+            .greeting-hello { font-size: 22px; }
+            .section { padding-top: 12px; }
+            .grid { gap: 9px; }
+            .card { gap: 6px; border-radius: 18px; }
+            .icon { width: 42px; height: 42px; border-radius: 14px; }
+            .icon svg { width: 20px; height: 20px; }
+        }
+        @media (max-height: 620px) {
+            .greeting-date { display: none; }
+            .footer { display: none; }
+        }
+        @media (max-width: 360px) {
+            .icon { width: 40px; height: 40px; }
+            .label { font-size: 10.5px; }
         }
 
-        .eco-footer strong { color: #14532d; font-weight: 900; }
+        /* ===== AUTH ===== */
+        .authed #auth-overlay { display: none; }
 
-        .footer-dot {
-            width: 4px; height: 4px;
-            background: #f97316;
-            border-radius: 50%;
-            box-shadow: 0 0 5px rgba(249, 115, 22, 0.5);
-        }
-
-        /* ===== AUTH OVERLAY ===== */
         .auth-overlay {
-            position: fixed; inset: 0;
-            background: rgba(14, 45, 28, 0.60);
-            z-index: 1000;
+            position: fixed; inset: 0; z-index: 1000;
             display: flex; align-items: center; justify-content: center;
             padding: 20px;
-            backdrop-filter: blur(14px) saturate(1.2);
+            background: rgba(9, 36, 24, 0.62);
+            backdrop-filter: blur(16px) saturate(1.2);
+            -webkit-backdrop-filter: blur(16px) saturate(1.2);
             transition: opacity 0.35s ease;
         }
-
         .auth-card {
-            background: #ffffff;
-            width: 100%; max-width: 340px;
-            border-radius: 28px;
+            width: 100%; max-width: 350px;
+            background: #fff;
+            border-radius: 30px;
             overflow: hidden;
-            border: 1px solid rgba(46, 163, 113, 0.20);
-            box-shadow: 0 28px 70px rgba(10, 40, 24, 0.25), 0 0 0 1px rgba(255,255,255,0.7) inset;
-            animation: modalIn 0.32s cubic-bezier(0.16,1,0.3,1);
+            box-shadow: 0 30px 80px rgba(6, 30, 19, 0.38);
+            animation: modalIn 0.4s var(--ease);
         }
+        @keyframes modalIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-        @keyframes modalIn {
-            from { transform: scale(0.88) translateY(20px); opacity: 0; }
-            to   { transform: scale(1) translateY(0); opacity: 1; }
+        .auth-head {
+            position: relative; overflow: hidden;
+            padding: 30px 22px 24px;
+            text-align: center; color: #fff;
+            background:
+                radial-gradient(circle at 90% 0%, rgba(74,222,128,0.35), transparent 55%),
+                radial-gradient(circle at 0% 100%, rgba(249,115,22,0.30), transparent 50%),
+                linear-gradient(155deg, var(--green-900), var(--green-700) 60%, var(--green-600));
         }
-
-        .auth-header {
-            background: linear-gradient(150deg, #0e3d28 0%, #15573a 50%, #1e7550 100%);
-            color: white;
-            padding: 28px 22px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .auth-header::before {
-            content: '';
-            position: absolute;
-            top: -30px; right: -30px;
-            width: 120px; height: 120px;
-            background: radial-gradient(circle, rgba(134, 239, 172, 0.22) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .auth-header::after {
-            content: '';
-            position: absolute;
-            bottom: -30px; left: -20px;
-            width: 100px; height: 100px;
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.20) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .auth-icon-wrap {
-            width: 58px; height: 58px;
-            background: rgba(255,255,255,0.16);
+        .auth-icon {
+            width: 60px; height: 60px; margin: 0 auto 14px;
             border-radius: 20px;
-            margin: 0 auto 14px;
-            display: flex; align-items: center; justify-content: center;
-            border: 1.5px solid rgba(255,255,255,0.28);
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            display: grid; place-items: center;
+            background: rgba(255,255,255,0.16);
+            border: 1.5px solid rgba(255,255,255,0.30);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.20);
         }
+        .auth-icon svg { width: 27px; height: 27px; }
+        .auth-head h2 { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+        .auth-head p { margin-top: 4px; font-size: 12px; font-weight: 700; color: #a7f3d0; }
 
-        .auth-icon-wrap svg { width: 26px; height: 26px; color: white; }
-
-        .auth-header h2 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 900; margin-bottom: 4px; position: relative; z-index: 1; color: #ffffff; }
-        .auth-header p  { font-size: 11.5px; color: #a7f3d0; font-weight: 700; position: relative; z-index: 1; }
-
-        .auth-body {
-            padding: 24px 22px 26px;
-            display: flex; flex-direction: column; gap: 14px;
-            background: #ffffff;
-        }
-
-        .auth-body label { font-size: 12px; font-weight: 700; color: #16422d; display: block; }
-
+        .auth-body { padding: 24px 22px 26px; display: flex; flex-direction: column; gap: 14px; }
+        .auth-body label { font-size: 12.5px; font-weight: 800; color: var(--green-800); }
         .auth-input {
-            width: 100%; margin-top: 7px;
-            padding: 13px 15px;
-            border-radius: 14px; border: 1.5px solid #d0e7da;
-            font-size: 14px; font-weight: 700; outline: none;
-            background: #f7faf8; transition: all 0.2s;
-            color: #0f291e;
+            width: 100%; margin-top: 8px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1.5px solid #d3e8dc;
+            background: #f6faf8;
+            font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
         }
-
-        .auth-input:focus {
-            border-color: #16a34a; background: #ffffff;
-            box-shadow: 0 0 0 3.5px rgba(34, 197, 94, 0.18);
-        }
+        .auth-input:focus { border-color: #16a34a; background: #fff; box-shadow: 0 0 0 4px rgba(34,197,94,0.16); }
 
         .auth-submit {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            color: white; border: none;
             padding: 14px; border-radius: 14px;
-            font-size: 13.5px; font-weight: 800; cursor: pointer;
-            box-shadow: 0 4px 18px rgba(234, 88, 12, 0.38);
-            transition: all 0.2s; margin-top: 2px;
+            font-size: 14px; font-weight: 800; color: #fff;
+            background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.40);
+            transition: transform 0.2s var(--ease), box-shadow 0.2s;
         }
-
-        .auth-submit:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 7px 22px rgba(234, 88, 12, 0.48);
-        }
-        .auth-submit:active { transform: scale(0.97); transition-duration: 0.08s; }
+        .auth-submit:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(234, 88, 12, 0.48); }
+        .auth-submit:active { transform: scale(0.97); }
+        .auth-submit:disabled { opacity: 0.7; cursor: wait; }
 
         .auth-error {
-            color: #be123c; background: #fff1f2;
-            padding: 9px 13px; border-radius: 10px;
-            font-size: 11.5px; font-weight: 700; text-align: center;
-            display: none; border: 1px solid #fecdd3;
+            display: none;
+            padding: 10px 14px; border-radius: 12px;
+            font-size: 12px; font-weight: 700; text-align: center;
+            color: #be123c; background: #fff1f2; border: 1px solid #fecdd3;
         }
-
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%       { transform: translateX(-9px); }
-            40%       { transform: translateX(9px); }
-            60%       { transform: translateX(-5px); }
-            80%       { transform: translateX(5px); }
+            0%,100% { transform: translateX(0); } 20% { transform: translateX(-9px); }
+            40% { transform: translateX(9px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); }
         }
 
-        /* Toast notification */
-        .toast-msg {
-            position: fixed; bottom: 28px; left: 50%;
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 28px);
             transform: translateX(-50%) translateY(20px);
-            background: linear-gradient(135deg, #0e3d28, #185e3c);
-            color: #ffffff;
-            padding: 11px 24px; border-radius: 30px;
-            font-size: 12px; font-weight: 700;
-            box-shadow: 0 8px 28px rgba(10, 40, 24, 0.35);
-            z-index: 999; white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.24s, transform 0.24s;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(249, 115, 22, 0.45);
+            padding: 12px 22px; border-radius: 30px;
+            font-size: 12.5px; font-weight: 700; color: #fff; white-space: nowrap;
+            background: linear-gradient(135deg, var(--green-900), var(--green-700));
+            border: 1px solid rgba(249,115,22,0.5);
+            box-shadow: 0 10px 30px rgba(9, 36, 24, 0.38);
+            opacity: 0; z-index: 999;
+            transition: opacity 0.25s, transform 0.25s var(--ease);
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
+    <div class="app">
 
         <!-- ===== HEADER ===== -->
-        <header class="app-header">
-            <div class="header-top">
-                <div class="logo-container">
-                    <div class="logo-badge">
-                        <img src="logo.png" alt="AMplast Logo">
-                    </div>
-                    <div class="brand-meta">
+        <header class="header">
+            <div class="header-row">
+                <div class="brand">
+                    <div class="logo"><img src="logo.png" alt="Logo AMplast"></div>
+                    <div class="brand-text">
                         <span class="brand-name">AMplast</span>
-                        <span class="app-title">Menu Principal</span>
+                        <span class="brand-title">Menu Principal</span>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <div id="current-date" class="date-pill">Chargement...</div>
-                    <button id="btn-lock-session" class="btn-lock" title="Verrouiller la session" aria-label="Verrouiller la session">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        </svg>
-                    </button>
-                </div>
+                <button id="btn-lock-session" class="btn-lock" title="Verrouiller la session" aria-label="Verrouiller la session">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </button>
             </div>
-
-            <div class="system-banner">
-                <div class="banner-left">
-                    <div class="status-dot"></div>
-                    <span>Système de Gestion</span>
-                </div>
-                <div class="banner-right">En ligne · v2.5</div>
+            <div class="greeting">
+                <div id="greeting-hello" class="greeting-hello">Bonjour</div>
+                <div id="current-date" class="greeting-date">Chargement...</div>
             </div>
-            <div class="header-shimmer"></div>
         </header>
 
-        <!-- Section label -->
-        <div class="section-header">
+        <!-- ===== STATUT ===== -->
+        <div class="status" role="status">
+            <div class="status-left"><span class="status-dot"></span><span>Système de Gestion</span></div>
+            <span class="status-version">En ligne · v2.5</span>
+        </div>
+
+        <div class="section">
             <span class="section-title">Modules</span>
             <div class="section-line"></div>
         </div>
 
-        <!-- ===== GRILLE DES BOUTONS CARRÉS ARRONDIS NÉON ===== -->
-        <main class="main-content">
-            <div class="buttons-grid">
+        <!-- ===== GRILLE ===== -->
+        <main class="main">
+            <nav class="grid" aria-label="Modules">
 
-                <!-- 1. Clients -->
-                <a href="amclts.html" class="btn-card theme-clients" id="btn-clients" title="Gestion des Clients">
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                <a href="amclts.html" class="card t-clients" id="btn-clients" title="Gestion des Clients">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Clients</span>
+                    <span class="label">Clients</span>
                 </a>
 
-                <!-- 2. Fournisseurs -->
-                <a href="amfrs.html" class="btn-card theme-fournisseurs" id="btn-fournisseurs" title="Gestion des Fournisseurs">
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="1" y="3" width="15" height="13"/>
-                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                            <circle cx="5.5" cy="18.5" r="2.5"/>
-                            <circle cx="18.5" cy="18.5" r="2.5"/>
+                <a href="amfrs.html" class="card t-fournisseurs" id="btn-fournisseurs" title="Gestion des Fournisseurs">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                            <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Fournisseurs</span>
+                    <span class="label">Fournisseurs</span>
                 </a>
 
-                <!-- 3. Matières -->
-                <a href="amatiere.html" class="btn-card theme-matieres" id="btn-matieres" title="Matières Premières">
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <a href="amatiere.html" class="card t-matieres" id="btn-matieres" title="Matières Premières">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                            <line x1="12" y1="22.08" x2="12" y2="12"/>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Matières</span>
+                    <span class="label">Matières</span>
                 </a>
 
-                <!-- 4. Produits -->
-                <a href="amstock.html" class="btn-card theme-produits" id="btn-produits" title="Catalogue Produits">
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                            <polyline points="2 17 12 22 22 17"/>
-                            <polyline points="2 12 12 17 22 12"/>
+                <a href="amstock.html" class="card t-produits" id="btn-produits" title="Catalogue Produits">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Produits</span>
+                    <span class="label">Produits</span>
                 </a>
 
-                <!-- 5. Matériels -->
-                <a href="amachine.html" class="btn-card theme-materiels" id="btn-materiels" title="Parc Matériels">
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <a href="amachine.html" class="card t-materiels" id="btn-materiels" title="Parc Matériels">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Matériels</span>
+                    <span class="label">Matériels</span>
                 </a>
 
-                <!-- 6. Ouvriers -->
-                <a href="amkhdam.html" class="btn-card theme-ouvriers" id="btn-ouvriers" title="Gestion des Ouvriers">
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="8" r="7"/>
-                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                <a href="amkhdam.html" class="card t-ouvriers" id="btn-ouvriers" title="Gestion des Ouvriers">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Ouvriers</span>
+                    <span class="label">Ouvriers</span>
                 </a>
 
-                <!-- 7. Dépenses -->
-                <div class="btn-card theme-depenses" id="btn-depenses" onclick="comingSoon('Dépenses &amp; Charges')" title="Dépenses & Charges">
-                    <span class="btn-badge-soon">Bientôt</span>
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="1" x2="12" y2="23"/>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                <button type="button" class="card soon t-depenses" id="btn-depenses" data-soon="Dépenses &amp; Charges" title="Dépenses &amp; Charges">
+                    <span class="badge-soon">Bientôt</span>
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Dépenses</span>
-                </div>
+                    <span class="label">Dépenses</span>
+                </button>
 
-                <!-- 8. Situation -->
-                <a href="amdocs.html" class="btn-card theme-situation" id="btn-situation" title="Tableau de bord / Situation">
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="20" x2="18" y2="10"/>
-                            <line x1="12" y1="20" x2="12" y2="4"/>
-                            <line x1="6"  y1="20" x2="6"  y2="14"/>
+                <a href="amdocs.html" class="card t-situation" id="btn-situation" title="Documents / Situation">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Docs</span>
+                    <span class="label">Docs</span>
                 </a>
 
-                <!-- 9. Production -->
-                <div class="btn-card theme-production" id="btn-production" onclick="comingSoon('Production &amp; Mélange')" title="Production & Mélange">
-                    <span class="btn-badge-soon">Bientôt</span>
-                    <div class="btn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <button type="button" class="card soon t-production" id="btn-production" data-soon="Production &amp; Mélange" title="Production &amp; Mélange">
+                    <span class="badge-soon">Bientôt</span>
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                         </svg>
                     </div>
-                    <span class="btn-label">Production</span>
-                </div>
+                    <span class="label">Production</span>
+                </button>
 
-            </div>
+            </nav>
         </main>
 
-        <!-- ===== FOOTER ===== -->
-        <footer class="eco-footer">
-            <strong>AMplast</strong>
-            <div class="footer-dot"></div>
-            <span>Gestion Intégrée Éco-Responsable</span>
+        <footer class="footer">
+            <strong>AMplast</strong><span class="footer-dot"></span><span>Gestion Intégrée Éco-Responsable</span>
         </footer>
+    </div>
 
-    </div><!-- .app-container -->
-
-    <!-- ===== AUTH OVERLAY ===== -->
-    <div id="auth-overlay" class="auth-overlay">
+    <!-- ===== AUTH ===== -->
+    <div id="auth-overlay" class="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
         <div class="auth-card">
-            <div class="auth-header">
-                <div class="auth-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <div class="auth-head">
+                <div class="auth-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                 </div>
-                <h2>Accès Sécurisé</h2>
+                <h2 id="auth-title">Accès Sécurisé</h2>
                 <p>Système de Gestion AMplast</p>
             </div>
             <div class="auth-body">
                 <div>
                     <label for="auth-password">Mot de passe administrateur</label>
-                    <input type="password" id="auth-password" class="auth-input"
-                           placeholder="Entrez le mot de passe" autocomplete="current-password">
+                    <input type="password" id="auth-password" class="auth-input" placeholder="Entrez le mot de passe" autocomplete="current-password">
                 </div>
-                <div id="auth-error" class="auth-error">Mot de passe incorrect. Veuillez réessayer.</div>
-                <button id="auth-btn" class="auth-submit">Déverrouiller l'accès</button>
+                <div id="auth-error" class="auth-error" role="alert">Mot de passe incorrect. Veuillez réessayer.</div>
+                <button id="auth-btn" class="auth-submit" type="button">Déverrouiller l'accès</button>
             </div>
         </div>
     </div>
 
     <script>
-        /* ===== AUTHENTICATION ===== */
+        /* ===== AUTHENTIFICATION ===== */
         const authOverlay  = document.getElementById('auth-overlay');
         const authPassword = document.getElementById('auth-password');
         const authBtn      = document.getElementById('auth-btn');
@@ -883,20 +637,9 @@
         // SHA-256 du mot de passe actuel
         const EXPECTED_HASH = "d30ea69ba67ff9c8c9d52a2d202edb26d1a619b0baed813de401ec2dbf392448";
 
-        function checkAuthStatus() {
-            try {
-                const d = JSON.parse(localStorage.getItem('auth_data') || '{}');
-                return d.passed === 'true' && (Date.now() - d.time < 12 * 3600 * 1000);
-            } catch { return false; }
-        }
-
-        if (checkAuthStatus()) {
-            authOverlay.style.display = 'none';
-        }
-
         async function hashString(str) {
             const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
         async function checkAuth() {
@@ -911,7 +654,11 @@
                 if (hash === EXPECTED_HASH) {
                     localStorage.setItem('auth_data', JSON.stringify({ passed: 'true', time: Date.now() }));
                     authOverlay.style.opacity = '0';
-                    setTimeout(() => authOverlay.style.display = 'none', 350);
+                    setTimeout(() => {
+                        document.documentElement.classList.add('authed');
+                        authOverlay.style.opacity = '';
+                        authPassword.value = '';
+                    }, 350);
                 } else {
                     authError.style.display = 'block';
                     authPassword.value = '';
@@ -921,42 +668,51 @@
                     void card.offsetWidth;
                     card.style.animation = 'shake 0.4s ease';
                 }
-            } catch (err) { console.error(err); }
-            finally {
+            } catch (err) {
+                console.error(err);
+            } finally {
                 authBtn.textContent = "Déverrouiller l'accès";
                 authBtn.disabled = false;
             }
         }
 
         authBtn.addEventListener('click', checkAuth);
-        authPassword.addEventListener('keypress', e => { if (e.key === 'Enter') checkAuth(); });
+        authPassword.addEventListener('keydown', e => { if (e.key === 'Enter') checkAuth(); });
 
-        /* ===== DATE ===== */
-        const el = document.getElementById('current-date');
-        if (el) {
-            const s = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'short' });
-            el.textContent = s.charAt(0).toUpperCase() + s.slice(1);
-        }
+        // Bouton cadenas : verrouille la session et réaffiche l'écran d'accès
+        document.getElementById('btn-lock-session').addEventListener('click', () => {
+            try { localStorage.removeItem('auth_data'); } catch (e) {}
+            authError.style.display = 'none';
+            document.documentElement.classList.remove('authed');
+            setTimeout(() => authPassword.focus(), 50);
+        });
 
-        /* ===== COMING SOON TOAST ===== */
+        /* ===== SALUTATION & DATE ===== */
+        (function () {
+            const now = new Date();
+            const h = now.getHours();
+            const hello = h < 5 ? 'Bonsoir' : h < 18 ? 'Bonjour' : 'Bonsoir';
+            document.getElementById('greeting-hello').textContent = hello + ' 👋';
+            const s = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('current-date').textContent = s.charAt(0).toUpperCase() + s.slice(1);
+        })();
+
+        /* ===== MODULES À VENIR ===== */
         function comingSoon(name) {
-            document.querySelectorAll('.toast-msg').forEach(t => t.remove());
+            document.querySelectorAll('.toast').forEach(t => t.remove());
             const toast = document.createElement('div');
-            toast.className = 'toast-msg';
-            toast.textContent = `🚧 ${name} — Module en déploiement`;
+            toast.className = 'toast';
+            toast.textContent = '🚧 ' + name + ' — Module en déploiement';
             document.body.appendChild(toast);
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    toast.style.opacity = '1';
-                    toast.style.transform = 'translateX(-50%) translateY(0)';
-                });
-            });
+            requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
             setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(-50%) translateY(20px)';
-                setTimeout(() => toast.remove(), 280);
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
             }, 2600);
         }
+        document.querySelectorAll('[data-soon]').forEach(el => {
+            el.addEventListener('click', () => comingSoon(el.dataset.soon));
+        });
     </script>
 </body>
 </html>

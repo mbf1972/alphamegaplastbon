@@ -871,6 +871,7 @@ input[type="number"] {
     font-weight: 900;
     background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 4px 16px rgba(13, 148, 136, 0.2);
     letter-spacing: 0.05em;
